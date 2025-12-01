@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 
 public class AlertEntity {
+	@Column(name = "user_id")
+	private Integer user_id;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
