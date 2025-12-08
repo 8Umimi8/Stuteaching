@@ -13,13 +13,13 @@ import com.example.demo.entity.AlertEntity;
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface Alert extends JpaRepository<AlertEntity, Integer> {
+public interface AlertRepository extends JpaRepository<AlertEntity, Integer> {
 
-	@Query("SELECT a FROM AlertEntity a WHERE a.alert_id = :alert_id")
-	List<AlertEntity> DisplayAlerts(@Param("alert_id") int alert_id);
+	@Query("SELECT a FROM AlertEntity a WHERE a.userId = :user_id")
+	List<AlertEntity> DisplayAlerts(@Param("user_id") int user_id);
 
 	@Modifying
 	@Transactional
-	@Query("DELETE FROM AlertEntity a WHERE a.alert_id IN :alert_id")
+	@Query("DELETE FROM AlertEntity a WHERE a.alertId IN :alert_id")
 	int DeleteAlerts(@Param("alert_id") int[] alert_id);
 }

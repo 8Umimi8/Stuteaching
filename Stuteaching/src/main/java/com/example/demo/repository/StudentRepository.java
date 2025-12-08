@@ -13,7 +13,7 @@ import com.example.demo.entity.StudentEntity;
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface Student extends JpaRepository<StudentEntity, Integer> {
+public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
 
 	@Query("SELECT a FROM StudentEntity a WHERE a.user_id = :user_id")
 	List<StudentEntity> DisplayStudent(@Param("user_id") int user_id);
@@ -21,6 +21,6 @@ public interface Student extends JpaRepository<StudentEntity, Integer> {
 	@Modifying
 	@Transactional
 	@Query("UPDATE FROM StudentEntity a set a.user_name = :user_name where a.user_id = :user_id")
-	int UpdataTeacher(@Param("user_id") int user_id,
+	int UpdataStudent(@Param("user_id") int user_id,
 			@Param("user_name") String user_name);
 }

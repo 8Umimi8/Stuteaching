@@ -13,11 +13,13 @@ import com.example.demo.entity.TeacherEntity;
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface Teacher extends JpaRepository<TeacherEntity, Integer> {
+public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer> {
 
+	//先生情報の表示
 	@Query("SELECT a FROM TeacherEntity a WHERE a.user_id = :user_id")
 	List<TeacherEntity> DisplayTeacher(@Param("user_id") int user_id);
 
+	//先生情報の更新
 	@Modifying
 	@Transactional
 	@Query("UPDATE FROM TeacherEntity a set a.user_name = :user_name"

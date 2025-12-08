@@ -3,9 +3,9 @@ package com.example.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.entity.LoginEntity;
+import com.example.demo.entity.TalkEntity;
 
 @Repository
-public interface Login extends JpaRepository<LoginEntity, Integer> {
+public interface PostTalkRepository extends JpaRepository<TalkEntity, Integer> {
 
 }
