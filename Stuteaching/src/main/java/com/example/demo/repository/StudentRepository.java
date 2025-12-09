@@ -15,9 +15,11 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
 
+	//生徒情報の表示
 	@Query("SELECT a FROM StudentEntity a WHERE a.user_id = :user_id")
 	List<StudentEntity> DisplayStudent(@Param("user_id") int user_id);
 
+	//生徒情報の更新
 	@Modifying
 	@Transactional
 	@Query("UPDATE FROM StudentEntity a set a.user_name = :user_name where a.user_id = :user_id")
