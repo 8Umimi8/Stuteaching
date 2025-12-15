@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stuteaching Header Draft</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">Stuteaching</a>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> ホーム</a></li>
+                    <li><a href="#"><i class="fas fa-book"></i> 教科一覧</a></li>
+                    <li><a href="#"><i class="fas fa-calendar-alt"></i> スケジュール</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> 学習記録</a></li>
+                </ul>
+            </nav>
+
+            <div class="user-actions">
+                <a href="#" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="#" class="profile-btn">
+                    <div class="profile-icon"><i class="fas fa-user"></i></div>
+                </a>
+            </div>
+
+            <button class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <script>
+        // Simple script for mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>
