@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +11,7 @@ import com.example.demo.DTO.AlertDTO;
 import com.example.demo.entity.AlertEntity;
 import com.example.demo.repository.AlertRepository;
 import com.example.demo.service.AlertService;
+import com.example.demo.util.UtilService;
 
 @Service
 public class AlertServiceImpl implements AlertService {
@@ -21,11 +21,11 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public List<AlertDTO> DisplayAlerts(int user_id) {
-		ModelMapper modelMapper = new ModelMapper();
+
 		Optional<AlertEntity> alertEntity = alertrepository.findById(user_id);
 		List<AlertDTO> alertDTO = new ArrayList<AlertDTO>();
 
-		modelMapper.map(alertEntity, alertDTO);
+		UtilService.ConvertDTO(alertEntity, alertDTO);
 
 		return alertDTO;
 	}
