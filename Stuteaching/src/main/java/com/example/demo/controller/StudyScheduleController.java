@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,49 +12,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.DTO.TimeManageDTO;
+import com.example.demo.entity.TimeEntity;
+import com.example.demo.service.StudyScheduleService;
 
 @RestController
 @RequestMapping("/study-time")
 public class StudyScheduleController {
 
-	private List<TimeManageDTO> timeList = new ArrayList<>();
+	@Autowired
+	private StudyScheduleService service;
 
-	// insert
+	// ========================
+	// 勉強時間 登録
+	// ========================
 	@PostMapping("/insert")
-	public String insertTime(@RequestBody TimeManageDTO dto) {
-		timeList.add(dto);
+	public String insert(@RequestBody TimeEntity entity) {
+		service.insert(entity);
 		return "勉強時間を登録しました";
 	}
 
-	// Update
+	// ========================
+	// 勉強時間 更新
+	// ========================
 	@PutMapping("/update")
-	public String updateTime(@RequestBody TimeManageDTO dto) {
-		for (TimeManageDTO t : timeList) {
-			if (t.getDate().equals(dto.getDate())
-					&& t.getStudy_subject().equals(dto.getStudy_subject())) {
-
-				t.setStudy_time(dto.getStudy_time());
-				return "勉強時間を更新しました";
-			}
-		}
-		return "更新対象が見つかりません";
+	public String update(@RequestBody TimeEntity entity) {
+		service.UpdateTime(entity);
+		return "勉強時間を更新しました";
 	}
 
-	// Delete
+	// ========================
+	// 勉強時間 削除
+	// ========================
 	@DeleteMapping("/delete")
-	public String deleteTime(@RequestParam Date date,
-			@RequestParam String studySubject) {
-
-		timeList.removeIf(t -> t.getDate().equals(date)
-				&& t.getStudy_subject().equals(studySubject));
-
+	public String delete(@RequestParam Integer time_id) {
+		service.delete(time_id);
 		return "勉強時間を削除しました";
 	}
 
-	// Display
+	// ========================
+	// 勉強時間 表示（ユーザー別）
+	// ========================
 	@GetMapping("/display")
-	public List<TimeManageDTO> displayTime() {
-		return timeList;
+	public List<TimeEntity> display(@RequestParam Integer user_id) {
+		return service.findByUserId(user_id);
 	}
 }
