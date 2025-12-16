@@ -46,8 +46,11 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 
 	@Override
 	public TimeManageDTO DisplayTime(int user_id) {
+		Optional<TimeEntity> entity = studyschedulerepository.findById(user_id);
+		TimeManageDTO dto = new TimeManageDTO();
+		UtilService.ConvertDTO(entity, dto);
 
-		return null;
+		return dto;
 	}
 
 }
