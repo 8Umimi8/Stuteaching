@@ -40,12 +40,13 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 
 	@Override
 	public void DeleteTime(int time_id) {
+		studyschedulerepository.deleteById(time_id);
 
 	}
 
 	@Override
 	public TimeManageDTO DisplayTime(int user_id) {
-		// TODO 自動生成されたメソッド・スタブ
+
 		return null;
 	}
 
