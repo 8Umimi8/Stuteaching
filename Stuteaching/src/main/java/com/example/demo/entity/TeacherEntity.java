@@ -35,5 +35,5 @@ public class TeacherEntity {
 	private String subject_name;
 
 	@Column(name = "review")
-	private Integer review;
+	private String review;
 }
