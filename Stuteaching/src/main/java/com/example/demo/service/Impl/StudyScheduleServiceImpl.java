@@ -1,5 +1,7 @@
 package com.example.demo.service.Impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +47,9 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 	}
 
 	@Override
-	public TimeManageDTO DisplayTime(int user_id) {
+	public List<TimeManageDTO> DisplayTime(int user_id) {
 		Optional<TimeEntity> entity = studyschedulerepository.findById(user_id);
-		TimeManageDTO dto = new TimeManageDTO();
+		List<TimeManageDTO> dto = new ArrayList<TimeManageDTO>();
 		UtilService.ConvertDTO(entity, dto);
 
 		return dto;
