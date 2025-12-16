@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 public interface StudyScheduleRepository extends JpaRepository<TimeEntity, Integer> {
 
 	//勉強時間表示
-	@Query("SELECT a FROM TimeEntity a WHERE a.user_id = :user_id")
+	@Query("SELECT a FROM TimeEntity a WHERE a.user_Id = :user_Id")
 	List<TimeEntity> DisplayTime(@Param("user_id") int user_id);
 
 	//勉強時間削除

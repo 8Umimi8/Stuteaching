@@ -18,6 +18,9 @@ import lombok.Setter;
 
 public class TimeEntity {
 	@Id
+	@Column(name = "time_id")
+	private Integer time_id;
+
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Integer user_id;
