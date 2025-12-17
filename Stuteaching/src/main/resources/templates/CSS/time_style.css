@@ -1,0 +1,27 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 左右に均等配置 */
+    max-width: 1200px;
+    /* 必要なら中央寄せ用 */
+    margin: 0 auto;
+    /* 画面中央に配置 */
+    padding: 0 20px;
+    /* 左右に余白 */
+}
+
+#calendar {
+    width: 70%;
+    /* 画面幅の90%に比例 */
+    max-width: 1200px;
+    /* 上限を設定 */
+    height: auto;
+    max-height: 700px;
+    margin: 0 auto;
+    transform: translateX(-8%);
+}
+
+.fc .fc-highlight {
+    background-color: rgba(0, 123, 255, 0.3);
+}

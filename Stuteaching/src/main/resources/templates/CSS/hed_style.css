@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP');
+
+:root {
+    --primary-color: #4A90E2;
+    /* Calming study blue */
+    --text-color: #333;
+    --bg-color: #ffffff;
+    --hover-bg: #f5f7fa;
+    --border-color: #eaeaea;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.header {
+    background-color: var(--bg-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    position: fixed;
+}
+
+.header-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo {
+    font-family: 'Noto Serif JP', sans-serif;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+.logo span {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    letter-spacing: 0.5px;
+}
+
+.logo2 {
+    position: absolute;
+    width: 75px;
+    height: auto;
+    left: 20px;
+    /* 画面左からの距離 */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.nav-menu ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+}
+
+.nav-menu a:hover {
+    color: var(--primary-color);
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.icon-btn {
+    color: var(--text-color);
+    font-size: 18px;
+    transition: color 0.3s;
+    position: absolute;
+    right: 70px;
+    /* 画面右端 */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.icon-btn:hover {
+    color: var(--primary-color);
+}
+
+.profile-icon {
+    width: 35px;
+    height: 35px;
+    background-color: var(--hover-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    position: absolute;
+    right: 20px;
+    /* 画面右端 */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+/* Base styles are desktop-first. Now, responsive styles: */
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-color);
+        border-top: 1px solid var(--border-color);
+        padding: 20px 0;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-menu.active {
+        transform: translateY(0);
+    }
+
+    .nav-menu ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .hamburger {
+        display: block;
+        margin-left: 20px;
+    }
+
+    .user-actions {
+        margin-left: auto;
+        /* Push user actions to the right, hamburger follows */
+    }
+
+    /* ===== モバイル時のヘッダー崩れ修正（最小） ===== */
+    @media (max-width: 768px) {
+
+        /* ロゴ画像 */
+        .logo2 {
+            position: static;
+            transform: none;
+            margin-right: 8px;
+            width: 55px;
+        }
+
+        /* 右上アイコン類 */
+        .icon-btn,
+        .profile-icon {
+            position: static;
+            transform: none;
+        }
+
+        /* user-actions を通常の flex に戻す */
+        .user-actions {
+            position: static;
+            gap: 12px;
+        }
+    }
+
+    .header {
+        position: fixed;
+        /* 画面上部に固定 */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        /* ヘッダーの高さを指定 */
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+        z-index: 1000;
+        /* カレンダーより前面に表示 */
+    }
+
+    body {
+        margin: 0;
+        padding-top: 60px;
+        /* ヘッダーの高さ分だけ本文を下げる */
+    }
+}
+
+/* ヘッダーを固定表示 */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    /* ヘッダーの高さを指定 */
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    z-index: 1000;
+    /* カレンダーより前面に表示 */
+}
+
+/* 本文を下げる */
+body {
+    margin: 0;
+    padding-top: 90px;
+    /* ヘッダー高さ(70px)＋余裕(20px) */
+}

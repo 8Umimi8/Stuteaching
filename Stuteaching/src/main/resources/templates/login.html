@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ログイン</title>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <main class="card" role="main" aria-labelledby="login-title">
+    <h1 id="login-title">スタチン</h1>
+
+    <form id="login-form" action="/login" method="post">
+      <div class="field">
+        <label for="email">メールアドレス</label>
+        <input id="email" name="email" type="email" class="input" autocomplete="email" inputmode="email"
+          placeholder="sutatin@teaching.com" required />
+      </div>
+
+      <div class="field pw-wrap">
+        <label for="password">パスワード</label>
+        <input id="password" name="password" type="password" class="input" autocomplete="current-password"
+          placeholder="パスワード" required />
+      </div>
+
+      <div class="error" id="error" role="alert" aria-live="polite"></div>
+
+      <button type="submit" class="btn">ログイン</button>
+    </form>
+
+    <div class="footer">
+      <a href="/regist.html">新規登録の方はこちら</a>
+    </div>
+  </main>
+</body>
+
+</html>

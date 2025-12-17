@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ログイン</title>
+</head>
+
+<body>
+    <main class="card" role="main" aria-labelledby="regist-title">
+        <h1 id="login-title">スタチン</h1>
+
+        <form id="regist-form" action="agreement.html" method="get">
+            <div class="field">
+                <label for="email">メールアドレス</label>
+                <input id="email" name="email" type="email" class="input" autocomplete="email" inputmode="email"
+                    placeholder="sutatin@teaching.com" required />
+            </div>
+
+            <div class="field pw-wrap">
+                <label for="password">パスワード</label>
+                <input id="password" name="password" type="password" class="input" autocomplete="current-password"
+                    placeholder="パスワード" required minlength="8" />
+            </div>
+
+            <div class="field pw-again">
+                <label for="password_again">パスワードの確認</label>
+                <input id="password_again" name="password_again" type="password" class="input"
+                    autocomplete="new-password" placeholder="パスワード" required minlength="8" />
+            </div>
+
+            <div class="field name">
+                <label for="name">表示名</label>
+                <input id="name" name="name" type="name" class="input" autocomplete="current-password"
+                    placeholder="スタチン太郎" required />
+            </div>
+
+            <label for="year">生年月日</label>
+            <select id="year" name="bday-year" autocomplete="bday-year" required>
+                <option value="">年</option>
+            </select>
+
+            <select id="month" name="bday-month" autocomplete="bday-month" required>
+                <option value="">月</option>
+            </select>
+
+            <select id="day" name="bday-day" autocomplete="bday-day" required>
+                <option value="">日</option>
+            </select>
+
+            <script>
+                // 年（直近100年分）
+                const yearSelect = document.getElementById("year");
+                const currentYear = new Date().getFullYear();
+                const startYear = currentYear - 100;
+                for (let y = currentYear; y >= startYear; y--) {
+                    const opt = document.createElement("option");
+                    opt.value = y;
+                    opt.textContent = y;
+                    yearSelect.appendChild(opt);
+                }
+
+                // 月（1〜12）
+                const monthSelect = document.getElementById("month");
+                for (let m = 1; m <= 12; m++) {
+                    const opt = document.createElement("option");
+                    opt.value = m;
+                    opt.textContent = m;
+                    monthSelect.appendChild(opt);
+                }
+
+                // 日（1〜31）
+                const daySelect = document.getElementById("day");
+                for (let d = 1; d <= 31; d++) {
+                    const opt = document.createElement("option");
+                    opt.value = d;
+                    opt.textContent = d;
+                    daySelect.appendChild(opt);
+                }
+            </script>
+            </br>
+
+            <label for="sex">性別</label>
+            <select id="sex" name="sex" autocomplete="sex" required>
+                <option value="">選択してください</option>
+                <option value="male">男性</option>
+                <option value="female">女性</option>
+                <option value="other">その他</option>
+            </select>
+            </br>
+
+            <label for="role">役職</label>
+            <select id="role" name="role" autocomplete="role" required>
+                <option value="">選択してください</option>
+                <option value="student">生徒</option>
+                <option value="teacher">先生</option>
+            </select>
+
+            <div class="error" id="error" role="alert" aria-live="polite"></div>
+
+            <button type="submit" class="btn">登録</button>
+        </form>
+
+        <div class="footer">
+            <a href="/login.html">ログイン</a>
+        </div>
+    </main>
+</body>
+
+</html>

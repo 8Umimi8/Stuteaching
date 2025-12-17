@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マッチ | Stutyching - 学習プラットフォーム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/hed_style.css">
+    <link rel="stylesheet" href="css/time_style.css">
+    <link rel="stylesheet" href="css/main_style.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <style>
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .calendar-wrapper {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        #calendar {
+            flex: 1;
+            width: 70%;
+            max-width: 900px;
+            height: auto;
+            max-height: 700px;
+        }
+
+        .calendar-controls {
+            flex-shrink: 0;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        #selectedDateDisplay {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: #4CAF50;
+        }
+
+        .btn-add:hover {
+            background: #45a049;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+        }
+
+        .btn-edit:hover {
+            background: #1976D2;
+        }
+
+        .btn-delete {
+            background: #F44336;
+        }
+
+        .btn-delete:hover {
+            background: #D32F2F;
+        }
+
+        .fc .fc-highlight {
+            background-color: rgba(0, 123, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <img src="logo.jpg" alt="スタチンのロゴ" class="logo2">
+            <a href="#" class="logo">Stutyching</a>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> マッチ</a></li>
+                    <li><a href="#"><i class="fas fa-comments"></i> トーク</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> アカウント設定</a></li>
+                </ul>
+            </nav>
+
+            <div class="spacer"></div>
+
+            <div class="user-actions">
+                <a href="#" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="#" class="profile-btn">
+                    <div class="profile-icon"><i class="fas fa-user"></i></div>
+                </a>
+            </div>
+
+            <button class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="calendar-wrapper">
+        <div id="calendar"></div>
+        <div class="calendar-controls">
+            <!-- 選択された日付を表示 -->
+            <div id="selectedDateDisplay">日付が選択されていません</div>
+            <button id="addEventBtn" class="btn btn-add">勉強時間を追加</button>
+            <button id="editEventBtn" class="btn btn-edit">勉強時間を編集</button>
+            <button id="deleteEventBtn" class="btn btn-delete">勉強時間を削除</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
+
+    <script>
+        let selectedDate = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ja',
+                fixedWeekCount: false,
+                selectable: true,
+                editable: true,
+                events: '/events',
+
+                // 日付選択時に表示を更新
+                select: function (info) {
+                    selectedDate = info.startStr;
+                    selectedDateDisplay.textContent = "選択日: " + selectedDate;
+                }
+            });
+
+            calendar.render();
+
+            // 「追加」ボタン
+            const addEventBtn = document.getElementById('addEventBtn');
+            addEventBtn.addEventListener('click', function () {
+                if (!selectedDate) {
+                    alert("まずカレンダーで日付を選択してください！");
+                    return;
+                }
+                window.location.href = "add.html?date=" + selectedDate;
+            });
+
+            // 「編集」ボタン
+            const editEventBtn = document.getElementById('editEventBtn');
+            editEventBtn.addEventListener('click', function () {
+                if (!selectedDate) {
+                    alert("まずカレンダーで日付を選択してください！");
+                    return;
+                }
+                window.location.href = "edit.html?date=" + selectedDate;
+            });
+
+            // 「削除」ボタン
+            const deleteEventBtn = document.getElementById('deleteEventBtn');
+            deleteEventBtn.addEventListener('click', function () {
+                if (!selectedDate) {
+                    alert("まずカレンダーで日付を選択してください！");
+                    return;
+                }
+                window.location.href = "delete.html?date=" + selectedDate;
+            });
+        });
+    </script>
+</body>
+
+</html>
