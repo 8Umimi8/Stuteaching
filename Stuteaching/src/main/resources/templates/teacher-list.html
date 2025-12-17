@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マッチ | Stutyching - 学習プラットフォーム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/hed_style.css">
+    <link rel="stylesheet" href="css/home_style.css">
+    <style>
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <img src="logo.jpg" alt="スタチンのロゴ" class="logo2">
+            <a href="#" class="logo">Stutyching</a>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> マッチ</a></li>
+                    <li><a href="#"><i class="fas fa-comments"></i> トーク</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> アカウント設定</a></li>
+                </ul>
+            </nav>
+
+            <div class="spacer"></div>
+
+            <div class="user-actions">
+                <a href="#" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="#" class="profile-btn">
+                    <div class="profile-icon"><i class="fas fa-user"></i></div>
+                </a>
+            </div>
+
+            <button class="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <script>
+        // Mobile menu toggle (ヘッダー内で動作)
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+    </script>
+
+    <main>
+        <section aria-labelledby="match-title">
+            <h1 style="margin-left: 30px;" id="match-title">
+                マッチ
+            </h1>
+
+            <div style="margin-left: 10px;" class="actions">
+                <button class="btn">フィルター</button>
+                <button class="btn">並び替え</button>
+            </div>
+
+            <div class="grid" id="user-grid">
+                <!-- ここにDBから取得したユーザーデータを動的に挿入 -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // DBからデータをフェッチしてカードを生成
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                const users = await response.json();
+                const grid = document.getElementById('user-grid');
+
+                users.forEach(user => {
+                    const card = document.createElement('article');
+                    card.className = 'card';
+                    card.setAttribute('aria-label', 'ユーザカード');
+
+                    const starsHtml = Array.from({ length: 5 }, (_, i) =>
+                        i < user.rating ? '<span class="star-filled">★</span>' : '★'
+                    ).join('');
+
+                    card.innerHTML = `
+                        <div class="avatar" aria-hidden="true">${user.initial}</div>
+                        <div class="card-body">
+                            <div class="name">${user.name}</div>
+                            <div class="meta">
+                                <span>教科: ${user.subjects}</span>
+                                <span class="stars" aria-label="評価 ${user.rating} / 5">
+                                    ${starsHtml}
+                                </span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn primary">マッチする</button>
+                                <button class="btn">詳細</button>
+                            </div>
+                        </div>
+                    `;
+
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('ユーザーデータの読み込みに失敗しました:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+</body>
+
+</html>

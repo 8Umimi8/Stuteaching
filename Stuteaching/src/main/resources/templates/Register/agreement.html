@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー登録</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            line-height: 1.6;
+            margin: 2rem;
+            background: #f9fafb;
+            color: #111;
+        }
+
+        .policy-box {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button.disabled {
+            background: #aaa;
+            pointer-events: none;
+            /* クリック不可にする */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>同意書</h1>
+
+    <div class="policy-box">
+        <h2>プライバシーポリシー</h2>
+        <p>当サービスでは、会員登録に際して以下の情報を取得・利用します。</p>
+        <ul>
+            <li>氏名またはニックネーム</li>
+            <li>メールアドレス</li>
+            <li>パスワード（暗号化して保存）</li>
+            <li>その他、登録フォームに入力いただいた任意情報</li>
+        </ul>
+        <p>取得した情報は本人確認、サービス提供、サポート対応、不正利用防止のために利用します。</p>
+        <p>法令に基づく場合を除き、本人の同意なく第三者に提供することはありません。</p>
+
+        <h2>利用規約</h2>
+        <p>当サービスでは、会員登録に際して以下の情報を取得・利用します。</p>
+        <ul>
+            <li>氏名またはニックネーム</li>
+            <li>メールアドレス</li>
+            <li>パスワード（暗号化して保存）</li>
+            <li>その他、登録フォームに入力いただいた任意情報</li>
+        </ul>
+        <p>取得した情報は本人確認、サービス提供、サポート対応、不正利用防止のために利用します。</p>
+        <p>法令に基づく場合を除き、本人の同意なく第三者に提供することはありません。</p>
+    </div>
+
+    <div class="consent">
+        <label>
+            <input type="checkbox" id="agree-privacy">
+            プライバシーポリシーに同意します
+        </label>
+    </div>
+
+    <div class="consent">
+        <label>
+            <input type="checkbox" id="agree-terms">
+            利用規約に同意します
+        </label>
+    </div>
+
+    <!-- aタグをボタン風に -->
+    <a href="regist-compleat.html" id="register" class="button disabled">同意する</a>
+
+    <script>
+        const privacy = document.getElementById('agree-privacy');
+        const terms = document.getElementById('agree-terms');
+        const button = document.getElementById('register');
+
+        function updateButton() {
+            if (privacy.checked && terms.checked) {
+                button.classList.remove('disabled');
+            } else {
+                button.classList.add('disabled');
+            }
+        }
+
+        privacy.addEventListener('change', updateButton);
+        terms.addEventListener('change', updateButton);
+    </script>
+</body>
+
+</html>
