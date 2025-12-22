@@ -14,13 +14,13 @@ import lombok.Getter;
 @Getter
 public class LoginUserDetails implements UserDetails {
 
-	private final Integer userId;
+	private final Integer user_id;
 	private final String email;
 	private final String password;
 	private final Collection<? extends GrantedAuthority> authorities;
 
 	public LoginUserDetails(LoginEntity entity) {
-		this.userId = entity.getUser_id();
+		this.user_id = entity.getUser_id();
 		this.email = entity.getEmail();
 		this.password = entity.getPassword();
 		this.authorities = List.of(
