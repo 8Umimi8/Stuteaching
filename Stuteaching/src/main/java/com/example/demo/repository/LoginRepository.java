@@ -10,6 +10,6 @@ import com.example.demo.entity.LoginEntity;
 @Repository
 public interface LoginRepository extends JpaRepository<LoginEntity, Integer> {
 
-	//ログイン（情報を持ってくる）
+	//メールアドレスで users テーブルからユーザー情報を取得する
 	Optional<LoginEntity> findByEmail(String email);
 }

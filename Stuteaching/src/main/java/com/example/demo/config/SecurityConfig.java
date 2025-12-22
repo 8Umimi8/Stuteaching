@@ -17,6 +17,12 @@ public class SecurityConfig {
 	@Autowired
 	private LoginUserDetailsService userDetailsService;
 
+	/**
+	 * Spring Security の全体設定
+	 * ・URLごとの認可
+	 * ・ログイン画面
+	 * ・ログアウト処理
+	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
@@ -34,11 +40,13 @@ public class SecurityConfig {
 		return http.build();
 	}
 
+	//パスワードの暗号化方式を定義（BCrypt）
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
+	//Spring Security に UserDetailsService を登録する
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return userDetailsService;

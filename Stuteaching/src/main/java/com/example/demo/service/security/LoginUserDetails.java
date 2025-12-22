@@ -17,8 +17,10 @@ public class LoginUserDetails implements UserDetails {
 	private final Integer user_id;
 	private final String email;
 	private final String password;
+	//ユーザーの権限情報
 	private final Collection<? extends GrantedAuthority> authorities;
 
+	//Entity から Security 用の UserDetails を生成する
 	public LoginUserDetails(LoginEntity entity) {
 		this.user_id = entity.getUser_id();
 		this.email = entity.getEmail();
@@ -27,37 +29,44 @@ public class LoginUserDetails implements UserDetails {
 				new SimpleGrantedAuthority("ROLE_" + entity.getRole()));
 	}
 
+	//ユーザーが持つ権限情報を返す
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO 自動生成されたメソッド・スタブ
 		return authorities;
 	}
 
+	//認証に使用するパスワードを返す
 	@Override
 	public String getPassword() {
 		return password;
 	}
 
+	//認証に使用するメールアドレスを返す
 	@Override
 	public String getUsername() {
 		return email;
 	}
 
+	//アカウントの有効期限チェック（常に有効）
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
+	//アカウントのロック状態チェック（常に未ロック）
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
+	//資格情報の有効期限チェック（常に有効）
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
+	//アカウントの有効／無効チェック（常に有効）
 	@Override
 	public boolean isEnabled() {
 		return true;
