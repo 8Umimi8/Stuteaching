@@ -48,6 +48,8 @@ public class LoginUserDetails implements UserDetails {
 		return email;
 	}
 
+	//-----以下は未使用状態-----
+
 	//アカウントの有効期限チェック（常に有効）
 	@Override
 	public boolean isAccountNonExpired() {
@@ -67,6 +69,7 @@ public class LoginUserDetails implements UserDetails {
 	}
 
 	//アカウントの有効／無効チェック（常に有効）
+	// アカウント無効化機能を実装する場合に使用
 	@Override
 	public boolean isEnabled() {
 		return true;
