@@ -1,18 +1,18 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.StudentUsersDTO;
 import com.example.demo.DTO.TeacherUsersDTO;
 import com.example.demo.service.AccountService;
 
-@RestController
+@Controller
 @RequestMapping("/account")
 public class AccountController {
 
@@ -22,40 +22,54 @@ public class AccountController {
 	// ========================
 	// 教師情報 表示
 	// ========================
-	@GetMapping("/teacher/display")
-	public TeacherUsersDTO displayTeacher(@RequestParam int user_id) {
-		return accountService.DisplayTeacher(user_id);
+	@GetMapping("/teacher")
+	public String displayTeacher(
+			@RequestParam int user_id,
+			Model model) {
+
+		TeacherUsersDTO teacher = accountService.DisplayTeacher(user_id);
+		model.addAttribute("teacher", teacher);
+
+		return "profile"; // teacher_account.html
 	}
 
 	// ========================
 	// 教師情報 更新
 	// ========================
-	@PutMapping("/teacher/update")
+	@PostMapping("/teacher/update")
 	public String updateTeacher(
 			@RequestParam int user_id,
-			@RequestBody TeacherUsersDTO dto) {
+			TeacherUsersDTO dto) {
 
 		accountService.UpdateTeacher(user_id, dto);
-		return "教師情報を更新しました";
+
+		return "redirect:/account/teacher?user_id=" + user_id;
 	}
 
 	// ========================
 	// 生徒情報 表示
 	// ========================
-	@GetMapping("/student/display")
-	public StudentUsersDTO displayStudent(@RequestParam int user_id) {
-		return accountService.DisplayStudent(user_id);
+	@GetMapping("/student")
+	public String displayStudent(
+			@RequestParam int user_id,
+			Model model) {
+
+		StudentUsersDTO student = accountService.DisplayStudent(user_id);
+		model.addAttribute("student", student);
+
+		return "profile"; // student_account.html
 	}
 
 	// ========================
 	// 生徒情報 更新
 	// ========================
-	@PutMapping("/student/update")
+	@PostMapping("/student/update")
 	public String updateStudent(
 			@RequestParam int user_id,
-			@RequestBody StudentUsersDTO dto) {
+			StudentUsersDTO dto) {
 
 		accountService.UpdateStudent(user_id, dto);
-		return "生徒情報を更新しました";
+
+		return "redirect:/account/student?user_id=" + user_id;
 	}
 }
