@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マッチ | Stutyching - 学習プラットフォーム</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/hed_style.css">
+    <link rel="stylesheet" href="css/main_style.css">
+    <link rel="stylesheet" href="css/insert.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="header"></div>
+    <script>
+        fetch("header.html")
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("header").innerHTML = html;
+
+                // ハンバーガー
+                const hamburger = document.querySelector('.hamburger');
+                const navMenu = document.querySelector('.nav-menu');
+
+                if (hamburger && navMenu) {
+                    hamburger.addEventListener('click', () => {
+                        navMenu.classList.toggle('active');
+                    });
+                }
+
+                //通知
+                const notifyBtn = document.getElementById("notifyBtn");
+                const notificationPanel = document.getElementById("notificationPanel");
+
+                if (notifyBtn && notificationPanel) {
+                    notifyBtn.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        notificationPanel.style.display =
+                            notificationPanel.style.display === "block" ? "none" : "block";
+                    });
+                }
+            });
+    </script>
+    <style>
+
+    </style>
+
+
+    <body>
+        <div class="form-container">
+            <h1>予定を追加</h1>
+            <form action="addsche.html" method="get">
+                <label for="subject">教科</label>
+                <input type="text" id="subject" name="subject" placeholder="例: 数学" required>
+
+                <label for="study-time">勉強時間（分）</label>
+                <input type="number" id="study-time" name="study_time" placeholder="例: 60" required>
+
+                <label for="date">日付</label>
+                <input type="date" id="date" name="date" required>
+
+                <button type="submit">追加する</button>
+            </form>
+        </div>
+    </body>
+
+</html>

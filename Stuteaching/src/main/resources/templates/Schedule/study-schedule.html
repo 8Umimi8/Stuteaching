@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マッチ | Stutyching - 学習プラットフォーム</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/hed_style.css">
+    <link rel="stylesheet" href="css/time_style.css">
+    <link rel="stylesheet" href="css/main_style.css">
+
+    <!-- FullCalendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .calendar-wrapper {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .calendar-controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #f6ad55;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e53e3e;
+            color: white;
+        }
+
+        /* 週データカード */
+        .week-stats {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 24px;
+            background: var(--bg-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        #weekSummary {
+            margin-top: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <script>
+        fetch("header.html")
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("header").innerHTML = html;
+
+                const hamburger = document.querySelector('.hamburger');
+                const navMenu = document.querySelector('.nav-menu');
+
+                if (hamburger && navMenu) {
+                    hamburger.addEventListener('click', () => {
+                        navMenu.classList.toggle('active');
+                    });
+                }
+
+                const notifyBtn = document.getElementById("notifyBtn");
+                const notificationPanel = document.getElementById("notificationPanel");
+
+                if (notifyBtn && notificationPanel) {
+                    notifyBtn.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        notificationPanel.style.display =
+                            notificationPanel.style.display === "block" ? "none" : "block";
+                    });
+                }
+            });
+    </script>
+
+    <div class="calendar-wrapper">
+        <div id="calendar"></div>
+
+        <div class="calendar-controls">
+            <div id="selectedDateDisplay">日付が選択されていません</div>
+            <button id="addEventBtn" class="btn btn-add">勉強時間を追加</button>
+            <button id="editEventBtn" class="btn btn-edit">勉強時間を編集</button>
+            <button id="deleteEventBtn" class="btn btn-delete">勉強時間を削除</button>
+        </div>
+    </div>
+
+    <!-- 週データ表示 -->
+    <div class="week-stats">
+        <h3 style="text-align:center;">選択週の学習データ</h3>
+        <canvas id="weekChart"></canvas>
+        <div id="weekSummary"></div>
+    </div>
+
+    <!-- FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
+
+    <script>
+        let selectedDate = null;
+        let weekChart = null;
+
+        // 週の開始（日曜）を取得
+        function getWeekStart(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDay();
+            date.setDate(date.getDate() - day);
+            return date;
+        }
+
+        // 週データ集計
+        function calculateWeeklyStats(events, selectedDate) {
+            const weekStart = getWeekStart(selectedDate);
+            const dailyTotals = Array(7).fill(0);
+
+            events.forEach(ev => {
+                const d = new Date(ev.start);
+                const diff = Math.floor((d - weekStart) / (1000 * 60 * 60 * 24));
+
+                if (diff >= 0 && diff < 7) {
+                    dailyTotals[diff] += ev.extendedProps.hours || 0;
+                }
+            });
+
+            return dailyTotals;
+        }
+
+        // グラフ描画
+        function renderWeekChart(dailyTotals) {
+            const ctx = document.getElementById("weekChart").getContext("2d");
+
+            if (weekChart) weekChart.destroy();
+
+            weekChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["月", "火", "水", "木", "金", "土", "日"],
+                    datasets: [{
+                        label: "勉強時間（時間）",
+                        data: dailyTotals,
+                        backgroundColor: "#667eea",
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 合計・平均
+        function renderWeekSummary(dailyTotals) {
+            const total = dailyTotals.reduce((a, b) => a + b, 0);
+            const avg = (total / 7).toFixed(1);
+
+            document.getElementById("weekSummary").innerHTML =
+                `合計: ${total} 時間　｜　平均: ${avg} 時間/日`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ja',
+                fixedWeekCount: false,
+                selectable: true,
+                editable: true,
+
+                // ★ここにデモデータを入れる
+                events: [
+                    { title: "数学 2時間", start: "2026-01-05", extendedProps: { hours: 2 } },
+                    { title: "英語 1.5時間", start: "2026-01-06", extendedProps: { hours: 1.5 } },
+                    { title: "物理 3時間", start: "2026-01-07", extendedProps: { hours: 3 } },
+                    { title: "化学 1時間", start: "2026-01-09", extendedProps: { hours: 1 } },
+                    { title: "国語 2.5時間", start: "2026-01-10", extendedProps: { hours: 2.5 } }
+                ],
+
+                select: function (info) {
+                    selectedDate = info.startStr;
+                    selectedDateDisplay.textContent = "選択日: " + selectedDate;
+
+                    const events = calendar.getEvents();
+                    const dailyTotals = calculateWeeklyStats(events, selectedDate);
+
+                    renderWeekChart(dailyTotals);
+                    renderWeekSummary(dailyTotals);
+                }
+            });
+
+            calendar.render();
+
+            // ボタン処理
+            document.getElementById('addEventBtn').addEventListener('click', () => {
+                if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
+                window.location.href = "add.html?date=" + selectedDate;
+            });
+
+            document.getElementById('editEventBtn').addEventListener('click', () => {
+                if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
+                window.location.href = "edit.html?date=" + selectedDate;
+            });
+
+            document.getElementById('deleteEventBtn').addEventListener('click', () => {
+                if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
+                window.location.href = "delete.html?date=" + selectedDate;
+            });
+        });
+    </script>
+</body>
+
+</html>
