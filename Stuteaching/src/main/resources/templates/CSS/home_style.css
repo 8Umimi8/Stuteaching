@@ -3,7 +3,11 @@
 
 
    .actions {
+    position: relative;
        display: flex;
+       justify-content: flex-end;
+       top:0px;
+       margin-right: 40px;
        gap: 12px;
        align-items: center;
        margin-bottom: 24px;
@@ -207,25 +211,6 @@
        box-shadow: 0 4px 8px rgba(29, 78, 216, 0.4);
    }
 
-   /* 追加: h1 のレスポンシブ対応 */
-   #match-title {
-       margin: 0 0 12px;
-       font-size: 2rem;
-       font-weight: 800;
-       background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-       -webkit-background-clip: text;
-       -webkit-text-fill-color: transparent;
-       background-clip: text;
-   }
-
-   @media (max-width: 640px) {
-       #match-title {
-           font-size: 1.5rem;
-           /* モバイルで小さく */
-           text-align: center;
-           /* 中央揃え */
-       }
-   }
 
    :root {
        --bg: linear-gradient(135deg, #f0f4f8 0%, #e1e8ed 100%);
@@ -250,3 +235,62 @@
        background: var(--bg);
        background-attachment: fixed;
    }
+
+   /* ミニ画面風フィルターパネル */
+/* ミニ画面風フィルターパネル */
+.filter-panel {
+    position: absolute;
+    top: 140px;   /* ボタンのすぐ下 */
+    right: 0;   
+    width: 260px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 2000;
+    animation: fadeIn 0.15s ease-out;
+}
+
+/* タブレット */
+ @media (max-width: 960px) 
+ { 
+    .filter-panel {
+         right: 0; width: 220px; 
+        }
+     } 
+ /* スマホ */ 
+ @media (max-width: 640px)
+  { 
+    .filter-panel { 
+        right: 0; width: 180px; top: 45px; 
+    } 
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.filter-panel h3 {
+    margin-top: 0;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.filter-panel label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.filter-panel select {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+
+  
