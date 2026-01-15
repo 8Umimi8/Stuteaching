@@ -7,15 +7,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>プロフィール</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="css/profile.css">
-        <link rel="stylesheet" href="css/main_style.css">
-        <link rel="stylesheet" href="css/hed_style.css">
+        <link rel="stylesheet" href="../css/profile.css">
+        <link rel="stylesheet" href="../css/main_style.css">
+        <link rel="stylesheet" href="../css/hed_style.css">
     </head>
 
     <body>
         <div id="header"></div>
         <script>
-            fetch("header.html")
+            fetch("../header.html")
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById("header").innerHTML = html;
