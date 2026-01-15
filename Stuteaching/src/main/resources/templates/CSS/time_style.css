@@ -1,27 +1,104 @@
-.header-container {
+.calendar-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /* 左右に均等配置 */
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
     max-width: 1200px;
-    /* 必要なら中央寄せ用 */
-    margin: 0 auto;
-    /* 画面中央に配置 */
-    padding: 0 20px;
-    /* 左右に余白 */
+    margin: 20px auto;
 }
 
 #calendar {
+    flex: 1;
     width: 70%;
-    /* 画面幅の90%に比例 */
-    max-width: 1200px;
-    /* 上限を設定 */
+    max-width: 900px;
     height: auto;
     max-height: 700px;
-    margin: 0 auto;
-    transform: translateX(-8%);
+    margin-left: 20px;
+}
+
+.calendar-controls {
+    width: 260px;
+    /* ← 固定幅（値は調整可） */
+    flex-shrink: 0;
+    /* ← 絶対に縮ませない */
+}
+
+
+#selectedDateDisplay {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.btn {
+    display: block;
+    width: auto;
+    margin: 10px 0;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* 画面幅に比例して縮む（デザインは変えない） */
+@media (max-width: 900px) {
+    .btn {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+.btn-add {
+    background: #4CAF50;
+}
+
+.btn-add:hover {
+    background: #45a049;
+}
+
+.btn-edit {
+    background: #2196F3;
+}
+
+.btn-edit:hover {
+    background: #1976D2;
+}
+
+.btn-delete {
+    background: #F44336;
+}
+
+.btn-delete:hover {
+    background: #D32F2F;
 }
 
 .fc .fc-highlight {
     background-color: rgba(0, 123, 255, 0.3);
+}
+
+/*グラフ*/
+.week-stats {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background: var(--bg-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+#weekSummary {
+    margin-top: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
 }

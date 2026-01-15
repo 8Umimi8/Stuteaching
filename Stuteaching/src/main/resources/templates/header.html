@@ -1,17 +1,16 @@
-<header class="header">
+<header class="header" th:fragment="header">
     <div class="brand">
 
         <div class="logo-group">
-            <img src="logo.jpg" class="logo2" alt="Stutyching ロゴ">
-            <a href="#" class="logo">Stutyching</a>
+            <img th:src="@{/img/logo.jpg}" alt="Stutyching ロゴ">
         </div>
 
         <nav class="nav-menu">
             <ul>
-                <li><a href="teacher-list.html"><i class="fas fa-home"></i> マッチ</a></li>
-                <li><a href="chat.html"><i class="fas fa-comments"></i> トーク</a></li>
-                <li><a href="study-schedule.html"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
-                <li><a href="profile.html"><i class="fas fa-clock"></i> アカウント詳細</a></li>
+                <li><a th:href="@{/teacher-list}"><i class="fas fa-home"></i> マッチ</a></li>
+                <li><a th:href="@{/chat}"><i class="fas fa-comments"></i> トーク</a></li>
+                <li><a th:href="@{/schedule}"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
+                <li><a th:href="@{/account/profile}"><i class="fas fa-user"></i> アカウント詳細</a></li>
             </ul>
         </nav>
 
@@ -26,10 +25,9 @@
                 <div class="notification-title">通知</div>
 
                 <ul class="notification-list" id="notificationList">
-                    <!-- ここに JS で通知を追加する -->
+                    <!-- JS で通知を追加 -->
                 </ul>
             </div>
-
 
             <a href="#" class="profile-btn">
                 <div class="profile-icon"><i class="fas fa-user"></i></div>

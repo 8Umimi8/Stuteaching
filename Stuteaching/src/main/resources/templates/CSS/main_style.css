@@ -1,252 +1,51 @@
-   /* Main Styles */
+:root {
+    --bg: linear-gradient(135deg, #f0f4f8 0%, #e1e8ed 100%);
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    --primary-hover: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    --border: #e5e7eb;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
 
+* {
+    box-sizing: border-box;
+}
 
+body {
+    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    background-attachment: fixed;
+}
 
-   .actions {
-       display: flex;
-       gap: 12px;
-       align-items: center;
-       margin-bottom: 24px;
-   }
+body .header {
+    margin: 0 !important;
+    padding: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+}
 
-   @media (max-width: 640px) {
-       .actions {
-           flex-direction: column;
-           /* モバイルで縦並び */
-           gap: 8px;
-           align-items: stretch;
-           /* ボタンを幅いっぱいに */
-       }
-   }
+main {
+    max-width: 1200px;
+    margin: 32px auto;
+    padding: 0 20px;
+    margin-top: 90px;
+    /* デスクトップ: ヘッダーの高さ（70px）＋余裕（20px） */
+}
 
-   .btn {
-       padding: 12px 18px;
-       border-radius: 12px;
-       background: #fff;
-       border: 1px solid var(--border);
-       cursor: pointer;
-       color: var(--text);
-       font-weight: 600;
-       transition: all 0.2s ease;
-       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-       font-size: 1rem;
-       /* デフォルトサイズ */
-   }
-
-   @media (max-width: 640px) {
-       .btn {
-           padding: 10px 16px;
-           /* モバイルでパディングを小さく */
-           font-size: 0.9rem;
-           /* フォントサイズを小さく */
-       }
-   }
-
-   .btn:hover {
-       background: #f9fafb;
-       transform: translateY(-2px);
-       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-   }
-
-   .grid {
-       display: grid;
-       grid-template-columns: repeat(3, minmax(0, 1fr));
-       gap: 20px;
-   }
-
-   @media (max-width: 960px) {
-       .grid {
-           grid-template-columns: repeat(2, 1fr);
-           gap: 16px;
-           /* ギャップを狭く */
-       }
-   }
-
-   @media (max-width: 640px) {
-       .grid {
-           grid-template-columns: 1fr;
-           gap: 12px;
-           /* さらに狭く */
-       }
-   }
-
-   .card {
-       background: var(--card);
-       border: 1px solid var(--border);
-       border-radius: 16px;
-       padding: 20px;
-       display: flex;
-       gap: 16px;
-       align-items: flex-start;
-       box-shadow: var(--shadow);
-       transition: all 0.3s ease;
-   }
-
-   @media (max-width: 640px) {
-       .card {
-           flex-direction: column;
-           /* モバイルで縦並び */
-           align-items: center;
-           /* 中央揃え */
-           padding: 16px;
-           /* パディングを小さく */
-           gap: 12px;
-       }
-   }
-
-   .card:hover {
-       transform: translateY(-4px);
-       box-shadow: var(--shadow-hover);
-   }
-
-   .avatar {
-       width: 60px;
-       height: 60px;
-       border-radius: 14px;
-       background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-       display: grid;
-       place-items: center;
-       font-weight: 700;
-       color: var(--muted);
-       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-   }
-
-   @media (max-width: 640px) {
-       .avatar {
-           width: 50px;
-           /* モバイルで小さく */
-           height: 50px;
-       }
-   }
-
-   .card-body {
-       flex: 1;
-   }
-
-   .name {
-       font-weight: 700;
-       margin: 2px 0 8px;
-       font-size: 1.1rem;
-   }
-
-   @media (max-width: 640px) {
-       .name {
-           font-size: 1rem;
-           /* モバイルで小さく */
-           text-align: center;
-           /* 中央揃え */
-       }
-   }
-
-   .meta {
-       color: var(--muted);
-       font-size: 0.95rem;
-       display: flex;
-       gap: 16px;
-       flex-wrap: wrap;
-       align-items: center;
-   }
-
-   @media (max-width: 640px) {
-       .meta {
-           flex-direction: column;
-           /* モバイルで縦並び */
-           gap: 8px;
-           text-align: center;
-           /* 中央揃え */
-           font-size: 0.9rem;
-           /* フォントサイズを小さく */
-       }
-   }
-
-   .stars {
-       color: #d1d5db;
-       letter-spacing: 2px;
-       font-size: 1rem;
-   }
-
-   @media (max-width: 640px) {
-       .stars {
-           font-size: 0.9rem;
-           /* モバイルで小さく */
-       }
-   }
-
-   .star-filled {
-       color: #f59e0b;
-       filter: drop-shadow(0 1px 2px rgba(245, 158, 11, 0.3));
-   }
-
-   .card-actions {
-       margin-top: 16px;
-       display: flex;
-       gap: 10px;
-   }
-
-   @media (max-width: 640px) {
-       .card-actions {
-           flex-direction: column;
-           /* モバイルで縦並び */
-           gap: 8px;
-           align-items: stretch;
-           /* ボタンを幅いっぱいに */
-           margin-top: 12px;
-       }
-   }
-
-   .primary {
-       background: var(--primary);
-       color: white;
-       border-color: #1d4ed8;
-       box-shadow: 0 2px 4px rgba(29, 78, 216, 0.3);
-   }
-
-   .primary:hover {
-       background: var(--primary-hover);
-       transform: translateY(-2px);
-       box-shadow: 0 4px 8px rgba(29, 78, 216, 0.4);
-   }
-
-   /* 追加: h1 のレスポンシブ対応 */
-   #match-title {
-       margin: 0 0 12px;
-       font-size: 2rem;
-       font-weight: 800;
-       background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-       -webkit-background-clip: text;
-       -webkit-text-fill-color: transparent;
-       background-clip: text;
-   }
-
-   @media (max-width: 640px) {
-       #match-title {
-           font-size: 1.5rem;
-           /* モバイルで小さく */
-           text-align: center;
-           /* 中央揃え */
-       }
-   }
-
-   :root {
-       --bg: linear-gradient(135deg, #f0f4f8 0%, #e1e8ed 100%);
-       --card: #ffffff;
-       --text: #1f2937;
-       --muted: #6b7280;
-       --primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-       --primary-hover: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-       --border: #e5e7eb;
-       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-       --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-   }
-
-   * {
-       box-sizing: border-box;
-   }
-
-   body {
-       margin: 0;
-       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
-       color: var(--text);
-       background: var(--bg);
-       background-attachment: fixed;
-   }
+@media (max-width: 768px) {
+    main {
+        margin-top: 120px;
+        /* モバイル: ヘッダーの高さ（70px）＋メニュー展開分の余裕（50px以上）で重なりを防ぐ */
+        padding: 0 16px;
+        /* モバイルでパディングを狭く */
+    }
+}

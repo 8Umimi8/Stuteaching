@@ -6,101 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マッチ | Stutyching - 学習プラットフォーム</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/hed_style.css">
-    <link rel="stylesheet" href="css/time_style.css">
-    <link rel="stylesheet" href="css/main_style.css">
+    <link rel="stylesheet" href="../css/hed_style.css">
+    <link rel="stylesheet" href="../css/main_style.css">
+    <link rel="stylesheet" href="../css/insert.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <header class="header">
-        <div class="header-container">
-            <img src="logo.jpg" alt="スタチンのロゴ" class="logo2">
-            <a href="#" class="logo">Stutyching</a>
+    <div id="header"></div>
+    <script>
+        fetch("../header.html")
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("header").innerHTML = html;
 
-            <nav class="nav-menu">
-                <ul>
-                    <li><a href="#" class="active"><i class="fas fa-home"></i> マッチ</a></li>
-                    <li><a href="#"><i class="fas fa-comments"></i> トーク</a></li>
-                    <li><a href="#"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> アカウント設定</a></li>
-                </ul>
-            </nav>
+                // ハンバーガー
+                const hamburger = document.querySelector('.hamburger');
+                const navMenu = document.querySelector('.nav-menu');
 
-            <div class="spacer"></div>
+                if (hamburger && navMenu) {
+                    hamburger.addEventListener('click', () => {
+                        navMenu.classList.toggle('active');
+                    });
+                }
 
-            <div class="user-actions">
-                <a href="#" class="icon-btn"><i class="fas fa-bell"></i></a>
-                <a href="#" class="profile-btn">
-                    <div class="profile-icon"><i class="fas fa-user"></i></div>
-                </a>
-            </div>
+                //通知
+                const notifyBtn = document.getElementById("notifyBtn");
+                const notificationPanel = document.getElementById("notificationPanel");
 
-            <button class="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </header>
+                if (notifyBtn && notificationPanel) {
+                    notifyBtn.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        notificationPanel.style.display =
+                            notificationPanel.style.display === "block" ? "none" : "block";
+                    });
+                }
+            });
+    </script>
     <style>
-        body {
-            padding: 40px;
-            background: var(--bg);
-            font-family: system-ui, sans-serif;
-        }
 
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        button {
-            padding: 12px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        button:hover {
-            background: var(--primary-hover);
-        }
     </style>
-    </head>
+
 
     <body>
         <div class="form-container">
-            <h1>時間記入</h1>
-            <form action="/add-event" method="POST">
+            <h1>予定を追加</h1>
+            <form action="addsche.html" method="get">
                 <label for="subject">教科</label>
                 <input type="text" id="subject" name="subject" placeholder="例: 数学" required>
 
