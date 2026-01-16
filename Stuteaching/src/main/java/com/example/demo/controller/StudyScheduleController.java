@@ -25,7 +25,7 @@ public class StudyScheduleController {
 	// ========================
 	@GetMapping("/display")
 	public String display(
-			@RequestParam int user_id,
+			@RequestParam("user_id") int user_id,
 			Model model) {
 
 		List<TimeManageDTO> list = service.DisplayTime(user_id);
@@ -42,7 +42,7 @@ public class StudyScheduleController {
 
 		service.InsertTime(dto);
 
-		return "redirect:/study-time/display?user_id=1";
+		return "redirect:/study-time/display";
 	}
 
 	// ========================
@@ -55,7 +55,7 @@ public class StudyScheduleController {
 
 		service.UpdateTime(time_id, dto);
 
-		return "redirect:/study-time/display?user_id=1";
+		return "redirect:/study-time/display";
 	}
 
 	// ========================
@@ -66,6 +66,6 @@ public class StudyScheduleController {
 
 		service.DeleteTime(time_id);
 
-		return "redirect:/study-time/display?user_id=1";
+		return "redirect:/study-time/display";
 	}
 }
