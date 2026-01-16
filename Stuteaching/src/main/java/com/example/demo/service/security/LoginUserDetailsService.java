@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.LoginEntity;
 import com.example.demo.service.LoginService;
 
 @Service
@@ -19,8 +20,16 @@ public class LoginUserDetailsService implements UserDetailsService {
 	 * メールアドレスを使ってユーザー情報を取得し、UserDetails として返す
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		return new LoginUserDetails(loginService.findByEmail(email));
+	public UserDetails loadUserByUsername(String email)
+			throws UsernameNotFoundException {
+
+		LoginEntity entity = loginService.findByEmail(email);
+
+		if (entity == null) {
+			throw new UsernameNotFoundException("User not found: " + email);
+		}
+
+		return new LoginUserDetails(entity);
 	}
 
 }
