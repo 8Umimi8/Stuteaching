@@ -5,14 +5,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>新規登録</title>
-  <link rel="stylesheet" href="../css/regist.css">
+  <link rel="stylesheet" th:href="@{/css/regist.css}">
 </head>
 
 <body>
   <main class="card" role="main" aria-labelledby="regist-title">
     <h1 id="regist-title">新規登録</h1>
 
-    <form id="regist-form" action="agreement.html" method="get">
+    <form id="regist-form" th:action="@{/agreement}" method="get">
 
       <div class="field">
         <label for="email">メールアドレス</label>
@@ -41,14 +41,19 @@
         <div class="bday-selects">
           <select id="year" name="bday-year" required>
             <option value="">年</option>
+            <option
+              th:each="y : ${#numbers.sequence(#dates.year(#dates.createNow()), #dates.year(#dates.createNow()) - 100, -1)}"
+              th:value="${y}" th:text="${y}"></option>
           </select>
 
           <select id="month" name="bday-month" required>
             <option value="">月</option>
+            <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="${m}"></option>
           </select>
 
           <select id="day" name="bday-day" required>
             <option value="">日</option>
+            <option th:each="d : ${#numbers.sequence(1, 31)}" th:value="${d}" th:text="${d}"></option>
           </select>
         </div>
       </div>
@@ -80,44 +85,12 @@
     </form>
 
     <div class="footer">
-      <a href="/login.html">ログイン</a>
+      <a th:href="@{/login.html}">ログイン</a>
     </div>
   </main>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-
-      /* ------------------------------
-         生年月日生成
-      ------------------------------ */
-      const yearSelect = document.getElementById("year");
-      const monthSelect = document.getElementById("month");
-      const daySelect = document.getElementById("day");
-
-      const currentYear = new Date().getFullYear();
-      const startYear = currentYear - 100;
-
-      for (let y = currentYear; y >= startYear; y--) {
-        const opt = document.createElement("option");
-        opt.value = y;
-        opt.textContent = y;
-        yearSelect.appendChild(opt);
-      }
-
-      for (let m = 1; m <= 12; m++) {
-        const opt = document.createElement("option");
-        opt.value = m;
-        opt.textContent = m;
-        monthSelect.appendChild(opt);
-      }
-
-      for (let d = 1; d <= 31; d++) {
-        const opt = document.createElement("option");
-        opt.value = d;
-        opt.textContent = d;
-        daySelect.appendChild(opt);
-      }
-
       /* ------------------------------
          パスワード一致チェック
       ------------------------------ */

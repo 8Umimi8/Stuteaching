@@ -6,49 +6,20 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>プロフィール</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="../css/profile.css">
-        <link rel="stylesheet" href="../css/main_style.css">
-        <link rel="stylesheet" href="../css/hed_style.css">
+        <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+        <link rel="stylesheet" th:href="@{../css/profile.css}">
+        <link rel="stylesheet" th:href="@{../css/main_style.css}">
+        <link rel="stylesheet" th:href="@{../css/hed_style.css}">
     </head>
 
     <body>
-        <div id="header"></div>
-        <script>
-            fetch("../header.html")
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById("header").innerHTML = html;
-
-                    // ハンバーガー
-                    const hamburger = document.querySelector('.hamburger');
-                    const navMenu = document.querySelector('.nav-menu');
-
-                    if (hamburger && navMenu) {
-                        hamburger.addEventListener('click', () => {
-                            navMenu.classList.toggle('active');
-                        });
-                    }
-
-                    //通知
-                    const notifyBtn = document.getElementById("notifyBtn");
-                    const notificationPanel = document.getElementById("notificationPanel");
-
-                    if (notifyBtn && notificationPanel) {
-                        notifyBtn.addEventListener("click", (e) => {
-                            e.preventDefault();
-                            notificationPanel.style.display =
-                                notificationPanel.style.display === "block" ? "none" : "block";
-                        });
-                    }
-                });
-        </script>
+        <div th:replace="header :: header"></div>
 
         <div class="profile-card">
 
             <div class="profile-avatar">R</div>
 
-            <div class="profile-name">来栖康生</div>
+            <div class="profile-name" th:text="${user.name}">来栖康生</div>
 
 
             <div class="profile-section">
@@ -57,16 +28,16 @@
                 <div class="profile-info">
 
                     <div class="profile-label">性別</div>
-                    <div class="profile-value">男</div>
+                    <div class="profile-value" th:text="${user.gender}">男</div>
 
                     <div class="profile-label">生年月日</div>
-                    <div class="profile-value">2005年11月2日</div>
+                    <div class="profile-value" th:text="${user.birthday}">2005年11月2日</div>
 
                     <div class="profile-label">メールアドレス</div>
-                    <div class="profile-value">sutatin@example.com</div>
+                    <div class="profile-value" th:text="${user.email}">sutatin@example.com</div>
 
                     <div class="profile-label" style="margin-top: 16px;">担当教科</div>
-                    <div class="profile-value">数学</div>
+                    <div class="profile-value" th:text="${user.subject}">数学</div>
 
                 </div>
             </div>

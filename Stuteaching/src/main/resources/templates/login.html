@@ -5,14 +5,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ログイン</title>
-  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 
 <body>
   <main class="card" role="main" aria-labelledby="login-title">
     <h1 id="login-title">ログイン</h1>
 
-    <form id="login-form" action="/Match/teacher-list.html" method="get">
+    <form id="login-form" th:action="@{/login}" method="post">
       <div class="field">
         <label for="email">メールアドレス</label>
         <input id="email" name="email" type="email" class="input" autocomplete="email" inputmode="email"
@@ -25,13 +25,15 @@
           placeholder="パスワード" required />
       </div>
 
-      <div class="error" id="error" role="alert" aria-live="polite"></div>
+      <div class="error" id="error" role="alert" aria-live="polite" th:if="${param.error}">
+        メールアドレスまたはパスワードが間違っています。
+      </div>
 
       <button type="submit" class="btn">ログイン</button>
     </form>
 
     <div class="footer">
-      <a href="/Register/regist.html">新規登録の方はこちら</a>
+      <a th:href="@{/Register/regist}"><i class="fas fa-user">新規登録の方はこちら</a>
     </div>
   </main>
 </body>

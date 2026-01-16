@@ -8,17 +8,17 @@
 
         <nav class="nav-menu">
             <ul>
-                <li><a th:href="@{/teacher-list}"><i class="fas fa-home"></i> マッチ</a></li>
-                <li><a th:href="@{/chat}"><i class="fas fa-comments"></i> トーク</a></li>
-                <li><a th:href="@{/schedule}"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
-                <li><a th:href="@{/account/profile}"><i class="fas fa-user"></i> アカウント詳細</a></li>
+                <li><a th:href="@{Match/teacher-list}"><i class="fas fa-home"></i> マッチ</a></li>
+                <li><a th:href="@{chat/chat}"><i class="fas fa-comments"></i> トーク</a></li>
+                <li><a th:href="@{Schedule/study-schedule}"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
+                <li><a th:href="@{account/profile}"><i class="fas fa-user"></i> アカウント詳細</a></li>
             </ul>
         </nav>
 
         <div class="user-actions">
 
             <!-- 通知ボタン -->
-            <a href="#" class="icon-btn" id="notifyBtn">
+            <a th:href="@{#}" class="icon-btn" id="notifyBtn">
                 <i class="fas fa-bell"></i>
             </a>
 
@@ -26,11 +26,13 @@
                 <div class="notification-title">通知</div>
 
                 <ul class="notification-list" id="notificationList">
-                    <!-- JS で通知を追加 -->
+                    <!-- Thymeleaf Loop -->
+                    <li th:each="note : ${notifications}" th:text="${note}">通知サンプル</li>
+                    <li th:if="${notifications == null or notifications.empty}" style="color:#777;">通知はありません</li>
                 </ul>
             </div>
 
-            <a href="#" class="profile-btn">
+            <a th:href="@{#}" class="profile-btn">
                 <div class="profile-icon"><i class="fas fa-user"></i></div>
             </a>
 

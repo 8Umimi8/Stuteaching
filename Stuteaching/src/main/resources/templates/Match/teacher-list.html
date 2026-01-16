@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マッチ | Stutyching - 学習プラットフォーム</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/hed_style.css">
-    <link rel="stylesheet" href="../css/home_style.css">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{../css/hed_style.css}">
+    <link rel="stylesheet" th:href="@{../css/home_style.css}">
 </head>
 <style>
     /* =========================
@@ -33,182 +33,156 @@
 </style>
 
 <body>
-    <div id="header"></div>
-    <script>
-        fetch("../header.html")
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("header").innerHTML = html;
+    // 通知
+    const notifyBtn = document.getElementById("notifyBtn");
+    const notificationPanel = document.getElementById("notificationPanel");
 
-                // ハンバーガー
-                const hamburger = document.querySelector('.hamburger');
-                const navMenu = document.querySelector('.nav-menu');
+    if (notifyBtn && notificationPanel) {
+    notifyBtn.addEventListener("click", (e) => {
+    e.preventDefault();
 
-                if (hamburger && navMenu) {
-                    hamburger.addEventListener('click', () => {
-                        navMenu.classList.toggle('active');
-                    });
-                }
+    const isOpen = notificationPanel.style.display === "block";
+    notificationPanel.style.display = isOpen ? "none" : "block";
 
-                // 通知
-                const notifyBtn = document.getElementById("notifyBtn");
-                const notificationPanel = document.getElementById("notificationPanel");
+    // パネルを開いたら既読にする
+    if (!isOpen) {
+    notifyBtn.classList.remove("has-notification");
+    }
+    });
+    }
 
-                if (notifyBtn && notificationPanel) {
-                    notifyBtn.addEventListener("click", (e) => {
-                        e.preventDefault();
+    // 初期状態：通知が来ているように見せる
+    notifyBtn.classList.add("has-notification");
+    // 通知リスト
+    const notificationList = document.getElementById("notificationList");
 
-                        const isOpen = notificationPanel.style.display === "block";
-                        notificationPanel.style.display = isOpen ? "none" : "block";
+    // 通知追加関数
+    function addNotification(text) {
+    const li = document.createElement("li");
+    li.textContent = text;
+    notificationList.appendChild(li);
 
-                        // パネルを開いたら既読にする
-                        if (!isOpen) {
-                            notifyBtn.classList.remove("has-notification");
-                        }
-                    });
-                }
+    // 未読バッジ
+    notifyBtn.classList.add("has-notification");
+    }
 
-                // 初期状態：通知が来ているように見せる
-                notifyBtn.classList.add("has-notification");
-                // 通知リスト
-                const notificationList = document.getElementById("notificationList");
+    // サンプル通知
+    addNotification("ようこそスタチンへ");
+    // フィルターをここに入れる
 
-                // 通知追加関数
-                function addNotification(text) {
-                    const li = document.createElement("li");
-                    li.textContent = text;
-                    notificationList.appendChild(li);
+    const filterBtn = document.getElementById("filterBtn");
+    const filterPanel = document.getElementById("filterPanel");
 
-                    // 未読バッジ
-                    notifyBtn.classList.add("has-notification");
-                }
+    if (filterBtn && filterPanel) {
+    filterBtn.addEventListener("click", () => {
+    filterPanel.style.display =
+    filterPanel.style.display === "block" ? "none" : "block";
+    });
+    }
 
-                // サンプル通知
-                addNotification("ようこそスタチンへ");
-                //  フィルターをここに入れる
+    // フィルター適用
+    document.getElementById("applyFilter").addEventListener("click", () => {
+    const subject = document.getElementById("filterSubject").value;
+    const rating = document.getElementById("filterRating").value;
 
-                const filterBtn = document.getElementById("filterBtn");
-                const filterPanel = document.getElementById("filterPanel");
+    const cards = document.querySelectorAll(".card");
 
-                if (filterBtn && filterPanel) {
-                    filterBtn.addEventListener("click", () => {
-                        filterPanel.style.display =
-                            filterPanel.style.display === "block" ? "none" : "block";
-                    });
-                }
+    cards.forEach(card => {
+    // 教科（複数対応）
+    const subjectText = card.querySelector(".meta span").textContent;
+    const userSubjects = subjectText
+    .replace("教科: ", "")
+    .split(",")
+    .map(s => s.trim()); // ["数学", "英語"]
 
-                // フィルター適用
-                document.getElementById("applyFilter").addEventListener("click", () => {
-                    const subject = document.getElementById("filterSubject").value;
-                    const rating = document.getElementById("filterRating").value;
+    // ★の数
+    const userRating = card.querySelectorAll(".star-filled").length;
 
-                    const cards = document.querySelectorAll(".card");
+    let show = true;
 
-                    cards.forEach(card => {
-                        // 教科（複数対応）
-                        const subjectText = card.querySelector(".meta span").textContent;
-                        const userSubjects = subjectText
-                            .replace("教科: ", "")
-                            .split(",")
-                            .map(s => s.trim()); // ["数学", "英語"]
+    // 教科フィルター：1つでも一致すればOK
+    if (subject && !userSubjects.includes(subject)) {
+    show = false;
+    }
 
-                        // ★の数
-                        const userRating = card.querySelectorAll(".star-filled").length;
+    // 評価フィルター
+    if (rating && userRating < Number(rating)) { show=false; } card.style.display=show ? "block" : "none" ; });
+        filterPanel.style.display="none" ; }); // リセット document.getElementById("resetFilter").addEventListener("click",
+        ()=> {
+        document.getElementById("filterSubject").value = "";
+        document.getElementById("filterRating").value = "";
 
-                        let show = true;
+        document.querySelectorAll(".card").forEach(card => {
+        card.style.display = "block";
+        });
 
-                        // 教科フィルター：1つでも一致すればOK
-                        if (subject && !userSubjects.includes(subject)) {
-                            show = false;
-                        }
+        filterPanel.style.display = "none";
+        });
 
-                        // 評価フィルター
-                        if (rating && userRating < Number(rating)) {
-                            show = false;
-                        }
+        });
 
-                        card.style.display = show ? "block" : "none";
-                    });
+        </script>
 
-                    filterPanel.style.display = "none";
-                });
-
-                // リセット
-                document.getElementById("resetFilter").addEventListener("click", () => {
-                    document.getElementById("filterSubject").value = "";
-                    document.getElementById("filterRating").value = "";
-
-                    document.querySelectorAll(".card").forEach(card => {
-                        card.style.display = "block";
-                    });
-
-                    filterPanel.style.display = "none";
-                });
-
-            });
-
-    </script>
-
-    <main>
-        <section aria-labelledby="match-title">
+        <main>
+            <section aria-labelledby="match-title">
 
 
-            <div class="actions">
-                <button class="btn" id="filterBtn">フィルター</button>
-            </div>
+                <div class="actions">
+                    <button class="btn" id="filterBtn">フィルター</button>
+                </div>
 
-            <div class="filter-panel" id="filterPanel">
-                <h3>フィルター</h3>
+                <div class="filter-panel" id="filterPanel">
+                    <h3>フィルター</h3>
 
-                <label>教科</label>
-                <select id="filterSubject">
-                    <option value="">すべて</option>
-                    <option value="数学">数学</option>
-                    <option value="英語">英語</option>
-                    <option value="国語">国語</option>
-                    <option value="理科">理科</option>
-                    <option value="社会">社会</option>
-                </select>
+                    <label>教科</label>
+                    <select id="filterSubject">
+                        <option value="">すべて</option>
+                        <option value="数学">数学</option>
+                        <option value="英語">英語</option>
+                        <option value="国語">国語</option>
+                        <option value="理科">理科</option>
+                        <option value="社会">社会</option>
+                    </select>
 
-                <label>評価</label>
-                <select id="filterRating">
-                    <option value="">すべて</option>
-                    <option value="5">★5</option>
-                    <option value="4">★4以上</option>
-                    <option value="3">★3以上</option>
-                </select>
+                    <label>評価</label>
+                    <select id="filterRating">
+                        <option value="">すべて</option>
+                        <option value="5">★5</option>
+                        <option value="4">★4以上</option>
+                        <option value="3">★3以上</option>
+                    </select>
 
-                <button class="btn primary" id="applyFilter">適用</button>
-                <button class="btn" id="resetFilter">リセット</button>
-            </div>
+                    <button class="btn primary" id="applyFilter">適用</button>
+                    <button class="btn" id="resetFilter">リセット</button>
+                </div>
 
 
-            </div>
+                </div>
 
-            <div class="grid" id="user-grid">
-                <!-- ここにDBから取得したユーザーデータを動的に挿入 -->
-            </div>
-        </section>
-    </main>
+                <div class="grid" id="user-grid">
+                    <!-- ここにDBから取得したユーザーデータを動的に挿入 -->
+                </div>
+            </section>
+        </main>
 
-    <script>
-        // DBからデータをフェッチしてカードを生成
-        async function loadUsers() {
-            try {
-                const response = await fetch('/api/users');
-                const users = await response.json();
-                const grid = document.getElementById('user-grid');
+        <script>
+            // DBからデータをフェッチしてカードを生成
+            async function loadUsers() {
+                try {
+                    const response = await fetch('/api/users');
+                    const users = await response.json();
+                    const grid = document.getElementById('user-grid');
 
-                users.forEach(user => {
-                    const card = document.createElement('article');
-                    card.className = 'card';
-                    card.setAttribute('aria-label', 'ユーザカード');
+                    users.forEach(user => {
+                        const card = document.createElement('article');
+                        card.className = 'card';
+                        card.setAttribute('aria-label', 'ユーザカード');
 
-                    const starsHtml = Array.from({ length: 5 }, (_, i) =>
-                        i < user.rating ? '<span class="star-filled">★</span>' : '★'
-                    ).join('');
+                        const starsHtml = Array.from({ length: 5 }, (_, i) =>
+                            i < user.rating ? '<span class="star-filled">★</span>' : '★'
+                        ).join('');
 
-                    card.innerHTML = `
+                        card.innerHTML = `
                         <div class="avatar" aria-hidden="true">${user.initial}</div>
                         <div class="card-body">
                             <div class="name">${user.name}</div>
@@ -225,112 +199,112 @@
                         </div>
                     `;
 
-                    grid.appendChild(card);
-                });
-            } catch (error) {
-                console.error('ユーザーデータの読み込みに失敗しました:', error);
+                        grid.appendChild(card);
+                    });
+                } catch (error) {
+                    console.error('ユーザーデータの読み込みに失敗しました:', error);
+                }
             }
-        }
 
-        document.addEventListener('DOMContentLoaded', loadUsers);
-    </script>
-    <div class="grid" id="user-grid">
+            document.addEventListener('DOMContentLoaded', loadUsers);
+        </script>
+        <div class="grid" id="user-grid">
 
-        <article class="card" aria-label="ユーザカード">
-            <div class="avatar" aria-hidden="true">A</div>
-            <div class="card-body">
-                <div class="name">佐藤 あかり</div>
-                <div class="meta">
-                    <span>教科: 英語</span>
-                    <span class="stars" aria-label="評価 5 / 5">
-                        <span class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span>
-                    </span>
+            <article class="card" aria-label="ユーザカード">
+                <div class="avatar" aria-hidden="true">A</div>
+                <div class="card-body">
+                    <div class="name">佐藤 あかり</div>
+                    <div class="meta">
+                        <span>教科: 英語</span>
+                        <span class="stars" aria-label="評価 5 / 5">
+                            <span class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span>
+                        </span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn primary">メッセージ</button>
+
+                    </div>
                 </div>
-                <div class="card-actions">
-                    <button class="btn primary">メッセージ</button>
+            </article>
 
+            <article class="card" aria-label="ユーザカード">
+                <div class="avatar" aria-hidden="true">K</div>
+                <div class="card-body">
+                    <div class="name">木村 りょう</div>
+                    <div class="meta">
+                        <span>教科: 数学</span>
+                        <span class="stars" aria-label="評価 4 / 5">
+                            <span class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span><span class="star-filled">★</span>★
+                        </span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn primary">メッセージ</button>
+
+                    </div>
                 </div>
-            </div>
-        </article>
+            </article>
 
-        <article class="card" aria-label="ユーザカード">
-            <div class="avatar" aria-hidden="true">K</div>
-            <div class="card-body">
-                <div class="name">木村 りょう</div>
-                <div class="meta">
-                    <span>教科: 数学</span>
-                    <span class="stars" aria-label="評価 4 / 5">
-                        <span class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span><span class="star-filled">★</span>★
-                    </span>
+            <article class="card" aria-label="ユーザカード">
+                <div class="avatar" aria-hidden="true">M</div>
+                <div class="card-body">
+                    <div class="name">宮本 さくら</div>
+                    <div class="meta">
+                        <span>教科: 数学</span>
+                        <span class="stars" aria-label="評価 5 / 5">
+                            <span class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span>
+                        </span>
+                    </div>
+                    <div class="card-actions">
+                        <a th:href="@{chat.html}">
+                            <button class="btn primary">メッセージ</button></a>
+
+                    </div>
                 </div>
-                <div class="card-actions">
-                    <button class="btn primary">メッセージ</button>
+            </article>
 
+            <article class="card" aria-label="ユーザカード">
+                <div class="avatar" aria-hidden="true">T</div>
+                <div class="card-body">
+                    <div class="name">高橋 けん</div>
+                    <div class="meta">
+                        <span>教科: 理科</span>
+                        <span class="stars" aria-label="評価 5 / 5">
+                            <span class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span>
+                        </span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn primary">メッセージ</button>
+
+                    </div>
                 </div>
-            </div>
-        </article>
+            </article>
 
-        <article class="card" aria-label="ユーザカード">
-            <div class="avatar" aria-hidden="true">M</div>
-            <div class="card-body">
-                <div class="name">宮本 さくら</div>
-                <div class="meta">
-                    <span>教科: 数学</span>
-                    <span class="stars" aria-label="評価 5 / 5">
-                        <span class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span>
-                    </span>
+            <article class="card" aria-label="ユーザカード">
+                <div class="avatar" aria-hidden="true">S</div>
+                <div class="card-body">
+                    <div class="name">鈴木 まゆ</div>
+                    <div class="meta">
+                        <span>教科: 社会</span>
+                        <span class="stars" aria-label="評価 4 / 5">
+                            <span class="star-filled">★</span><span class="star-filled">★</span><span
+                                class="star-filled">★</span><span class="star-filled">★</span>★
+                        </span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn primary">メッセージ</button>
+
+                    </div>
                 </div>
-                <div class="card-actions">
-                    <a href="chat.html">
-                        <button class="btn primary">メッセージ</button></a>
+            </article>
 
-                </div>
-            </div>
-        </article>
-
-        <article class="card" aria-label="ユーザカード">
-            <div class="avatar" aria-hidden="true">T</div>
-            <div class="card-body">
-                <div class="name">高橋 けん</div>
-                <div class="meta">
-                    <span>教科: 理科</span>
-                    <span class="stars" aria-label="評価 5 / 5">
-                        <span class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span>
-                    </span>
-                </div>
-                <div class="card-actions">
-                    <button class="btn primary">メッセージ</button>
-
-                </div>
-            </div>
-        </article>
-
-        <article class="card" aria-label="ユーザカード">
-            <div class="avatar" aria-hidden="true">S</div>
-            <div class="card-body">
-                <div class="name">鈴木 まゆ</div>
-                <div class="meta">
-                    <span>教科: 社会</span>
-                    <span class="stars" aria-label="評価 4 / 5">
-                        <span class="star-filled">★</span><span class="star-filled">★</span><span
-                            class="star-filled">★</span><span class="star-filled">★</span>★
-                    </span>
-                </div>
-                <div class="card-actions">
-                    <button class="btn primary">メッセージ</button>
-
-                </div>
-            </div>
-        </article>
-
-    </div>
+        </div>
 </body>
 
 </html>

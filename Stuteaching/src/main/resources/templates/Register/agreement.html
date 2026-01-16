@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ユーザー登録</title>
-    <link rel="stylesheet" href="../css/style.css">
+     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <style>
         body {
@@ -85,7 +85,7 @@
     </div>
 
     <!-- aタグをボタン風に -->
-    <a href="regist-compleat.html" id="register" class="button disabled">同意する</a>
+    <a th:href="@{regist-compleat.html}" id="register" class="button disabled">同意する</a>
 
     <script>
         const privacy = document.getElementById('agree-privacy');

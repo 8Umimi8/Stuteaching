@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マッチ | Stutyching - 学習プラットフォーム</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/hed_style.css">
-    <link rel="stylesheet" href="../css/time_style.css">
-    <link rel="stylesheet" href="../css/main_style.css">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{../css/hed_style.css}">
+    <link rel="stylesheet" th:href="@{../css/time_style.css}">
+    <link rel="stylesheet" th:href="@{../css/main_style.css}">
 
     <!-- FullCalendar -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <link th:href="@{https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css}" rel="stylesheet">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -125,7 +125,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
 
-    <script>
+    <script th:inline="javascript">
         let selectedDate = null;
         let weekChart = null;
 
@@ -199,14 +199,8 @@
                 selectable: true,
                 editable: true,
 
-                // ★ここにデモデータを入れる
-                events: [
-                    { title: "数学 2時間", start: "2026-01-05", extendedProps: { hours: 2 } },
-                    { title: "英語 1.5時間", start: "2026-01-06", extendedProps: { hours: 1.5 } },
-                    { title: "物理 3時間", start: "2026-01-07", extendedProps: { hours: 3 } },
-                    { title: "化学 1時間", start: "2026-01-09", extendedProps: { hours: 1 } },
-                    { title: "国語 2.5時間", start: "2026-01-10", extendedProps: { hours: 2.5 } }
-                ],
+                // Controllerから渡されたJSONデータを使用 (th:inline="javascript" が必要)
+                events: /*[[${events}]]*/[],
 
                 select: function (info) {
                     selectedDate = info.startStr;
