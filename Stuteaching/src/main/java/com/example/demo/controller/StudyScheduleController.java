@@ -31,7 +31,7 @@ public class StudyScheduleController {
 		List<TimeManageDTO> list = service.DisplayTime(user_id);
 		model.addAttribute("timeList", list);
 
-		return "study-schedule"; // time.html
+		return "Schedule/study-schedule"; // time.html
 	}
 
 	// ========================

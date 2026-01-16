@@ -21,9 +21,9 @@ public class UserController {
 	// ========================
 	// 表示
 	// ========================
-	@GetMapping("/longin")
+	@GetMapping("/login")
 	public String display() {
-		return "regist";
+		return "Register/regist";
 	};
 
 	// ========================
