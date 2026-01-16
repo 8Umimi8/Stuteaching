@@ -31,9 +31,11 @@ public class SecurityConfig {
 						.anyRequest().authenticated())
 				.formLogin(login -> login
 						.loginPage("/login")
+						.loginProcessingUrl("/login")
 						.usernameParameter("email")
 						.passwordParameter("password")
-						.defaultSuccessUrl("/home", true))
+						.defaultSuccessUrl("/Match/teacher-list", true)
+						.failureUrl("/login?error"))
 				.logout(logout -> logout
 						.logoutSuccessUrl("/login?logout"));
 
