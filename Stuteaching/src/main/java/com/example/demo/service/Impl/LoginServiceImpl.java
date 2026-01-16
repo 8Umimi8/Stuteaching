@@ -1,6 +1,7 @@
 package com.example.demo.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.LoginEntity;
@@ -20,7 +21,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public LoginEntity findByEmail(String email) {
 		return loginRepository.findByEmail(email)
-				.orElseThrow(() -> new RuntimeException("ユーザーが存在しません"));
+				.orElseThrow(() -> new UsernameNotFoundException("ユーザーが存在しません"));
 	}
 
 }
