@@ -17,6 +17,8 @@ public class SecurityConfig {
 	@Autowired
 	private LoginUserDetailsService userDetailsService;
 
+	private final String[] Matchers = { "/login", "/user/**", "/css/**" };
+
 	/**
 	 * Spring Security の全体設定
 	 * ・URLごとの認可
@@ -25,9 +27,11 @@ public class SecurityConfig {
 	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		http
+				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/login", "/user/login").permitAll()
+						.requestMatchers(Matchers).permitAll()
 						.anyRequest().authenticated())
 				.formLogin(login -> login
 						.loginPage("/login")

@@ -26,7 +26,7 @@ public class UserController {
 	private UserService userService;
 
 	// ========================
-	// 表示
+	// 新規会員登録表示
 	// ========================
 	@GetMapping("/login")
 	public String showLogin() {
@@ -35,20 +35,37 @@ public class UserController {
 	};
 
 	// ========================
+	// 会員登録完了表示
+	// ========================
+	@GetMapping("/compleat")
+	public String showCompleat() {
+		log.info("登録完了");
+		return "Register/regist-compleat";
+	};
+
+	@GetMapping("/agreement")
+	public String showAgreement() {
+		log.info("プライバシーポリシー");
+		return "Register/agreement";
+	};
+
+	// ========================
 	// 会員登録
 	// ========================
 	@PostMapping("/insert")
 	public String insert(@Valid @RequestBody UserDTO user, BindingResult bindingResult, Model model) {
+		log.info("登録");
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errors", bindingResult.getFieldErrors());
 			model.addAttribute("UserDTO", user);
+			log.info("errors:{}", bindingResult.getFieldErrors());
 			return "Register/regist";
 		}
 
 		userService.InsertUser(user);
 
 		// 登録完了後 → ログイン画面へ
-		return "Register/agreement";
+		return "redirect:/agreement";
 	}
 
 	// ========================
