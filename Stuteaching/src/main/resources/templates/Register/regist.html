@@ -32,7 +32,7 @@
 
       <div class="field">
         <label for="name">表示名</label>
-        <input id="name" name="name" type="text" class="input" placeholder="スタチン太郎" required />
+        <input id="name" name="user_name" type="text" class="input" placeholder="スタチン太郎" required />
       </div>
 
       <!-- 生年月日 -->
@@ -60,8 +60,8 @@
 
       <!-- 性別 -->
       <div class="field">
-        <label for="sex">性別</label>
-        <select id="sex" name="sex" required>
+        <label for="gender">性別</label>
+        <select id="gender" name="gender" required>
           <option value="">選択してください</option>
           <option value="male">男性</option>
           <option value="female">女性</option>
@@ -78,9 +78,7 @@
           <option value="teacher">先生</option>
         </select>
       </div>
-
       <div class="error" id="error" role="alert" aria-live="polite"></div>
-       <th:if="${errors}" th:text="${errors}">
       <button type="submit" class="btn">登録</button>
     </form>
 
