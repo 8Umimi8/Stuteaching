@@ -1,6 +1,7 @@
 package com.example.demo.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.UserDTO;
@@ -19,15 +20,22 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userrepository;
 
-	@Override
-	public void Login(String email, String password) {
-
-	}
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public void InsertUser(UserDTO user) {
+
+		// ===== パスワードをハッシュ化 =====
+		String rawPassword = user.getPassword();
+		String encodedPassword = passwordEncoder.encode(rawPassword);
+		user.setPassword(encodedPassword);
+
+		// ===== DTO → Entity 変換 =====
 		UserEntity userEntity = new UserEntity();
 		UtilService.ConvertEntity(user, userEntity);
+
+		// ===== DB保存 =====
 		userrepository.save(userEntity);
 
 	}
@@ -35,6 +43,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void DeleteUser(int user_id) {
 		userrepository.deleteById(user_id);
+
+	}
+
+	//今回は使わない
+	@Override
+	public void Login(String email, String password) {
+		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
