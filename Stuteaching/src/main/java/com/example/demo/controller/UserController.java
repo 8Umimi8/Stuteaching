@@ -53,12 +53,6 @@ public class UserController {
 	// 会員登録
 	// ========================
 	@PostMapping("/insert")
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-	public String insert(UserDTO user) {
-=======
-=======
->>>>>>> feature/コントローラー作り３
 	public String insert(@Valid @RequestBody UserDTO user, BindingResult bindingResult, Model model) {
 		log.info("登録");
 		if (bindingResult.hasErrors()) {
@@ -67,23 +61,13 @@ public class UserController {
 			log.info("errors:{}", bindingResult.getFieldErrors());
 			return "Register/regist";
 		}
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> feature/コントローラー作り３
 
 		userService.InsertUser(user);
 
 		// 登録完了後 → ログイン画面へ
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-		return "login";
-=======
+
 		return "redirect:/agreement";
->>>>>>> Stashed changes
-=======
-		return "redirect:/agreement";
->>>>>>> feature/コントローラー作り３
+
 	}
 
 	// ========================
