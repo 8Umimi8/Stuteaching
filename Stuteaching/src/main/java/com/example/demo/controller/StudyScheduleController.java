@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.DTO.TimeManageDTO;
 import com.example.demo.service.StudyScheduleService;
+import com.example.demo.service.security.LoginUserDetails;
 
 @Controller
 @RequestMapping("/study-time")
@@ -24,9 +26,9 @@ public class StudyScheduleController {
 	// 勉強時間 表示（一覧画面）
 	// ========================
 	@GetMapping("/display")
-	public String display(
-			@RequestParam("user_id") int user_id,
-			Model model) {
+	public String display(Model model, @AuthenticationPrincipal LoginUserDetails user) {
+
+		Integer user_id = user.getUser_id();
 
 		List<TimeManageDTO> list = service.DisplayTime(user_id);
 		model.addAttribute("timeList", list);

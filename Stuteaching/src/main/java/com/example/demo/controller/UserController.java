@@ -7,14 +7,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.service.UserService;
 
-import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 
 @Controller
@@ -53,7 +51,7 @@ public class UserController {
 	// 会員登録
 	// ========================
 	@PostMapping("/insert")
-	public String insert(@Valid @RequestBody UserDTO user, BindingResult bindingResult, Model model) {
+	public String insert(UserDTO user, BindingResult bindingResult, Model model) {
 		log.info("登録");
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errors", bindingResult.getFieldErrors());
