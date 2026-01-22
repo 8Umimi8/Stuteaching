@@ -4,6 +4,7 @@ import java.sql.Date;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -17,10 +18,10 @@ public class UserDTO {
 	@NotBlank(message = "必須です")
 	@Email(message = "メールアドレスの形式が正しくありません")
 	private String email;
-	@NotBlank(message = "必須です")
+	@NotNull(message = "必須です")
 	private Date birthday;
-	@NotBlank(message = "必須です")
+	@NotNull(message = "必須です")
 	private Integer gender;
-	@NotBlank(message = "必須です")
+	@NotNull(message = "必須です")
 	private Integer role;
 }
