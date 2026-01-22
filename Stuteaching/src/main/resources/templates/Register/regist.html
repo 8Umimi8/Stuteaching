@@ -12,7 +12,7 @@
   <main class="card" role="main" aria-labelledby="regist-title">
     <h1 id="regist-title">新規登録</h1>
 
-    <form id="regist-form" th:action="@{/user/insert}" method="post">
+    <form id="regist-form" th:action="@{/user/insert}" th:object="${UserDTO}" method="post">
 
       <div class="field">
         <label for="email">メールアドレス</label>
@@ -35,37 +35,20 @@
         <input id="name" name="user_name" type="text" class="input" placeholder="スタチン太郎" required />
       </div>
 
-      <!-- 生年月日 -->
-      <div class="bday-group">
-        <label>生年月日</label>
-        <div class="bday-selects">
-          <select id="year" name="bday-year" required>
-            <option value="">年</option>
-            <option
-              th:each="y : ${#numbers.sequence(#dates.year(#dates.createNow()), #dates.year(#dates.createNow()) - 100, -1)}"
-              th:value="${y}" th:text="${y}"></option>
-          </select>
-
-          <select id="month" name="bday-month" required>
-            <option value="">月</option>
-            <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="${m}"></option>
-          </select>
-
-          <select id="day" name="bday-day" required>
-            <option value="">日</option>
-            <option th:each="d : ${#numbers.sequence(1, 31)}" th:value="${d}" th:text="${d}"></option>
-          </select>
-        </div>
-      </div>
+     <!-- 生年月日 -->
+<div class="bday-group">
+  <label>生年月日</label>
+  <input type="date" th:field="*{birthday}" class="form-control w-auto me-2">
+</div>
 
       <!-- 性別 -->
       <div class="field">
         <label for="gender">性別</label>
         <select id="gender" name="gender" required>
           <option value="">選択してください</option>
-          <option value="male">男性</option>
-          <option value="female">女性</option>
-          <option value="other">その他</option>
+          <option value=1>男性</option>
+          <option value=2>女性</option>
+          <option value=3>その他</option>
         </select>
       </div>
 
@@ -74,8 +57,8 @@
         <label for="role">役職</label>
         <select id="role" name="role" required>
           <option value="">選択してください</option>
-          <option value="student">生徒</option>
-          <option value="teacher">先生</option>
+          <option value=1>生徒</option>
+          <option value=2>先生</option>
         </select>
       </div>
       <div class="error" id="error" role="alert" aria-live="polite"></div>
