@@ -1,18 +1,19 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.service.UserService;
+import com.example.demo.service.security.LoginUserDetails;
 
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 
 @Controller
@@ -27,7 +28,8 @@ public class UserController {
 	// 新規会員登録表示
 	// ========================
 	@GetMapping("/login")
-	public String showLogin() {
+	public String showLogin(Model model) {
+		model.addAttribute("UserDTO", new UserDTO());
 		log.info("ログイン");
 		return "Register/regist";
 	};
@@ -54,7 +56,7 @@ public class UserController {
 	// 会員登録
 	// ========================
 	@PostMapping("/insert")
-	public String insert(UserDTO user, BindingResult bindingResult, Model model) {
+	public String insert(@Valid UserDTO user, BindingResult bindingResult, Model model) {
 		log.info("登録");
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errors", bindingResult.getFieldErrors());
@@ -67,19 +69,21 @@ public class UserController {
 
 		// 登録完了後 → ログイン画面へ
 
-		return "redirect:/agreement";
+		return "redirect:/user/agreement";
 
 	}
 
 	// ========================
 	// 退会（ユーザー削除）
 	// ========================
-	@DeleteMapping("/delete")
-	public String delete(@RequestParam int user_id) {
+	@PostMapping("/delete")
+	public String delete(@AuthenticationPrincipal LoginUserDetails user) {
+
+		Integer user_id = user.getUser_id();
 
 		userService.DeleteUser(user_id);
 
 		// 削除後 → トップへ
-		return "regist";
+		return "login";
 	}
 }
