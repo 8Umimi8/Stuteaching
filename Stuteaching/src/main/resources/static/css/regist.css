@@ -136,3 +136,34 @@
     .footer a:hover {
       text-decoration: underline;
     }
+    /* ------------------------------
+   Date Input (type="date")
+------------------------------ */
+input[type="date"] {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #333;
+}
+
+/* フォーカス時の青いアクセント（.input と統一） */
+input[type="date"]:focus {
+  border-color: #4a8df6;
+  box-shadow: 0 0 0 3px rgba(74, 141, 246, 0.25);
+  outline: none;
+}
+
+/* カレンダーアイコンを消す（Chrome系） */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* スピンボタンも非表示 */
+input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
