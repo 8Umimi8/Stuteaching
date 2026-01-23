@@ -22,6 +22,7 @@ public class LoginUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
+		System.out.println("login email = " + email);
 
 		LoginEntity entity = loginService.findByEmail(email);
 
