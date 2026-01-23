@@ -25,8 +25,13 @@ public class LoginUserDetails implements UserDetails {
 		this.user_id = entity.getUser_id();
 		this.email = entity.getEmail();
 		this.password = entity.getPassword();
-		this.authorities = List.of(
-				new SimpleGrantedAuthority("ROLE_" + entity.getRole()));
+		String roleName = switch (entity.getRole()) {
+		case 1 -> "ROLE_USER";
+		case 2 -> "ROLE_ADMIN";
+		default -> "ROLE_USER";
+		};
+
+		this.authorities = List.of(new SimpleGrantedAuthority(roleName));
 	}
 
 	//ユーザーが持つ権限情報を返す

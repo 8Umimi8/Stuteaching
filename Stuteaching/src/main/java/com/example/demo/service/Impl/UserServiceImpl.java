@@ -26,14 +26,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void InsertUser(UserDTO user) {
 
-		// ===== パスワードをハッシュ化 =====
-		String rawPassword = user.getPassword();
-		String encodedPassword = passwordEncoder.encode(rawPassword);
-		user.setPassword(encodedPassword);
-
 		// ===== DTO → Entity 変換 =====
 		UserEntity userEntity = new UserEntity();
 		UtilService.ConvertEntity(user, userEntity);
+
+		// ===== パスワードをハッシュ化 =====
+		String rawPassword = userEntity.getPassword();
+		String encodedPassword = passwordEncoder.encode(rawPassword);
+		userEntity.setPassword(encodedPassword);
 
 		// ===== DB保存 =====
 		userrepository.save(userEntity);
