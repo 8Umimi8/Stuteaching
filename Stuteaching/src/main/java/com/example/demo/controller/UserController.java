@@ -33,18 +33,21 @@ public class UserController {
 	};
 
 	// ========================
+	// プライバシーポリシー表示
+	// ========================
+	@GetMapping("/agreement")
+	public String showAgreement() {
+		log.info("プライバシーポリシー");
+		return "Register/agreement";
+	};
+
+	// ========================
 	// 会員登録完了表示
 	// ========================
 	@GetMapping("/compleat")
 	public String showCompleat() {
 		log.info("登録完了");
 		return "Register/regist-compleat";
-	};
-
-	@GetMapping("/agreement")
-	public String showAgreement() {
-		log.info("プライバシーポリシー");
-		return "Register/agreement";
 	};
 
 	// ========================
