@@ -39,7 +39,7 @@ public class SecurityConfig {
 						.loginProcessingUrl("/login")
 						.usernameParameter("email")
 						.passwordParameter("password")
-						.defaultSuccessUrl("/Match/teacher-list", true)
+						.defaultSuccessUrl("/home", true)
 						.failureUrl("/login?error"))
 				.logout(logout -> logout
 						.logoutSuccessUrl("/login?logout"));
