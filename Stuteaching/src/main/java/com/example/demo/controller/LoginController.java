@@ -18,6 +18,6 @@ public class LoginController {
 	public String home(@AuthenticationPrincipal LoginUserDetails user) {
 		Integer userId = user.getUser_id();
 		System.out.println("ログイン中の user_id = " + userId);
-		return "home"; // home.html
+		return "Match/teacher-list"; // teacher-list.htmlに飛ぶよ
 	}
 }
