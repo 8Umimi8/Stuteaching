@@ -20,29 +20,29 @@
 
       <div class="field">
         <label for="password">パスワード</label>
-        <input id="password" name="password" type="password" class="input" placeholder="パスワード" required minlength="8" th:value="*{password}"/>
+        <input id="password" name="password" type="password" class="input" placeholder="パスワード"  minlength="8"  th:value="*{password}" required/>
       </div>
 
       <div class="field">
         <label for="password_again">パスワードの確認</label>
-        <input id="password_again" name="password_again" type="password" class="input" placeholder="パスワード" required
-          minlength="8" th:value="*{password}"/>
+        <input id="password_again" name="password_again" type="password" class="input" placeholder="パスワード" 
+          minlength="8" th:value="*{password}" required/>
       </div>
 
       <div class="field">
         <label for="name">表示名</label>
-        <input  id="name" name="user_name" type="text" class="input" placeholder="スタチン太郎" required th:value="*{user_name}" />
-        <div th:errors="*{user_name}"></div>
+        <input  id="name" name="user_name" type="text" class="input" placeholder="スタチン太郎"  th:field="*{user_name}" />
+        <div></div>
       </div>
 
      <!-- 生年月日 -->
 <div class="field">
   <label>生年月日</label>
-  <input type="date" th:field="*{birthday}" class="form-control w-auto me-2">
+  <input type="date" th:field="*{birthday}" class="form-control w-auto me-2" th:value="*{birthday}">
 </div>
 
       <!-- 性別 -->
-      <div class="field">
+      <div class="field" th:value="*{gender}">
         <label for="gender">性別</label>
         <select id="gender" name="gender" required>
           <option value="">選択してください</option>
@@ -53,7 +53,7 @@
       </div>
 
       <!-- 役職 -->
-      <div class="field">
+      <div class="field" th:value="*{role}">
         <label for="role">役職</label>
         <select id="role" name="role" required>
           <option value="">選択してください</option>
