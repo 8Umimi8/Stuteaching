@@ -15,12 +15,9 @@
 
 <body>
     <div id="header"></div>
+    <div th:replace="fragments/header :: header"></div>
     <script>
-        fetch("../header.html")
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("header").innerHTML = html;
-
+      
                 // ハンバーガー
                 const hamburger = document.querySelector('.hamburger');
                 const navMenu = document.querySelector('.nav-menu');
@@ -52,15 +49,15 @@
     <body>
         <div class="form-container">
             <h1>予定を追加</h1>
-            <form action="addsche.html" method="get">
+            <form th:action="/study-time/insert" th:object="${TimeManageDTO}" method="post">
                 <label for="subject">教科</label>
-                <input type="text" id="subject" name="subject" placeholder="例: 数学" required>
+                <input type="text" id="subject" name="subject" placeholder="例: 数学" th:value="*{study_subject}" required>
 
                 <label for="study-time">勉強時間（分）</label>
-                <input type="number" id="study-time" name="study_time" placeholder="例: 60" required>
+                <input type="number" id="study-time" name="study_time" placeholder="例: 60" th:value="*{study_time}" required>
 
                 <label for="date">日付</label>
-                <input type="date" id="date" name="date" required>
+                <input type="date" id="date" name="date" th:value="*{date}" required>
 
                 <button type="submit">追加する</button>
             </form>
