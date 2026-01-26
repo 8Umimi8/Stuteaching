@@ -3,6 +3,8 @@ package com.example.demo.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,11 +27,21 @@ public class SecurityConfig {
 	 * ・ログイン画面
 	 * ・ログアウト処理
 	 */
+
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(userDetailsService());
+		provider.setPasswordEncoder(passwordEncoder());
+		return provider;
+	}
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
 				.csrf(csrf -> csrf.disable())
+				.authenticationProvider(authenticationProvider()) // ← 超重要
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(Matchers).permitAll()
 
@@ -39,7 +51,7 @@ public class SecurityConfig {
 						.loginProcessingUrl("/login")
 						.usernameParameter("email")
 						.passwordParameter("password")
-						.defaultSuccessUrl("/Match/teacher-list", true)
+						.defaultSuccessUrl("/home", true)
 						.failureUrl("/login?error"))
 				.logout(logout -> logout
 						.logoutSuccessUrl("/login?logout"));
