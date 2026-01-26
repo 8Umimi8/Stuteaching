@@ -39,15 +39,6 @@ body {
     background-color: #f9f9f9;
     padding-top: 70px !important;
     margin: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    /* ヘッダー高さ分 */
-}
-
-#header {
-    margin: 0 !important;
-    padding: 0 !important;
-    position: relative;
 }
 
 /* =========================
@@ -59,30 +50,12 @@ body {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    min-width: 100% !important;
     height: 70px;
     background: var(--bg-color);
     border-bottom: 1px solid #ddd;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     z-index: 1000;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
 }
-
-.logo-group {
-    display: flex;
-    align-items: center;
-    /* ← 縦位置を揃える */
-    gap: 10px;
-    /* ← ロゴと文字の間隔 */
-    line-height: normal !important;
-    height: 100%;
-    overflow: visible !important;
-}
-
-
 
 .brand {
     max-width: 1300px;
@@ -91,22 +64,21 @@ body {
     height: 70px;
     display: flex;
     align-items: center;
-    width: 100%;
     justify-content: space-between;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
-    box-sizing: border-box !important;
-    overflow: visible !important;
-    position: relative;
 }
 
 /* =========================
    ロゴ
 ========================= */
+.logo-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .logo2 {
     width: 50px;
     height: auto;
-    display: block !important;
-    flex-shrink: 0;
 }
 
 .logo {
@@ -117,17 +89,6 @@ body {
     background: linear-gradient(90deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-decoration: none;
-    line-height: 1.4 !important;
-    display: inline-block !important;
-    vertical-align: baseline !important;
-    overflow: visible !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    height: auto !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
     white-space: nowrap;
 }
 
@@ -152,7 +113,6 @@ body {
     color: var(--text-color);
     font-size: 15px !important;
     font-weight: 500 !important;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -177,9 +137,7 @@ body {
 .icon-btn {
     color: var(--text-color);
     font-size: 18px !important;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
     transition: color 0.3s;
-    line-height: 1 !important;
 }
 
 .icon-btn:hover {
@@ -196,8 +154,6 @@ body {
     justify-content: center;
     color: var(--primary-color);
     border: 1px solid var(--border-color);
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
-    line-height: 1 !important;
 }
 
 /* =========================
@@ -208,16 +164,8 @@ body {
     background: none;
     border: none;
     font-size: 26px !important;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
     color: var(--text-color);
     cursor: pointer;
-    margin-left: 20px;
-    width: auto !important;
-    line-height: 1 !important;
-}
-
-.hamburger:hover {
-    background: none !important;
 }
 
 /* =========================
@@ -225,7 +173,6 @@ body {
 ========================= */
 @media (max-width: 850px) {
 
-    /* ハンバーガー表示（右端固定） */
     .hamburger {
         display: block;
         margin-left: auto;
@@ -245,37 +192,44 @@ body {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
 
+    /* ★ ここを修正：中央揃えが確実に効くように */
+    .nav-menu ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* ← 追加 */
+        width: 100%;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .nav-menu li {
+        width: 100%; /* ← 追加 */
+    }
+
+    .nav-menu a {
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        padding: 10px 0;
+    }
+
     .nav-menu.active {
         transform: translateY(0);
     }
 
-    .nav-menu ul {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-
-    /* アイコンの absolute を解除して自然に並べる */
     .user-actions {
         gap: 15px;
         margin-left: 10px;
     }
-
-    .icon-btn,
-    .profile-icon {
-        position: static;
-        transform: none;
-        margin-left: 0;
-    }
-
-
 }
 
-/*通知*/
+/* =========================
+   通知
+========================= */
 .notification-panel {
     position: absolute;
     top: 70px;
-    /* ヘッダーの下に表示 */
     right: 10px;
     width: 250px;
     height: 200px;
@@ -292,29 +246,25 @@ body {
     font-weight: bold !important;
     margin-bottom: 10px;
     font-size: 16px !important;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
-    line-height: 1.2 !important;
 }
 
 .notification-list {
     list-style: none;
-    padding: 0;
-    margin: 0;
 }
 
 .notification-list li {
     padding: 10px;
     border-bottom: 1px solid #eee;
     font-size: 14px !important;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
-    line-height: 1.4 !important;
-}
-
-.notification-list li:last-child {
-    border-bottom: none;
 }
 
 .notification-list li:hover {
     background: #f5f5f5;
     cursor: pointer;
+}
+
+/* PCでも .active を反映 */
+.nav-menu.active {
+    transform: translateY(0);
+    display: flex !important;
 }
