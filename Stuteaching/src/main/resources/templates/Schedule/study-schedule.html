@@ -76,19 +76,7 @@
     <div id="header"></div>
 
     <script>
-        fetch("../header.html")
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("header").innerHTML = html;
-
-                const hamburger = document.querySelector('.hamburger');
-                const navMenu = document.querySelector('.nav-menu');
-
-                if (hamburger && navMenu) {
-                    hamburger.addEventListener('click', () => {
-                        navMenu.classList.toggle('active');
-                    });
-                }
+       <div th:replace="fragments/header :: header"></div>
 
                 const notifyBtn = document.getElementById("notifyBtn");
                 const notificationPanel = document.getElementById("notificationPanel");
@@ -219,7 +207,7 @@
             // ボタン処理
             document.getElementById('addEventBtn').addEventListener('click', () => {
                 if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
-                window.location.href = "add.html?date=" + selectedDate;
+                window.location.href = "/study-time/add-display";
             });
 
             document.getElementById('editEventBtn').addEventListener('click', () => {
