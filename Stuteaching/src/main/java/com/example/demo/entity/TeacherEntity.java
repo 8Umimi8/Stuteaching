@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,21 +19,24 @@ import lombok.Setter;
 public class TeacherEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "teacher_id")
+	private Integer teacherId;
+
 	@Column(name = "user_id")
-	private Integer user_id;
+	private Integer userId;
 
-	@Column(name = "user_name")
-	private String user_name;
+	@Column(name = "subject_id")
+	private Integer subjectId;
 
-	@Column(name = "birthday")
-	private Date birthday;
+	@Column(name = "review_id")
+	private Integer reviewId;
 
-	@Column(name = "gender")
-	private Integer gender;
+	@Column(name = "created_at")
+	private Timestamp createdAt;
 
-	@Column(name = "subject_name")
-	private String subject_name;
+	@Column(name = "updated_at")
+	private Timestamp updatedAt;
 
-	@Column(name = "review")
-	private String review;
+	@Column(name = "is_deleted")
+	private Integer isDeleted;
 }
