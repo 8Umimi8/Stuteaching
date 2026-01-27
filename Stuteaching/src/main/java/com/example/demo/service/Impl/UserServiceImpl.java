@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.LoginRepository;
+import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.TeacherRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.util.UtilService;
@@ -19,6 +21,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userrepository;
+
+	@Autowired
+	private StudentRepository studentRepository;
+
+	@Autowired
+	private TeacherRepository teacherRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
