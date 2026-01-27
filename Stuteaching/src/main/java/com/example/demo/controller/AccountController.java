@@ -36,15 +36,15 @@ public class AccountController {
 	// ========================
 	// 教師情報 更新
 	// ========================
-	@PostMapping("/teacher/update")
-	public String updateTeacher(
-			@RequestParam int user_id,
-			TeacherUsersDTO dto) {
-
-		accountService.UpdateTeacher(user_id, dto);
-
-		return "redirect:/account/teacher?user_id=" + user_id;
-	}
+	//	@PostMapping("/teacher/update")
+	//	public String updateTeacher(
+	//			@RequestParam int user_id,
+	//			TeacherUsersDTO dto) {
+	//
+	//		accountService.UpdateTeacher(user_id, dto);
+	//
+	//		return "redirect:/account/teacher?user_id=" + user_id;
+	//	}
 
 	// ========================
 	// 生徒情報 表示
