@@ -41,6 +41,10 @@ public class LoginUserDetails implements UserDetails {
 		return authorities;
 	}
 
+	public Integer getUserId() {
+		return user_id;
+	}
+
 	//認証に使用するパスワードを返す
 	@Override
 	public String getPassword() {
