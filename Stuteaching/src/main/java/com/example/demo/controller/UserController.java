@@ -62,6 +62,7 @@ public class UserController {
 			model.addAttribute("errors", bindingResult.getFieldErrors());
 			model.addAttribute("UserDTO", user);
 			log.info("errors:{}", bindingResult.getFieldErrors());
+			System.out.println("DTO password = " + user.getPassword());
 			return "Register/regist";
 		}
 
