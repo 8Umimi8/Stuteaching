@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 		// ===== DTO → Entity 変換 =====
 		UserEntity userEntity = new UserEntity();
-		UtilService.ConvertEntity(user, userEntity);
+		UtilService.ConvertEntity(userEntity, user);
 
 		// ===== パスワードをハッシュ化 =====
 		String rawPassword = userEntity.getPassword();
