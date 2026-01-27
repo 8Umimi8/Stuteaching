@@ -2,19 +2,25 @@ package com.example.demo.util;
 
 import org.modelmapper.ModelMapper;
 
+import com.example.demo.DTO.TalkDTO;
+import com.example.demo.entity.TalkEntity;
+
 public class UtilService {
 
-	public static Object ConvertEntity(Object entity, Object dto) {
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.map(entity, dto);
+	private static final ModelMapper mapper = new ModelMapper();
 
-		return entity;
+	static {
+		mapper.typeMap(TalkDTO.class, TalkEntity.class)
+				.addMappings(m -> m.skip(TalkEntity::setClassId));
 	}
 
-	public static Object ConvertDTO(Object entity, Object dto) {
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.map(dto, entity);
+	// DTO → Entity
+	public static void ConvertEntity(Object entity, Object dto) {
+		mapper.map(dto, entity);
+	}
 
-		return dto;
+	// Entity → DTO
+	public static void ConvertDTO(Object entity, Object dto) {
+		mapper.map(entity, dto);
 	}
 }
