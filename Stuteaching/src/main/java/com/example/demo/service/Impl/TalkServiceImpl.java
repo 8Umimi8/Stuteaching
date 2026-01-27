@@ -1,0 +1,55 @@
+package com.example.demo.service.Impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.DTO.TalkDTO;
+import com.example.demo.entity.TalkEntity;
+import com.example.demo.repository.TalkRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.TalkService;
+import com.example.demo.util.UtilService;
+
+@Service
+@Transactional
+public class TalkServiceImpl implements TalkService {
+
+	@Autowired
+	private TalkRepository talkRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Override
+	public void sendTalk(TalkDTO talkDTO) {
+		TalkEntity entity = new TalkEntity();
+
+		// ★ DTO → Entity 変換
+		UtilService.ConvertEntity(entity, talkDTO);
+
+		talkRepository.save(entity);
+
+	}
+
+	@Override
+	public List<TalkDTO> getTalkList(Integer roomId) {
+		List<TalkEntity> entityList = talkRepository.findByClassId(roomId);
+
+		// Entity → DTO 変換
+		return entityList.stream().map(entity -> {
+			TalkDTO dto = new TalkDTO();
+			UtilService.ConvertDTO(entity, dto);
+
+			if (entity.getSenderId() != null) {
+				userRepository.findById(entity.getSenderId())
+						.ifPresent(user -> dto.setSenderName(user.getUser_name()));
+			}
+
+			return dto;
+		}).toList();
+	}
+
+}
