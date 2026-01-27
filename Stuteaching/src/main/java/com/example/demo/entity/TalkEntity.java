@@ -18,14 +18,14 @@ public class TalkEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "class_id")
-	private Integer class_id;
+	private Integer classId;
+
+	@Column(name = "room_id")
+	private Integer roomId;
+
+	@Column(name = "sender_id")
+	private Integer senderId;
 
 	@Column(name = "message_text")
-	private String message_text;
-
-	@Column(name = "post_message")
-	private String post_message;
-
-	@Column(name = "user_name")
-	private String user_name;
+	private String messageText;
 }
