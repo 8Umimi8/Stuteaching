@@ -8,119 +8,117 @@
 
     <link rel="stylesheet" th:href="@{/css/chat.css}">
     <link rel="stylesheet" th:href="@{/css/hed_style.css}">
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+    <link rel="stylesheet"
+          th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
 </head>
 
 <body>
 
-    <!-- ★ header.html を Thymeleaf で読み込む（ハンバーガー含む） -->
-   <div th:replace="fragments/header :: header"></div>
+<!-- header -->
+<div th:replace="fragments/header :: header"></div>
 
-    <!-- サイドバー -->
-    <div class="sidebar">
-        <div th:each="u : ${users}" th:if="${u.id != myId}" class="user"
-            th:classappend="${u.id == currentUser.id} ? ' active'" th:data-user-id="${u.id}"
-            th:data-initial="${u.name.substring(0,1)}" th:text="${u.name}"
-            th:onclick="'location.href=\'/chat/' + ${u.id} + '\';'">
+<!-- サイドバー -->
+<div class="sidebar">
+    <div th:each="u : ${users}"
+         th:if="${u.id != currentUser.userId}"
+         class="user"
+         th:classappend="${u.id == classId} ? ' active'"
+         th:data-initial="${u.name.substring(0,1)}"
+         th:text="${u.name}"
+         th:onclick="'location.href=\'/chat/' + ${u.id} + '\';'">
+    </div>
+</div>
+
+<!-- チャットエリア -->
+<div class="chat-area">
+
+    <!-- ヘッダー -->
+    <div class="chat-header" style="display:flex;">
+        <div class="chat-header-title"
+             th:text="${currentUser.username}">
         </div>
+
+        <form th:action="@{'/chat/' + ${classId} + '/rating'}"
+              method="post"
+              class="chat-rating-area">
+
+            <input type="hidden" name="score" id="ratingScore">
+
+            <span class="stars">
+                <span class="rating-star"
+                      th:each="i : ${#numbers.sequence(1,5)}"
+                      th:onclick="'setRating(' + ${i} + ')'">
+                    ★
+                </span>
+            </span>
+
+            <button class="rating-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
     </div>
 
-    <!-- チャットエリア -->
-    <div class="chat-area">
+    <!-- メッセージ -->
+    <div class="chat-messages" style="display:block;">
+        <div th:each="m : ${messages}"
+             class="message"
+             th:classappend="${m.userId == currentUser.userId} ? ' from-me' : ' from-them'">
 
-        <div class="chat-header">
-            <div class="chat-header-title" th:text="${currentUser.name}"></div>
+            <div class="sender"
+                 th:if="${m.senderId != currentUser.userId}"
+                 th:text="${m.senderName}">
+            </div>
 
-            <!-- 評価 -->
-            <form th:action="@{'/chat/' + ${currentUser.id} + '/rating'}" method="post" class="chat-rating-area">
-
-                <span style="font-size: 0.9rem; margin-right: 8px;">評価:</span>
-
-                <input type="hidden" name="score" id="ratingScore">
-
-                <span class="stars">
-                    <span class="rating-star" th:each="i : ${#numbers.sequence(1,5)}"
-                        th:onclick="'setRating(' + ${i} + ')'" style="cursor:pointer;font-size:1.2rem;">★</span>
-                </span>
-
-                <button class="rating-btn" title="評価を送信">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </form>
-        </div>
-
-        <!-- メッセージ一覧 -->
-        <div class="chat-messages">
-            <div th:each="m : ${messages}" th:class="'message ' + (${m.senderId} == ${myId} ? 'from-me' : 'from-them')">
-
-                <img th:if="${m.type == 'image'}" th:src="@{${m.content}}" class="message-image">
-
-                <span th:if="${m.type == 'text'}" th:text="${m.content}"></span>
-
-                <div th:if="${m.type == 'system'}" class="message-system" th:text="${m.content}"></div>
+            <div class="content"
+                 th:text="${m.messageText}">
             </div>
         </div>
-
-        <!-- 入力欄 -->
-        <div class="chat-input">
-
-            <!-- 画像送信 -->
-            <form th:action="@{'/chat/' + ${currentUser.id} + '/send-image'}" method="post"
-                enctype="multipart/form-data">
-                <input type="file" name="image" id="imageInput" accept="image/*" style="display:none;"
-                    onchange="this.form.submit()">
-                <button type="button" class="attach-btn" onclick="document.getElementById('imageInput').click()">
-                    <i class="fas fa-image"></i>
-                </button>
-            </form>
-
-            <!-- テキスト送信 -->
-            <form th:action="@{'/chat/' + ${currentUser.id} + '/send'}" method="post" style="display:flex;flex:1;">
-                <input name="content" type="text" placeholder="メッセージを入力..." style="flex:1;">
-                <button><i class="fas fa-paper-plane"></i> 送信</button>
-            </form>
-        </div>
     </div>
 
-    <!-- ★ JS（fetch 削除・setRating を外に出す） -->
-    <script>
-        // ハンバーガーメニュー
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
+    <!-- 入力欄 -->
+    <form class="chat-input"
+          th:action="@{'/chat/' + ${classId} + '/send'}"
+          method="post"
+          style="display:flex;">
 
-        if (hamburger && navMenu) {
-            hamburger.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
-        }
+        <button type="button"
+                class="attach-btn"
+                onclick="document.getElementById('imageInput').click()">
+            <i class="fas fa-image"></i>
+        </button>
 
-        // 通知
-        const notifyBtn = document.getElementById("notifyBtn");
-        const notificationPanel = document.getElementById("notificationPanel");
+        <input type="file"
+               id="imageInput"
+               name="image"
+               accept="image/*"
+               style="display:none;">
 
-        if (notifyBtn && notificationPanel) {
-            notifyBtn.addEventListener("click", (e) => {
-                e.preventDefault();
+        <input type="text"
+               name="messageText"
+               placeholder="メッセージを入力..."
+               required>
 
-                const isOpen = notificationPanel.style.display === "block";
-                notificationPanel.style.display = isOpen ? "none" : "block";
+        <button type="submit">
+            <i class="fas fa-paper-plane"></i>
+            送信
+        </button>
+    </form>
 
-                if (!isOpen) {
-                    notifyBtn.classList.remove("has-notification");
-                }
-            });
-        }
+</div>
 
-        // ★ 評価の星
-        function setRating(score) {
-            document.getElementById("ratingScore").value = score;
-            const stars = document.querySelectorAll(".rating-star");
-            stars.forEach((s, i) => {
-                s.classList.toggle("star-filled", i < score);
-            });
-        }
-    </script>
+<script>
+    function setRating(score) {
+        document.getElementById("ratingScore").value = score;
+        document.querySelectorAll(".rating-star")
+            .forEach((s, i) => s.classList.toggle("star-filled", i < score));
+    }
+
+    // 自動スクロール
+    const messages = document.querySelector('.chat-messages');
+    if (messages) {
+        messages.scrollTop = messages.scrollHeight;
+    }
+</script>
 
 </body>
-
 </html>
