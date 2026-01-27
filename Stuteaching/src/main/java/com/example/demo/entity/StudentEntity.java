@@ -17,10 +17,9 @@ import lombok.Setter;
 public class StudentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "student_id")
+	private Integer student_id;
+
 	@Column(name = "user_id")
 	private Integer user_id;
-
-	@Column(name = "user_name")
-	private String user_name;
-
 }

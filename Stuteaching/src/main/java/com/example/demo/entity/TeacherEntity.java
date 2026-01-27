@@ -1,7 +1,5 @@
 package com.example.demo.entity;
 
-import java.sql.Timestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,13 +28,4 @@ public class TeacherEntity {
 
 	@Column(name = "review_id")
 	private Integer reviewId;
-
-	@Column(name = "created_at")
-	private Timestamp createdAt;
-
-	@Column(name = "updated_at")
-	private Timestamp updatedAt;
-
-	@Column(name = "is_deleted")
-	private Integer isDeleted;
 }
