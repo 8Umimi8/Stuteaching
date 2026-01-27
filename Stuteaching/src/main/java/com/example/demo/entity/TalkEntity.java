@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +22,9 @@ public class TalkEntity {
 	@Column(name = "class_id")
 	private Integer classId;
 
-	@Column(name = "room_id")
-	private Integer roomId;
+	@ManyToOne
+	@JoinColumn(name = "room_id", nullable = false)
+	private RoomEntity roomId;
 
 	@Column(name = "sender_id")
 	private Integer senderId;

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DTO.TalkDTO;
+import com.example.demo.entity.RoomEntity;
 import com.example.demo.entity.TalkEntity;
+import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.TalkRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TalkService;
@@ -23,13 +25,22 @@ public class TalkServiceImpl implements TalkService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private RoomRepository roomRepository;
+
 	@Override
 	public void sendTalk(TalkDTO talkDTO) {
+		// ① room を取得（FKの正解ルート）
+		RoomEntity room = roomRepository.findById(talkDTO.getRoomId())
+				.orElseThrow(() -> new IllegalArgumentException("roomが存在しない"));
+
+		// ② Entityを組み立てる
 		TalkEntity entity = new TalkEntity();
+		entity.setRoomId(room); // ★ 超重要
+		entity.setSenderId(talkDTO.getSenderId());
+		entity.setMessageText(talkDTO.getMessageText());
 
-		// ★ DTO → Entity 変換
-		UtilService.ConvertEntity(entity, talkDTO);
-
+		// ③ 保存
 		talkRepository.save(entity);
 
 	}
