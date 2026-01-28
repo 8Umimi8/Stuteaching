@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.StudentUsersDTO;
-import com.example.demo.DTO.TeacherUsersDTO;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.entity.TeacherEntity;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.service.AccountService;
 import com.example.demo.util.UtilService;
+import com.example.demo.web.dto.TeacherUsersResponseDTO;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -40,24 +40,25 @@ public class AccountServiceImpl implements AccountService {
 	//	}
 
 	@Override
-	public TeacherUsersDTO DisplayTeacher(int user_id) {
+	public TeacherUsersResponseDTO DisplayTeacher(int user_id) {
 		Optional<TeacherEntity> entity = teacherRepository.findById(user_id);
-		TeacherUsersDTO dto = new TeacherUsersDTO();
+		TeacherUsersResponseDTO dto = new TeacherUsersResponseDTO();
+
 		UtilService.ConvertDTO(entity, dto);
 
 		return dto;
 	}
 
-	@Override
-	public void UpdateStudent(int user_id, StudentUsersDTO user) {
-		Optional<StudentEntity> optional = studentRepository.findById(user_id);
-		StudentEntity entity = optional.get();
-
-		entity.setUser_name(user.getUser_name());
-
-		studentRepository.save(entity);
-
-	}
+	//	@Override
+	//	public void UpdateStudent(int user_id, StudentUsersDTO user) {
+	//		Optional<StudentEntity> optional = studentRepository.findById(user_id);
+	//		StudentEntity entity = optional.get();
+	//
+	//		entity.setUser_name(user.getUser_name());
+	//
+	//		studentRepository.save(entity);
+	//
+	//	}
 
 	@Override
 	public StudentUsersDTO DisplayStudent(int user_id) {
@@ -69,8 +70,15 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public List<TeacherUsersDTO> getAllTeachers() {
-		return teacherRepository.findAllTeachers();
+	public List<TeacherUsersResponseDTO> getAllTeachers() {
+		return teacherRepository.findAllTeachers()
+				.stream()
+				.map(p -> new TeacherUsersResponseDTO(
+						p.getTeacherId(),
+						p.getUserName(),
+						p.getGender(),
+						p.getReview(),
+						p.getSubjectName()))
+				.toList();
 	}
-
 }

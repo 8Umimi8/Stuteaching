@@ -70,29 +70,30 @@
                <div class="grid" id="user-grid">
 
     <div class="card" th:each="user : ${users}">
-        <div class="card-content">
+  <div class="card-content">
 
-            <!-- ユーザー名 -->
-            <h3 th:text="${user.user_name}"></h3>
+    <!-- ユーザー名 -->
+    <h3 th:text="${user.userName}"></h3>
 
-            <!-- 教科 -->
-            <div class="meta">
-                <span>
-                    教科:
-                    <span th:text="${user.subject_name}"></span>
-                </span>
-            </div>
-
-            <!-- 評価（★） -->
-            <div class="rating">
-                <span th:each="i : ${#numbers.sequence(1, user.review)}"
-                      class="star-filled">★</span>
-                <span th:each="i : ${#numbers.sequence(user.review + 1, 5)}"
-                      class="star-empty">☆</span>
-            </div>
-
-        </div>
+    <!-- 教科 -->
+    <div class="meta">
+      <span>
+        教科:
+        <span th:text="${user.subjectName}"></span>
+      </span>
     </div>
+
+    <!-- 評価（★） -->
+    <div class="rating">
+      <span th:if="${user.review != null and user.review > 0}"
+            th:each="i : ${#numbers.sequence(1, user.review)}"
+            class="star-filled">★</span>
+      <span th:if="${user.review == null or user.review == 0}">未評価</span>
+    </div>
+
+  </div>
+</div>
+
 
 </div>
             </section>

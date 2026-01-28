@@ -1,13 +1,13 @@
 package com.example.demo.DTO;
 
-import lombok.Data;
+public interface TeacherUsersDTO {
+	Integer getTeacherId();
 
-@Data
-public class TeacherUsersDTO {
+	String getUserName();
 
-	private Integer teacher_id;
-	private String user_name;
-	private Integer gender;
-	private Integer review;
-	private String subject_name;
+	Integer getGender();
+
+	Integer getReview();
+
+	String getSubjectName();
 }

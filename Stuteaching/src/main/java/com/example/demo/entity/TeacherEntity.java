@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,19 +15,28 @@ import lombok.Setter;
 @Table(name = "teacher_users")
 @Getter
 @Setter
-
 public class TeacherEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "teacher_id")
 	private Integer teacherId;
 
 	@Column(name = "user_id")
-	private Integer userId;
+	private Integer user_id;
 
 	@Column(name = "subject_id")
 	private Integer subjectId;
 
 	@Column(name = "review_id")
 	private Integer reviewId;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+
+	@Column(name = "is_deleted")
+	private Integer isDeleted;
 }

@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
 		if (user.getRole() == 2) {
 			TeacherEntity teacher = new TeacherEntity();
-			teacher.setUserId(userId);
+			teacher.setUser_id(userId);
 			teacherRepository.save(teacher);
 		}
 
