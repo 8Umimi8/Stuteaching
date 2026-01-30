@@ -22,7 +22,7 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 	@Override
 	public void InsertTime(TimeManageDTO timemanage) {
 		TimeEntity entity = new TimeEntity();
-		UtilService.ConvertEntity(timemanage, entity);
+		UtilService.ConvertEntity(entity, timemanage);
 		studyschedulerepository.save(entity);
 
 	}
@@ -32,8 +32,8 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 		Optional<TimeEntity> optional = studyschedulerepository.findById(time_id);
 		TimeEntity entity = optional.get();
 
-		entity.setStudy_subject(timemanage.getStudy_subject());
-		entity.setStudy_time(timemanage.getStudy_time());
+		entity.setStudySubject(timemanage.getStudySubject());
+		entity.setStudyTime(timemanage.getStudyTime());
 		entity.setDate(timemanage.getDate());
 
 		studyschedulerepository.save(entity);
@@ -47,12 +47,19 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 	}
 
 	@Override
-	public List<TimeManageDTO> DisplayTime(int user_id) {
-		Optional<TimeEntity> entity = studyschedulerepository.findById(user_id);
-		List<TimeManageDTO> dto = new ArrayList<TimeManageDTO>();
-		UtilService.ConvertDTO(entity, dto);
+	public List<TimeManageDTO> DisplayTime(int userId) {
 
-		return dto;
+		List<TimeEntity> entityList = studyschedulerepository.findByUserId(userId);
+
+		List<TimeManageDTO> dtoList = new ArrayList<>();
+
+		for (TimeEntity entity : entityList) {
+			TimeManageDTO dto = new TimeManageDTO();
+			UtilService.ConvertDTO(entity, dto);
+			dtoList.add(dto);
+		}
+
+		return dtoList;
 	}
 
 }

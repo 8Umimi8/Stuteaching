@@ -17,8 +17,10 @@ import com.example.demo.service.StudyScheduleService;
 import com.example.demo.service.security.LoginUserDetails;
 
 import jakarta.validation.Valid;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
+@Log4j2
 @RequestMapping("/study-time")
 public class StudyScheduleController {
 
@@ -54,13 +56,20 @@ public class StudyScheduleController {
 	// 勉強時間 登録
 	// ========================
 	@PostMapping("/insert")
-	public String insert(@Valid TimeManageDTO dto, BindingResult bindingResult, Model model) {
+	public String insert(
+			@Valid TimeManageDTO dto,
+			BindingResult bindingResult,
+			@AuthenticationPrincipal LoginUserDetails loginUser,
+			Model model) {
 
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errors", bindingResult.getFieldErrors());
 			model.addAttribute("TimeManageDTO", dto);
 			return "Register/regist";
 		}
+
+		// ★ loginUser はここで初めて存在する
+		dto.setUserId(loginUser.getUserId());
 
 		service.InsertTime(dto);
 
