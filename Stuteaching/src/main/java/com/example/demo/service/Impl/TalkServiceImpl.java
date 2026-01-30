@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DTO.TalkDTO;
+import com.example.demo.DTO.UserDTO;
 import com.example.demo.entity.RoomEntity;
 import com.example.demo.entity.TalkEntity;
 import com.example.demo.repository.RoomRepository;
@@ -47,9 +48,11 @@ public class TalkServiceImpl implements TalkService {
 
 	@Override
 	public List<TalkDTO> getTalkList(Integer roomId) {
-		List<TalkEntity> entityList = talkRepository.findByClassId(roomId);
+		RoomEntity room = roomRepository.findById(roomId)
+				.orElseThrow(() -> new IllegalArgumentException("roomが存在しない"));
 
-		// Entity → DTO 変換
+		List<TalkEntity> entityList = talkRepository.findByRoomIdOrderByCreatedAtAsc(room);
+
 		return entityList.stream().map(entity -> {
 			TalkDTO dto = new TalkDTO();
 			UtilService.ConvertDTO(entity, dto);
@@ -61,6 +64,25 @@ public class TalkServiceImpl implements TalkService {
 
 			return dto;
 		}).toList();
+	}
+
+	@Override
+	public UserDTO getChatPartner(Integer roomId, Integer myUserId) {
+
+		RoomEntity room = roomRepository.findById(roomId)
+				.orElseThrow(() -> new IllegalArgumentException("roomが存在しない"));
+
+		Integer partnerId = room.getRoomUserId().getUser_id().equals(myUserId)
+				? room.getRoomTeacherId().getUser_id()
+				: room.getRoomUserId().getUser_id();
+
+		return userRepository.findById(partnerId)
+				.map(entity -> {
+					UserDTO dto = new UserDTO();
+					UtilService.ConvertDTO(entity, dto); // ← 既存Utilを活用
+					return dto;
+				})
+				.orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しない"));
 	}
 
 }
