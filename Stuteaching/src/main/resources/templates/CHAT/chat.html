@@ -33,7 +33,7 @@
 <div class="chat-area">
 
     <!-- ヘッダー -->
-    <div class="chat-header" style="display:flex;">
+    <div class="chat-header" style="display:flex;" th:if="${chatPartner != null}">
         <div class="chat-header-title"
 		     th:text="${chatPartner.user_name}">
 		</div>
@@ -59,7 +59,7 @@
     </div>
 
     <!-- メッセージ -->
-    <div class="chat-messages" style="display:block;">
+    <div class="chat-messages" th:if="${chatPartner != null}" style="display:block;">
 	    <div th:each="m, iterStat : ${messages}" 
 	         class="message-wrapper"
 	         th:classappend="${m.senderId == currentUser.userId} ? ' me' : ' them'">
@@ -81,7 +81,7 @@
 	</div>
 
     <!-- 入力欄 -->
-    <form class="chat-input"
+    <form class="chat-input" th:if="${chatPartner != null}"
           th:action="@{'/chat/' + ${classId} + '/send'}"
           method="post"
           style="display:flex;">

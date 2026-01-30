@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,8 +26,18 @@ public class TalkController {
 	private RoomService roomService;
 
 	@GetMapping("/chat")
-	public String chatRoot() {
-		return "redirect:/chat/1";
+	public ModelAndView chatRoot(@AuthenticationPrincipal LoginUserDetails user) {
+		ModelAndView mav = new ModelAndView("CHAT/chat");
+
+		// 初期状態はroomなし
+		mav.addObject("messages", List.of()); // 空リスト
+		mav.addObject("classId", 0); // roomなし
+		mav.addObject("currentUser", user);
+		mav.addObject("chatPartner", null); // 相手なし
+
+		mav.addObject("users", roomService.getMyChatRooms(user.getUser_id()));
+
+		return mav;
 	}
 
 	// チャット画面表示
