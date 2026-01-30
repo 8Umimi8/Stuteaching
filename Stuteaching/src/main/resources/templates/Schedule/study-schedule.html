@@ -75,8 +75,9 @@
 <body>
     <div id="header"></div>
 
+<div th:replace="fragments/header :: header"></div>
+	
     <script>
-       <div th:replace="fragments/header :: header"></div>
 
                 const notifyBtn = document.getElementById("notifyBtn");
                 const notificationPanel = document.getElementById("notificationPanel");
@@ -88,7 +89,7 @@
                             notificationPanel.style.display === "block" ? "none" : "block";
                     });
                 }
-            });
+            
     </script>
 
     <div class="calendar-wrapper">
@@ -96,7 +97,7 @@
 
         <div class="calendar-controls">
             <div id="selectedDateDisplay">日付が選択されていません</div>
-            <button id="addEventBtn" class="btn btn-add">勉強時間を追加</button>
+            <a th:href="@{/study-time/add-display}" class="btn btn-add">勉強時間を追加</a>
             <button id="editEventBtn" class="btn btn-edit">勉強時間を編集</button>
             <button id="deleteEventBtn" class="btn btn-delete">勉強時間を削除</button>
         </div>
@@ -188,7 +189,10 @@
                 editable: true,
 
                 // Controllerから渡されたJSONデータを使用 (th:inline="javascript" が必要)
-                events: /*[[${events}]]*/[],
+                events: timeList.map(t => ({
+  				 title: t.studySubject + " " + t.studyTime + "分",
+        		start: t.date
+   				 })),
 
                 select: function (info) {
                     selectedDate = info.startStr;
@@ -205,10 +209,7 @@
             calendar.render();
 
             // ボタン処理
-            document.getElementById('addEventBtn').addEventListener('click', () => {
-                if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
-                window.location.href = "/study-time/add-display";
-            });
+            
 
             document.getElementById('editEventBtn').addEventListener('click', () => {
                 if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
@@ -221,6 +222,14 @@
             });
         });
     </script>
+    
+    <script th:inline="javascript">
+	    /*<![CDATA[*/
+	    const timeList = [[${timeList}]];
+	    console.log(timeList);
+	    /*]]>*/
+	</script>
+	
 </body>
 
 </html>

@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 public class TimeManageDTO {
 
-	private String study_subject;
-	private Integer study_time;
+	private Integer userId;
+	private String studySubject;
+	private Integer studyTime;
 	private Date date;
 }
