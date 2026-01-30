@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +21,14 @@ public class RoomEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "room_id")
 	private Integer roomId;
+
+	@ManyToOne
+	@JoinColumn(name = "room_user_id", nullable = false)
+	private UserEntity roomUserId;
+
+	@ManyToOne
+	@JoinColumn(name = "room_teacher_id", nullable = false)
+	private UserEntity roomTeacherId;
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
