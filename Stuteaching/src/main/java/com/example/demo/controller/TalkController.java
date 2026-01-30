@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.DTO.TalkDTO;
+import com.example.demo.service.RoomService;
 import com.example.demo.service.Impl.TalkServiceImpl;
 import com.example.demo.service.security.LoginUserDetails;
 
@@ -20,6 +19,9 @@ public class TalkController {
 
 	@Autowired
 	private TalkServiceImpl talkServiceImpl;
+
+	@Autowired
+	private RoomService roomService;
 
 	@GetMapping("/chat")
 	public String chatRoot() {
@@ -34,11 +36,15 @@ public class TalkController {
 
 		ModelAndView mav = new ModelAndView("CHAT/chat");
 
-		List<TalkDTO> messages = talkServiceImpl.getTalkList(classId);
-
-		mav.addObject("messages", messages);
+		mav.addObject("messages",
+				talkServiceImpl.getTalkList(classId));
 		mav.addObject("classId", classId);
 		mav.addObject("currentUser", user);
+		mav.addObject("chatPartner",
+				talkServiceImpl.getChatPartner(classId, user.getUser_id()));
+
+		mav.addObject("users",
+				roomService.getMyChatRooms(user.getUser_id()));
 
 		return mav;
 	}

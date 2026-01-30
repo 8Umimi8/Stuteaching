@@ -20,13 +20,13 @@
 <!-- サイドバー -->
 <div class="sidebar">
     <div th:each="u : ${users}"
-         th:if="${u.id != currentUser.userId}"
-         class="user"
-         th:classappend="${u.id == classId} ? ' active'"
-         th:data-initial="${u.name.substring(0,1)}"
-         th:text="${u.name}"
-         th:onclick="'location.href=\'/chat/' + ${u.id} + '\';'">
-    </div>
+	     th:if="${u.userId != currentUser.userId}"
+	     class="user"
+	     th:classappend="${u.roomId == classId} ? ' active'"
+	     th:data-initial="${u.name.substring(0,1)}"
+	     th:text="${u.name}"
+	     th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
+	</div>
 </div>
 
 <!-- チャットエリア -->
@@ -35,8 +35,8 @@
     <!-- ヘッダー -->
     <div class="chat-header" style="display:flex;">
         <div class="chat-header-title"
-             th:text="${currentUser.username}">
-        </div>
+		     th:text="${chatPartner.user_name}">
+		</div>
 
         <form th:action="@{'/chat/' + ${classId} + '/rating'}"
               method="post"
@@ -60,20 +60,25 @@
 
     <!-- メッセージ -->
     <div class="chat-messages" style="display:block;">
-        <div th:each="m : ${messages}"
-             class="message"
-             th:classappend="${m.userId == currentUser.userId} ? ' from-me' : ' from-them'">
-
-            <div class="sender"
-                 th:if="${m.senderId != currentUser.userId}"
-                 th:text="${m.senderName}">
-            </div>
-
-            <div class="content"
-                 th:text="${m.messageText}">
-            </div>
-        </div>
-    </div>
+	    <div th:each="m, iterStat : ${messages}" 
+	         class="message-wrapper"
+	         th:classappend="${m.senderId == currentUser.userId} ? ' me' : ' them'">
+	
+	        <!-- 名前 -->
+	        <div class="sender-name"
+	             th:if="${iterStat.index == 0 or m.senderId != messages[iterStat.index - 1].senderId}"
+	             th:text="${m.senderName}">
+	        </div>
+	
+	        <!-- メッセージバブル -->
+	        <div class="message"
+	             th:classappend="${m.senderId == currentUser.userId} ? ' from-me' : ' from-them'">
+	            <div class="content"
+	                 th:text="${m.messageText}">
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
     <!-- 入力欄 -->
     <form class="chat-input"
