@@ -98,8 +98,8 @@
         <div class="calendar-controls">
             <div id="selectedDateDisplay">日付が選択されていません</div>
             <a th:href="@{/study-time/add-display}" class="btn btn-add">勉強時間を追加</a>
-            <button id="editEventBtn" class="btn btn-edit">勉強時間を編集</button>
-            <button id="deleteEventBtn" class="btn btn-delete">勉強時間を削除</button>
+            <a id="editEventBtn" class="btn btn-edit">勉強時間を編集</a>
+            <a id="deleteEventBtn" class="btn btn-delete">勉強時間を削除</a>
         </div>
     </div>
 
@@ -128,20 +128,20 @@
 
         // 週データ集計
         function calculateWeeklyStats(events, selectedDate) {
-            const weekStart = getWeekStart(selectedDate);
-            const dailyTotals = Array(7).fill(0);
+    const weekStart = getWeekStart(selectedDate);
+    const dailyTotals = Array(7).fill(0);
 
-            events.forEach(ev => {
-                const d = new Date(ev.start);
-                const diff = Math.floor((d - weekStart) / (1000 * 60 * 60 * 24));
+    events.forEach(ev => {
+        const d = new Date(ev.start);
+        const diff = Math.floor((d - weekStart) / (1000 * 60 * 60 * 24));
 
-                if (diff >= 0 && diff < 7) {
-                    dailyTotals[diff] += ev.extendedProps.hours || 0;
-                }
-            });
-
-            return dailyTotals;
+        if (diff >= 0 && diff < 7) {
+            dailyTotals[diff] += ev.extendedProps.minutes;
         }
+    });
+
+    return dailyTotals;
+}
 
         // グラフ描画
         function renderWeekChart(dailyTotals) {
@@ -170,12 +170,24 @@
 
         // 合計・平均
         function renderWeekSummary(dailyTotals) {
-            const total = dailyTotals.reduce((a, b) => a + b, 0);
-            const avg = (total / 7).toFixed(1);
+    const totalMinutes = dailyTotals.reduce((a, b) => a + b, 0);
 
-            document.getElementById("weekSummary").innerHTML =
-                `合計: ${total} 時間　｜　平均: ${avg} 時間/日`;
-        }
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+
+    const totalText =
+        (h ? `${h}時間` : "") + (m ? `${m}分` : "");
+
+    const avgMinutes = Math.round(totalMinutes / 7);
+    const ah = Math.floor(avgMinutes / 60);
+    const am = avgMinutes % 60;
+
+    const avgText =
+        (ah ? `${ah}時間` : "") + (am ? `${am}分` : "");
+
+    document.getElementById("weekSummary").textContent =
+        `合計: ${totalText || "0分"} ｜ 平均: ${avgText || "0分"}/日`;
+}
 
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
@@ -190,9 +202,25 @@
 
                 // Controllerから渡されたJSONデータを使用 (th:inline="javascript" が必要)
                 events: timeList.map(t => ({
+				id: t.timeId,
   				 title: t.studySubject + " " + t.studyTime + "分",
-        		start: t.date
+        		start: t.date,
+        		extendedProps: {
+        timeId: t.timeId,           
+        hours: t.studyTime / 60,
+        minutes: Number(t.studyTime)
+    }
    				 })),
+   				 
+   				 
+
+eventClick: function(info) {
+    selectedEvent = info.event;
+    selectedDate = info.event.startStr;
+
+    document.getElementById("selectedDateDisplay").textContent =
+        "選択中: " + selectedDate;
+},
 
                 select: function (info) {
                     selectedDate = info.startStr;
@@ -207,18 +235,42 @@
             });
 
             calendar.render();
+            
+            document.getElementById('deleteEventBtn').addEventListener('click', () => {
+    if (!selectedEvent) {
+        alert("削除する勉強時間をクリックしてください！");
+        return;
+    }
+
+    const timeId = selectedEvent.extendedProps.timeId;
+
+    if (!confirm("この勉強時間を削除しますか？")) return;
+
+    fetch(`/study-time/delete?time_id=${timeId}`, {
+        method: "POST"
+    })
+    .then(() => {
+        selectedEvent.remove(); // カレンダーから即削除
+        selectedEvent = null;
+    });
+});
 
             // ボタン処理
             
 
             document.getElementById('editEventBtn').addEventListener('click', () => {
-                if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
-                window.location.href = "edit.html?date=" + selectedDate;
-            });
+    if (!selectedEvent) {
+        alert("編集する勉強時間を選択してください");
+        return;
+    }
+
+    window.location.href =
+        `/study-time/edit-display?timeId=${selectedEvent.extendedProps.timeId}`;
+});
 
             document.getElementById('deleteEventBtn').addEventListener('click', () => {
                 if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
-                window.location.href = "delete.html?date=" + selectedDate;
+                
             });
         });
     </script>

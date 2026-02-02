@@ -62,4 +62,16 @@ public class StudyScheduleServiceImpl implements StudyScheduleService {
 		return dtoList;
 	}
 
+	@Override
+	public TimeManageDTO findById(int timeId) {
+
+		TimeEntity entity = studyschedulerepository.findById(timeId)
+				.orElseThrow(() -> new RuntimeException("データが存在しません"));
+
+		TimeManageDTO dto = new TimeManageDTO();
+		UtilService.ConvertDTO(entity, dto);
+
+		return dto;
+	}
+
 }

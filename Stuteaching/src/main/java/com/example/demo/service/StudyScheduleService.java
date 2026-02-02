@@ -14,4 +14,6 @@ public interface StudyScheduleService {
 
 	public List<TimeManageDTO> DisplayTime(int user_id);
 
+	TimeManageDTO findById(int timeId);
+
 }
