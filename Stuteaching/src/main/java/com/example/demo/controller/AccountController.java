@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.DTO.UserDTO;
@@ -41,4 +43,26 @@ public class AccountController {
 
 		return "Account/profile";
 	}
+
+	@GetMapping("/profile/edit")
+	public String editProfile(Model model, Principal principal) {
+		UserDTO user = accountService.findByEmail(principal.getName());
+		model.addAttribute("user", user);
+
+		// 先生の場合、教科一覧と担当教科をセット
+		if (user.getRole() == 2) {
+			model.addAttribute("subjects", accountService.findAll());
+			TeacherEntity teacher = accountService.findByUserId(user.getUser_id());
+			model.addAttribute("teacher", teacher);
+		}
+
+		return "Account/edit";
+	}
+
+	@PostMapping("/profile/update")
+	public String updateProfile(@ModelAttribute("user") UserDTO user, Principal principal) {
+		accountService.updateUser(user, principal.getName());
+		return "redirect:/account/profile";
+	}
+
 }

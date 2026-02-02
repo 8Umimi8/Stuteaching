@@ -32,23 +32,26 @@
             <div class="profile-info">
 
                 <div class="profile-label">性別</div>
-                <div class="profile-value" th:text="${user.gender}"></div>
-
+<div class="profile-value"
+     th:text="${user.gender == 1 ? '男性' : (user.gender == 2 ? '女性' : 'どちらでもない')}">
+</div>
                 <div class="profile-label">生年月日</div>
-                <div class="profile-value" th:text="${user.birthday}"></div>
+<div class="profile-value"
+     th:text="${#dates.format(user.birthday, 'yyyy年MM月dd日')}"></div>
 
                 <div class="profile-label">メールアドレス</div>
                 <div class="profile-value" th:text="${user.email}"></div>
 <!-- ロール2（先生）のときだけ表示 -->
 <div th:if="${user.role == 2}">
-    <p>担当教科：
-        <span th:text="${teacher != null && teacher.subject != null ? teacher.subject.subject_name : '未設定'}"></span>
-    </p>
+   <div class="profile-label">担当教科</div>
+  <span th:text="${teacher != null && teacher.subjectId != null ? teacher.subjectId.subject_name : '未設定'}"></span>
+
+
 </div>
             </div>
         </div>
 
-        <button class="profile-button primary">プロフィールを編集</button>
+        <a th:href="@{/account/profile/edit}" class="profile-button primary">プロフィールを編集</a>
 
     </div>
 

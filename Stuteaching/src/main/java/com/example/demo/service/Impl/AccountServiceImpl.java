@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import com.example.demo.DTO.StudentUsersDTO;
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.entity.StudentEntity;
+import com.example.demo.entity.SubjectEntity;
 import com.example.demo.entity.TeacherEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.SubjectRepository;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AccountService;
@@ -31,6 +33,9 @@ public class AccountServiceImpl implements AccountService {
 	private StudentRepository studentRepository;
 
 	private final UserRepository userRepository;
+
+	@Autowired
+	private SubjectRepository subjectRepository;
 
 	@Autowired
 	public AccountServiceImpl(UserRepository userRepository) {
@@ -108,7 +113,31 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public TeacherEntity findByUserId(Integer userId) {
-		return teacherRepository.findByUser_id(userId);
+		// userId から UserEntity を取得して渡す
+		UserEntity userEntity = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+		return teacherRepository.findByUser(userEntity);
+	}
+
+	@Override
+	public void updateUser(UserDTO dto, String email) {
+		UserEntity user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new RuntimeException("ユーザーが見つからないよ");
+		}
+		user.setUser_name(dto.getUser_name());
+		user.setEmail(dto.getEmail());
+		user.setBirthday(dto.getBirthday());
+		user.setGender(dto.getGender());
+		userRepository.save(user);
+	}
+
+	@Override
+	public List<SubjectEntity> findAll() {
+		// 削除されていない教科のみ返す（is_deleted = 0）
+		return subjectRepository.findAll()
+				.stream()
+				.toList();
 	}
 
 }

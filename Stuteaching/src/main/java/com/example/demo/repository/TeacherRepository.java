@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.DTO.TeacherUsersDTO;
 import com.example.demo.entity.TeacherEntity;
+import com.example.demo.entity.UserEntity;
 
 @Repository
 public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer> {
@@ -28,7 +29,7 @@ public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer>
 			""", nativeQuery = true)
 	List<TeacherUsersDTO> findAllTeachers();
 
-	@Query("SELECT t FROM TeacherEntity t WHERE t.user_id = :userId")
-	TeacherEntity findByUser_id(@Param("userId") Integer userId);
+	@Query("SELECT t FROM TeacherEntity t WHERE t.user_id = :user")
+	TeacherEntity findByUser(@Param("user") UserEntity user);
 
 }
