@@ -91,10 +91,10 @@
       <span th:if="${user.review == null or user.review == 0}">未評価</span>
     </div>
     
-    <a th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}"
+    <button th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}"
 	   class="btn primary">
 	    メッセージ
-	</a>
+	</button>
 
   </div>
 </div>
