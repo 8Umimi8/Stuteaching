@@ -30,6 +30,15 @@
         box-shadow: 0 0 0 2px #fff;
         /* 白縁で視認性UP */
     }
+    .btn.primary {
+    display: inline-flex;        /* テキストを自然に中央寄せ */
+    align-items: center;         /* 垂直方向の中央揃え */
+    justify-content: center;     /* 水平方向の中央揃え */
+    padding: 8px 16px;           /* 文字が潰れない余白 */
+    line-height: 1;              /* 行の高さを安定させる */
+    text-decoration: none;       /* aタグの下線を消す */
+    border-radius: 6px;          /* ボタンらしい角丸 */
+}
 </style>
 
 <body>
@@ -91,11 +100,10 @@
       <span th:if="${user.review == null or user.review == 0}">未評価</span>
     </div>
     
-    <button th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}"
-	   class="btn primary">
-	    メッセージ
-	</button>
-
+    <a th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}"
+   class="btn primary">
+    メッセージ
+</a>
   </div>
 </div>
 
