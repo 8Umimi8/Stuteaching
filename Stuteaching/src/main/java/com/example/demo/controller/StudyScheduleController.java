@@ -42,7 +42,7 @@ public class StudyScheduleController {
 	}
 
 	// ========================
-	// 勉強時間編集 表示（一覧画面）
+	// 勉強時間追加 表示（一覧画面）
 	// ========================
 	@GetMapping("/add-display")
 	public String addDisplay(Model model) {
@@ -50,6 +50,21 @@ public class StudyScheduleController {
 		model.addAttribute("TimeManageDTO", new TimeManageDTO());
 
 		return "Schedule/study-schedule-insert"; // time.html
+	}
+
+	// ========================
+	// 勉強時間編集 表示（一覧画面）
+	// ========================
+	@GetMapping("/edit-display")
+	public String editDisplay(
+			@RequestParam int timeId,
+			Model model) {
+
+		TimeManageDTO dto = service.findById(timeId);
+
+		model.addAttribute("TimeManageDTO", dto);
+
+		return "Schedule/study-schedule-edit";
 	}
 
 	// ========================
@@ -81,11 +96,12 @@ public class StudyScheduleController {
 	// ========================
 	@PostMapping("/update")
 	public String update(
-			@RequestParam int time_id,
+			@RequestParam("time_id") int timeId,
 			TimeManageDTO dto) {
 
-		service.UpdateTime(time_id, dto);
+		System.out.println("★★ update timeId = " + timeId);
 
+		service.UpdateTime(timeId, dto);
 		return "redirect:/study-time/display";
 	}
 
@@ -93,10 +109,9 @@ public class StudyScheduleController {
 	// 勉強時間 削除
 	// ========================
 	@PostMapping("/delete")
-	public String delete(@RequestParam int time_id) {
+	public void delete(@RequestParam int time_id) {
 
 		service.DeleteTime(time_id);
 
-		return "redirect:/study-time/display";
 	}
 }
