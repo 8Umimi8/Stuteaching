@@ -19,6 +19,12 @@
     box-shadow: var(--shadow);
     animation: fadeIn 0.3s ease;
 }
+.profile-section-title {
+  text-align: center;
+}
+h1 {
+  text-align: center;
+}
 
 /* アイコン（チャットの user::before と統一） */
 .profile-avatar {

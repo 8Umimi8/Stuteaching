@@ -19,13 +19,13 @@
 <!-- サイドバー -->
 <div class="sidebar">
     <div th:each="u : ${users}"
-	     th:if="${u.userId != currentUser.userId}"
-	     class="user"
-	     th:classappend="${u.roomId == classId} ? ' active'"
-	     th:data-initial="${u.name.substring(0,1)}"
-	     th:text="${u.name}"
-	     th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
-	</div>
+         th:if="${u.userId != currentUser.userId}"
+         class="user"
+         th:classappend="${u.roomId == classId} ? ' active'"
+         th:data-initial="${u.name.substring(0,1)}"
+         th:text="${u.name}"
+         th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
+    </div>
 </div>
 
 <!-- チャットエリア -->
@@ -34,8 +34,8 @@
     <!-- ヘッダー -->
     <div class="chat-header" style="display:flex;" th:if="${chatPartner != null}">
         <div class="chat-header-title"
-		     th:text="${chatPartner.user_name}">
-		</div>
+             th:text="${chatPartner.user_name}">
+        </div>
 
         <form th:action="@{'/chat/' + ${classId} + '/rating'}"
               method="post"
@@ -57,28 +57,10 @@
         </form>
     </div>
 
-    <!-- メッセージ -->
-    <div class="chat-messages" th:if="${chatPartner != null}" style="display:block;">
-	    <div th:each="m, iterStat : ${messages}" 
-	         class="message-wrapper"
-	         th:classappend="${m.senderId == currentUser.userId} ? ' me' : ' them'">
-	
-	        <!-- 名前 -->
-	        <div class="sender-name"
-	             th:if="${iterStat.index == 0 or m.senderId != messages[iterStat.index - 1].senderId}"
-	             th:text="${m.senderName}">
-	        </div>
-	
-	        <!-- メッセージバブル -->
-	        <div class="message"
-	             th:classappend="${m.senderId == currentUser.userId} ? ' from-me' : ' from-them'">
-	            <div class="content"
-	                 th:text="${m.messageText}">
-	            </div>
-	        </div>
-	    </div>
-	</div>
-
+    <!-- メッセージ（初期は Thymeleaf で描画するが、JS が上書きする） -->
+    <!-- メッセージ（JS が描画する） -->
+<div class="chat-messages" th:if="${chatPartner != null}" style="display:block;">
+</div>
     <!-- 入力欄 -->
     <form class="chat-input" th:if="${chatPartner != null}"
           th:action="@{'/chat/' + ${classId} + '/send'}"
@@ -110,31 +92,94 @@
 
 </div>
 
+<!-- ========================= -->
+<!--        JavaScript         -->
+<!-- ========================= -->
+
+<script th:inline="javascript">
+    const currentUserId = /*[[${currentUser.userId}]]*/ 0;
+    const classId = /*[[${classId}]]*/ 0;
+</script>
 <script>
-    function setRating(score) {
-        document.getElementById("ratingScore").value = score;
-        document.querySelectorAll(".rating-star")
-            .forEach((s, i) => s.classList.toggle("star-filled", i < score));
-    }
+/* ------------------------------
+   メッセージ差分更新（点滅ゼロ）
+------------------------------ */
+let lastMessageId = null;
 
-    // 自動スクロール
-    const messages = document.querySelector('.chat-messages');
-    if (messages) {
-        messages.scrollTop = messages.scrollHeight;
-    }
-document.addEventListener("DOMContentLoaded", () => {
-      const hamburger = document.querySelector(".hamburger");
-      const navMenu = document.querySelector(".nav-menu");
+async function loadMessages(classId) {
+    const res = await fetch(`/chat/${classId}/messages`);
+    const messages = await res.json();
 
-      if (hamburger && navMenu) {
-        hamburger.addEventListener("click", () => {
-          navMenu.classList.toggle("active");
-          hamburger.classList.toggle("active");
-        });
-      }
+    const area = document.querySelector(".chat-messages");
+
+    messages.forEach(m => {
+        // すでに表示済みならスキップ
+        if (lastMessageId !== null && m.classId <= lastMessageId) {
+    return;
+}
+
+        const isMe = Number(m.senderId) === Number(currentUserId);
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "message-wrapper " + (isMe ? "me" : "them");
+        wrapper.dataset.senderId = m.senderId;
+
+        // 直前のメッセージと senderId が違う場合だけ名前を表示
+        const last = area.lastElementChild;
+        const showName = !last || last.dataset.senderId != m.senderId;
+
+        wrapper.innerHTML = `
+            ${showName ? `<div class="sender-name">${m.senderName}</div>` : ""}
+            <div class="message ${isMe ? "from-me" : "from-them"}">
+                <div class="content">${m.messageText}</div>
+            </div>
+        `;
+
+        area.appendChild(wrapper);
     });
+
+    // 最後のメッセージIDを更新
+    if (messages.length > 0) {
+       lastMessageId = messages[messages.length - 1].classId;
+        }
+
+    area.scrollTop = area.scrollHeight;
+}
+
+/* 初回ロード */
+document.addEventListener("DOMContentLoaded", () => {
+    if (classId > 0) {
+        loadMessages(classId);
+    }
+});
+
+/* 5秒ごとに差分更新 */
+setInterval(() => {
+    if (classId > 0) {
+        loadMessages(classId);
+    }
+}, 1000);
+
+/* 星評価 */
+function setRating(score) {
+    document.getElementById("ratingScore").value = score;
+    document.querySelectorAll(".rating-star")
+        .forEach((s, i) => s.classList.toggle("star-filled", i < score));
+}
+
+/* ハンバーガーメニュー */
+document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.querySelector(".hamburger");
+    const navMenu = document.querySelector(".nav-menu");
+
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+            hamburger.classList.toggle("active");
+        });
+    }
+});
 </script>
 
 </body>
-
 </html>

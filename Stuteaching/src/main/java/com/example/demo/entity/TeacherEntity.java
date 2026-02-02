@@ -28,8 +28,9 @@ public class TeacherEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private UserEntity user_id;
 
-	@Column(name = "subject_id")
-	private Integer subjectId;
+	@ManyToOne
+	@JoinColumn(name = "subject_id")
+	private SubjectEntity subjectId;
 
 	@Column(name = "review_id")
 	private Integer reviewId;

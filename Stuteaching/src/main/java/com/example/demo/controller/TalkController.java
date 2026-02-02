@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.DTO.TalkDTO;
@@ -79,4 +80,9 @@ public class TalkController {
 		return "redirect:/chat/" + roomId;
 	}
 
+	@GetMapping("/chat/{classId}/messages")
+	@ResponseBody
+	public List<TalkDTO> getMessages(@PathVariable Integer classId) {
+		return talkServiceImpl.getTalkList(classId);
+	}
 }

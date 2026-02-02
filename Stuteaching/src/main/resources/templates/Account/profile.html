@@ -1,48 +1,71 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>プロフィール</title>
+
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/hed_style.css}">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+
 <div class="profile-container">
-    <!doctype html>
-    <html lang="ja">
 
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>プロフィール</title>
-        <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
-        <link rel="stylesheet" th:href="@{../css/profile.css}">
-        <link rel="stylesheet" th:href="@{../css/main_style.css}">
-        <link rel="stylesheet" th:href="@{../css/hed_style.css}">
-    </head>
+    <div class="profile-card">
 
-    <body>
-        <div th:replace="header :: header"></div>
+        <div class="profile-avatar"></div>
 
-        <div class="profile-card">
-
-            <div class="profile-avatar">R</div>
-
-            <div class="profile-name" th:text="${user.name}">来栖康生</div>
+<div class="profile-section-title">表示名</div>
+        <h1 th:text="${user.user_name}"></h1>
 
 
-            <div class="profile-section">
-                <div class="profile-section-title">基本情報</div>
+        <div class="profile-section">
+            <div class="profile-section-title">基本情報</div>
 
-                <div class="profile-info">
+            <div class="profile-info">
 
-                    <div class="profile-label">性別</div>
-                    <div class="profile-value" th:text="${user.gender}">男</div>
+                <div class="profile-label">性別</div>
+                <div class="profile-value" th:text="${user.gender}"></div>
 
-                    <div class="profile-label">生年月日</div>
-                    <div class="profile-value" th:text="${user.birthday}">2005年11月2日</div>
+                <div class="profile-label">生年月日</div>
+                <div class="profile-value" th:text="${user.birthday}"></div>
 
-                    <div class="profile-label">メールアドレス</div>
-                    <div class="profile-value" th:text="${user.email}">sutatin@example.com</div>
-
-                    <div class="profile-label" style="margin-top: 16px;">担当教科</div>
-                    <div class="profile-value" th:text="${user.subject}">数学</div>
-
-                </div>
-            </div>
-
-            <button class="profile-button primary">プロフィールを編集</button>
-
-        </div>
+                <div class="profile-label">メールアドレス</div>
+                <div class="profile-value" th:text="${user.email}"></div>
+<!-- ロール2（先生）のときだけ表示 -->
+<div th:if="${user.role == 2}">
+    <p>担当教科：
+        <span th:text="${teacher != null && teacher.subject != null ? teacher.subject.subject_name : '未設定'}"></span>
+    </p>
 </div>
+            </div>
+        </div>
+
+        <button class="profile-button primary">プロフィールを編集</button>
+
+    </div>
+
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.querySelector(".hamburger");
+    const navMenu = document.querySelector(".nav-menu");
+
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+            hamburger.classList.toggle("active");
+        });
+    }
+});
+</script>
+
+</body>
+</html>
