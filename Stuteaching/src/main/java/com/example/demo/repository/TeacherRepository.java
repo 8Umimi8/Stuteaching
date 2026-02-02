@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.DTO.TeacherUsersDTO;
@@ -26,5 +27,8 @@ public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer>
 			    WHERE u.role = 2
 			""", nativeQuery = true)
 	List<TeacherUsersDTO> findAllTeachers();
+
+	@Query("SELECT t FROM TeacherEntity t WHERE t.user_id = :userId")
+	TeacherEntity findByUser_id(@Param("userId") Integer userId);
 
 }

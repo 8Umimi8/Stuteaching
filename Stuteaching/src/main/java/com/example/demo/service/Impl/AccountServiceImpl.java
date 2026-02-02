@@ -4,14 +4,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.StudentUsersDTO;
+import com.example.demo.DTO.UserDTO;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.entity.TeacherEntity;
+import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.TeacherRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AccountService;
+import com.example.demo.service.security.LoginUserDetails;
 import com.example.demo.util.UtilService;
 import com.example.demo.web.dto.TeacherUsersResponseDTO;
 
@@ -24,48 +30,49 @@ public class AccountServiceImpl implements AccountService {
 	@Autowired
 	private StudentRepository studentRepository;
 
-	//	@Override
-	//	public void UpdateTeacher(int user_id, TeacherUsersDTO user) {
-	//		Optional<TeacherEntity> optional = teacherRepository.findById(user_id);
-	//		TeacherEntity entity = optional.get();
-	//
-	//		entity.setUser_name(user.getUser_name());
-	//		entity.setBirthday(user.getBirthday());
-	//		entity.setGender(user.getGender());
-	//		entity.setSubject_name(user.getSubject_name());
-	//		entity.setReview(user.getReview());
-	//
-	//		teacherRepository.save(entity);
-	//
-	//	}
+	private final UserRepository userRepository;
+
+	@Autowired
+	public AccountServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	@Override
+	public UserDTO getCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		LoginUserDetails userDetails = (LoginUserDetails) auth.getPrincipal();
+		Integer id = userDetails.getUserId();
+
+		UserEntity entity = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		return convertToDTO(entity);
+	}
+
+	private UserDTO convertToDTO(UserEntity entity) {
+		UserDTO dto = new UserDTO();
+		dto.setUser_id(entity.getUser_id()); // ← user_id に合わせる
+		dto.setUser_name(entity.getUser_name()); // ← user_name に合わせる
+		dto.setGender(entity.getGender());
+		dto.setBirthday(entity.getBirthday());
+		dto.setEmail(entity.getEmail());
+		// subject は UserEntity に存在しないので削除 or 別テーブルから取得
+		return dto;
+	}
 
 	@Override
 	public TeacherUsersResponseDTO DisplayTeacher(int user_id) {
 		Optional<TeacherEntity> entity = teacherRepository.findById(user_id);
 		TeacherUsersResponseDTO dto = new TeacherUsersResponseDTO();
-
 		UtilService.ConvertDTO(entity, dto);
-
 		return dto;
 	}
-
-	//	@Override
-	//	public void UpdateStudent(int user_id, StudentUsersDTO user) {
-	//		Optional<StudentEntity> optional = studentRepository.findById(user_id);
-	//		StudentEntity entity = optional.get();
-	//
-	//		entity.setUser_name(user.getUser_name());
-	//
-	//		studentRepository.save(entity);
-	//
-	//	}
 
 	@Override
 	public StudentUsersDTO DisplayStudent(int user_id) {
 		Optional<StudentEntity> entity = studentRepository.findById(user_id);
 		StudentUsersDTO dto = new StudentUsersDTO();
 		UtilService.ConvertDTO(entity, dto);
-
 		return dto;
 	}
 
@@ -81,4 +88,27 @@ public class AccountServiceImpl implements AccountService {
 						p.getSubjectName()))
 				.toList();
 	}
+
+	@Override
+	public UserDTO findByEmail(String email) {
+		UserEntity entity = userRepository.findByEmail(email);
+		if (entity == null) {
+			throw new RuntimeException("User not found with email: " + email);
+		}
+
+		UserDTO dto = new UserDTO();
+		dto.setUser_id(entity.getUser_id());
+		dto.setUser_name(entity.getUser_name());
+		dto.setEmail(entity.getEmail());
+		dto.setBirthday(entity.getBirthday());
+		dto.setGender(entity.getGender());
+		dto.setRole(entity.getRole());
+		return dto;
+	}
+
+	@Override
+	public TeacherEntity findByUserId(Integer userId) {
+		return teacherRepository.findByUser_id(userId);
+	}
+
 }
