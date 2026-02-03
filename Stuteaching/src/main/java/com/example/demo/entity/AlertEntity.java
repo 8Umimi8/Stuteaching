@@ -1,31 +1,40 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "alert")
-@Getter
-@Setter
-
 public class AlertEntity {
-	@Column(name = "user_id")
-	private Integer user_id;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "alert_id")
-	private Integer alert_id;
+	private Integer alertId;
 
-	@Column(name = "user_name")
-	private String user_name;
+	@Column(name = "user_id")
+	private Integer userId;
 
-	@Column(name = "title")
 	private String title;
+
+	@Column(name = "is_read", nullable = false)
+	private Boolean isRead = false;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+
 }

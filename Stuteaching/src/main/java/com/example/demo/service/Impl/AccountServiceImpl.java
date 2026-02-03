@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DTO.StudentUsersDTO;
 import com.example.demo.DTO.UserDTO;
@@ -119,17 +120,38 @@ public class AccountServiceImpl implements AccountService {
 		return teacherRepository.findByUser(userEntity);
 	}
 
+	@Transactional
 	@Override
 	public void updateUser(UserDTO dto, String email) {
+		// --- 1. ユーザーを取得 ---
 		UserEntity user = userRepository.findByEmail(email);
 		if (user == null) {
 			throw new RuntimeException("ユーザーが見つからないよ");
 		}
+
+		// --- 2. 基本情報を更新 ---
 		user.setUser_name(dto.getUser_name());
 		user.setEmail(dto.getEmail());
 		user.setBirthday(dto.getBirthday());
 		user.setGender(dto.getGender());
 		userRepository.save(user);
+
+		// --- 3. 先生（role=2）の場合のみ、担当教科を更新 ---
+		if (user.getRole() == 2 && dto.getSubject() != null) {
+			// 先生エンティティを取得
+			TeacherEntity teacher = teacherRepository.findByUser(user);
+			if (teacher == null) {
+				throw new RuntimeException("先生情報が見つかりません");
+			}
+
+			// 選択された教科を取得
+			SubjectEntity subjectEntity = subjectRepository.findById(dto.getSubject())
+					.orElseThrow(() -> new RuntimeException("存在しない教科IDです: " + dto.getSubject()));
+
+			// 教科を更新
+			teacher.setSubjectId(subjectEntity);
+			teacherRepository.save(teacher);
+		}
 	}
 
 	@Override

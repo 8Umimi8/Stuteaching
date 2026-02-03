@@ -44,7 +44,7 @@
                     <div th:if="${user.role == 2}">
                         <div class="profile-label">担当教科</div>
                         <span
-                            th:text="${teacher != null && teacher.subjectId != null ? teacher.subjectId.subject_name : '未設定'}"></span>
+    th:text="${teacher != null and teacher.subjectId != null ? teacher.subjectId.subjectName : '未設定'}"></span>
 
 
                     </div>

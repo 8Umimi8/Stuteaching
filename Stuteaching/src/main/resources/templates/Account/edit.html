@@ -53,19 +53,18 @@
                     <input type="email" th:field="*{email}" class="profile-input" required />
                 </div>
 
-                <!-- ロール2（先生）なら担当教科を表示 -->
                 <div th:if="${user.role == 2}" class="profile-section">
-                    <div class="profile-label">担当教科</div>
-                    <select name="subjectId" class="profile-input">
-                        <option value="">選択してください</option>
-                        <!-- 硬いコードで教科を指定 -->
-                        <option value="1">数学</option>
-                        <option value="2">理科</option>
-                        <option value="3">社会</option>
-                        <option value="4">国語</option>
-                        <option value="5">英語</option>
-                    </select>
-                </div>
+  <div class="profile-label">担当教科</div>
+  <select name="subject" class="profile-input">
+    <option value="">選択してください</option>
+    <option value="1" th:selected="${teacher.subjectId?.subjectId == 1}">国語</option>
+    <option value="2" th:selected="${teacher.subjectId?.subjectId == 2}">数学</option>
+    <option value="3" th:selected="${teacher.subjectId?.subjectId == 3}">英語</option>
+    <option value="4" th:selected="${teacher.subjectId?.subjectId == 4}">理科</option>
+    <option value="5" th:selected="${teacher.subjectId?.subjectId == 5}">社会</option>
+  </select>
+</div>
+
 
                 <!-- 送信ボタン -->
                 <div class="profile-actions">

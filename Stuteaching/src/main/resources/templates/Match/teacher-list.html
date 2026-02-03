@@ -47,10 +47,14 @@
         border-radius: 6px;
         /* ボタンらしい角丸 */
     }
+    .filter-panel {
+    display: none; /* 初期は非表示 */
+}
+
 </style>
 
 <body>
-    <div th:replace="fragments/header :: header"></div>
+   <div th:replace="~{fragments/header :: header}"></div>
     <main>
         <section aria-labelledby="match-title">
 
@@ -124,44 +128,7 @@
 <script>
 
 
-    /* 通知 */
-    const notifyBtn = document.getElementById("notifyBtn");
-    const notificationPanel = document.getElementById("notificationPanel");
-
-    if (notifyBtn && notificationPanel) {
-        notifyBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            const isOpen = notificationPanel.style.display === "block";
-            notificationPanel.style.display = isOpen ? "none" : "block";
-
-            // パネルを開いたら既読にする
-            if (!isOpen) {
-                notifyBtn.classList.remove("has-notification");
-            }
-        });
-    }
-
-    // 初期状態：通知が来ているように見せる
-    notifyBtn.classList.add("has-notification");
-
-    // 通知リスト
-    const notificationList = document.getElementById("notificationList");
-
-    // 通知追加関数
-    function addNotification(text) {
-        const li = document.createElement("li");
-        li.textContent = text;
-        notificationList.appendChild(li);
-
-        // 未読バッジ
-        notifyBtn.classList.add("has-notification");
-    }
-
-    // サンプル通知
-    addNotification("ようこそスタチンへ");
-
-    /* フィルター */
+  document.addEventListener("DOMContentLoaded", () => {
     const filterBtn = document.getElementById("filterBtn");
     const filterPanel = document.getElementById("filterPanel");
 
@@ -180,27 +147,17 @@
         const cards = document.querySelectorAll(".card");
 
         cards.forEach(card => {
-            // 教科（複数対応）
             const subjectText = card.querySelector(".meta span").textContent;
             const userSubjects = subjectText
                 .replace("教科: ", "")
                 .split(",")
                 .map(s => s.trim());
 
-            // ★の数
             const userRating = card.querySelectorAll(".star-filled").length;
 
             let show = true;
-
-            // 教科フィルター：1つでも一致すればOK
-            if (subject && !userSubjects.includes(subject)) {
-                show = false;
-            }
-
-            // 評価フィルター
-            if (rating && userRating < Number(rating)) {
-                show = false;
-            }
+            if (subject && !userSubjects.includes(subject)) show = false;
+            if (rating && userRating < Number(rating)) show = false;
 
             card.style.display = show ? "block" : "none";
         });
@@ -219,6 +176,7 @@
 
         filterPanel.style.display = "none";
     });
+});
 
 </script>
 
