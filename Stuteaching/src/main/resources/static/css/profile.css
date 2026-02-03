@@ -25,7 +25,9 @@
 h1 {
   text-align: center;
 }
-
+a {
+  text-align: center;
+}
 /* アイコン（チャットの user::before と統一） */
 .profile-avatar {
     width: 80px;
@@ -121,11 +123,14 @@ h1 {
     transition: all 0.25s ease;
     box-shadow: var(--shadow);
 }
-
+.container {
+  text-align: center;
+}
 /* メインボタン（保存・更新など） */
 .profile-button.primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
+    text-align: center;
 }
 
 .profile-button.primary:hover {

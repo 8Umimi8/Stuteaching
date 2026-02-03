@@ -24,4 +24,5 @@ public class UserDTO {
 	private Integer gender;
 	@NotNull(message = "必須です")
 	private Integer role;
+	private Integer subject;
 }

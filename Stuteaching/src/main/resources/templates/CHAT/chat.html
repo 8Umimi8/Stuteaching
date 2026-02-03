@@ -8,178 +8,146 @@
 
     <link rel="stylesheet" th:href="@{/css/chat.css}">
     <link rel="stylesheet" th:href="@{/css/hed_style.css}">
-    <link rel="stylesheet"
-          th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
 </head>
 
 <body>
 
-<div th:replace="fragments/header :: header"></div>
+    <div th:replace="fragments/header :: header"></div>
 
-<!-- サイドバー -->
-<div class="sidebar">
-    <div th:each="u : ${users}"
-         th:if="${u.userId != currentUser.userId}"
-         class="user"
-         th:classappend="${u.roomId == classId} ? ' active'"
-         th:data-initial="${u.name.substring(0,1)}"
-         th:text="${u.name}"
-         th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
+    <!-- サイドバー -->
+    <div class="sidebar">
+        <div th:each="u : ${users}" th:if="${u.userId != currentUser.userId}" class="user"
+            th:classappend="${u.roomId == classId} ? ' active'" th:data-initial="${u.name.substring(0,1)}"
+            th:text="${u.name}" th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
+        </div>
     </div>
-</div>
 
-<!-- チャットエリア -->
-<div class="chat-area">
+    <!-- チャットエリア -->
+    <div class="chat-area">
 
-    <!-- ヘッダー -->
-    <div class="chat-header" style="display:flex;" th:if="${chatPartner != null}">
-        <div class="chat-header-title"
-             th:text="${chatPartner.user_name}">
+        <!-- ヘッダー -->
+        <div class="chat-header" style="display:flex;" th:if="${chatPartner != null}">
+            <div class="chat-header-title" th:text="${chatPartner.user_name}">
+            </div>
+
+            <form th:action="@{'/chat/' + ${classId} + '/rating'}" method="post" class="chat-rating-area">
+
+                <input type="hidden" name="score" id="ratingScore">
+
+                <span class="stars">
+                    <span class="rating-star" th:each="i : ${#numbers.sequence(1,5)}"
+                        th:onclick="'setRating(' + ${i} + ')'">
+                        ★
+                    </span>
+                </span>
+
+                <button class="rating-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
         </div>
 
-        <form th:action="@{'/chat/' + ${classId} + '/rating'}"
-              method="post"
-              class="chat-rating-area">
+        <!-- メッセージ（初期は Thymeleaf で描画するが、JS が上書きする） -->
+        <!-- メッセージ（JS が描画する） -->
+        <div class="chat-messages" th:if="${chatPartner != null}" style="display:block;">
+        </div>
+        <!-- 入力欄 -->
+        <form class="chat-input" th:if="${chatPartner != null}" th:action="@{'/chat/' + ${classId} + '/send'}"
+            method="post" enctype="multipart/form-data" style="display:flex;">
 
-            <input type="hidden" name="score" id="ratingScore">
+            <button type="button" class="attach-btn" onclick="document.getElementById('imageInput').click()">
+                <i class="fas fa-image"></i>
+            </button>
 
-            <span class="stars">
-                <span class="rating-star"
-                      th:each="i : ${#numbers.sequence(1,5)}"
-                      th:onclick="'setRating(' + ${i} + ')'">
-                    ★
-                </span>
-            </span>
+            <input type="file" id="imageInput" name="image" accept="image/*" style="display:none;">
 
-            <button class="rating-btn">
+            <input type="text" name="messageText" placeholder="メッセージを入力..." required>
+
+            <button type="submit">
                 <i class="fas fa-paper-plane"></i>
+                送信
             </button>
         </form>
+
     </div>
 
-    <!-- メッセージ（初期は Thymeleaf で描画するが、JS が上書きする） -->
-    <!-- メッセージ（JS が描画する） -->
-<div class="chat-messages" th:if="${chatPartner != null}" style="display:block;">
-</div>
-    <!-- 入力欄 -->
-    <form class="chat-input" th:if="${chatPartner != null}"
-          th:action="@{'/chat/' + ${classId} + '/send'}"
-          method="post"
-          style="display:flex;">
+    <!-- ========================= -->
+    <!--        JavaScript         -->
+    <!-- ========================= -->
 
-        <button type="button"
-                class="attach-btn"
-                onclick="document.getElementById('imageInput').click()">
-            <i class="fas fa-image"></i>
-        </button>
+    <script th:inline="javascript">
+        const currentUserId = /*[[${currentUser.userId}]]*/ 0;
+        const classId = /*[[${classId}]]*/ 0;
+    </script>
+    <script>
+        /* ------------------------------
+           メッセージ差分更新（点滅ゼロ）
+        ------------------------------ */
+        let lastMessageId = null;
 
-        <input type="file"
-               id="imageInput"
-               name="image"
-               accept="image/*"
-               style="display:none;">
+        async function loadMessages(classId) {
+            const res = await fetch(`/chat/${classId}/messages`);
+            const messages = await res.json();
 
-        <input type="text"
-               name="messageText"
-               placeholder="メッセージを入力..."
-               required>
+            const area = document.querySelector(".chat-messages");
 
-        <button type="submit">
-            <i class="fas fa-paper-plane"></i>
-            送信
-        </button>
-    </form>
+            messages.forEach(m => {
+                // すでに表示済みならスキップ
+                if (lastMessageId !== null && m.classId <= lastMessageId) {
+                    return;
+                }
 
-</div>
+                const isMe = Number(m.senderId) === Number(currentUserId);
 
-<!-- ========================= -->
-<!--        JavaScript         -->
-<!-- ========================= -->
+                const wrapper = document.createElement("div");
+                wrapper.className = "message-wrapper " + (isMe ? "me" : "them");
+                wrapper.dataset.senderId = m.senderId;
 
-<script th:inline="javascript">
-    const currentUserId = /*[[${currentUser.userId}]]*/ 0;
-    const classId = /*[[${classId}]]*/ 0;
-</script>
-<script>
-/* ------------------------------
-   メッセージ差分更新（点滅ゼロ）
------------------------------- */
-let lastMessageId = null;
+                // 直前のメッセージと senderId が違う場合だけ名前を表示
+                const last = area.lastElementChild;
+                const showName = !last || last.dataset.senderId != m.senderId;
 
-async function loadMessages(classId) {
-    const res = await fetch(`/chat/${classId}/messages`);
-    const messages = await res.json();
-
-    const area = document.querySelector(".chat-messages");
-
-    messages.forEach(m => {
-        // すでに表示済みならスキップ
-        if (lastMessageId !== null && m.classId <= lastMessageId) {
-    return;
-}
-
-        const isMe = Number(m.senderId) === Number(currentUserId);
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "message-wrapper " + (isMe ? "me" : "them");
-        wrapper.dataset.senderId = m.senderId;
-
-        // 直前のメッセージと senderId が違う場合だけ名前を表示
-        const last = area.lastElementChild;
-        const showName = !last || last.dataset.senderId != m.senderId;
-
-        wrapper.innerHTML = `
+                wrapper.innerHTML = `
             ${showName ? `<div class="sender-name">${m.senderName}</div>` : ""}
             <div class="message ${isMe ? "from-me" : "from-them"}">
                 <div class="content">${m.messageText}</div>
             </div>
         `;
 
-        area.appendChild(wrapper);
-    });
+                area.appendChild(wrapper);
+            });
 
-    // 最後のメッセージIDを更新
-    if (messages.length > 0) {
-       lastMessageId = messages[messages.length - 1].classId;
+            // 最後のメッセージIDを更新
+            if (messages.length > 0) {
+                lastMessageId = messages[messages.length - 1].classId;
+            }
+
+            area.scrollTop = area.scrollHeight;
         }
 
-    area.scrollTop = area.scrollHeight;
-}
-
-/* 初回ロード */
-document.addEventListener("DOMContentLoaded", () => {
-    if (classId > 0) {
-        loadMessages(classId);
-    }
-});
-
-/* 5秒ごとに差分更新 */
-setInterval(() => {
-    if (classId > 0) {
-        loadMessages(classId);
-    }
-}, 1000);
-
-/* 星評価 */
-function setRating(score) {
-    document.getElementById("ratingScore").value = score;
-    document.querySelectorAll(".rating-star")
-        .forEach((s, i) => s.classList.toggle("star-filled", i < score));
-}
-
-/* ハンバーガーメニュー */
-document.addEventListener("DOMContentLoaded", () => {
-    const hamburger = document.querySelector(".hamburger");
-    const navMenu = document.querySelector(".nav-menu");
-
-    if (hamburger && navMenu) {
-        hamburger.addEventListener("click", () => {
-            navMenu.classList.toggle("active");
-            hamburger.classList.toggle("active");
+        /* 初回ロード */
+        document.addEventListener("DOMContentLoaded", () => {
+            if (classId > 0) {
+                loadMessages(classId);
+            }
         });
-    }
-});
-</script>
+
+        /* 5秒ごとに差分更新 */
+        setInterval(() => {
+            if (classId > 0) {
+                loadMessages(classId);
+            }
+        }, 1000);
+
+        /* 星評価 */
+        function setRating(score) {
+            document.getElementById("ratingScore").value = score;
+            document.querySelectorAll(".rating-star")
+                .forEach((s, i) => s.classList.toggle("star-filled", i < score));
+        }
+    </script>
 
 </body>
+
 </html>

@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.entity.StudentEntity;
+import com.example.demo.entity.SubjectEntity;
 import com.example.demo.entity.TeacherEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.SubjectRepository;
 import com.example.demo.repository.TeacherRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
@@ -21,6 +23,8 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private LoginRepository loginrepository;
 
+	@Autowired
+	private SubjectRepository subjectRepository;
 	@Autowired
 	private UserRepository userrepository;
 
@@ -55,16 +59,23 @@ public class UserServiceImpl implements UserService {
 
 		if (user.getRole() == 1) {
 			StudentEntity student = new StudentEntity();
-			student.setUser_id(userEntity); // ← UserEntity を渡す
+			student.setUser_id(userEntity);
 			studentRepository.save(student);
 		}
 
-		if (user.getRole() == 2) {
+		// 先生
+		else if (user.getRole() == 2) {
 			TeacherEntity teacher = new TeacherEntity();
-			teacher.setUser_id(userEntity); // ← UserEntity を渡す
+			teacher.setUser_id(userEntity);
+
+			// ✅ 実際に存在する Subject を取得してセット
+			if (user.getSubject() != null) {
+				SubjectEntity subjectEntity = subjectRepository.findById(user.getSubject())
+						.orElseThrow(() -> new RuntimeException("存在しない教科IDです: " + user.getSubject()));
+				teacher.setSubjectId(subjectEntity);
+			}
 			teacherRepository.save(teacher);
 		}
-
 	}
 
 	@Override

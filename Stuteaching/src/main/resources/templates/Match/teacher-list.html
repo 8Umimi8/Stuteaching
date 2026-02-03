@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マッチ | Stutyching - 学習プラットフォーム</title>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
-    <link rel="stylesheet" th:href="@{../css/hed_style.css}">
-    <link rel="stylesheet" th:href="@{../css/home_style.css}">
+    <link rel="stylesheet" th:href="@{/css/hed_style.css}">
+    <link rel="stylesheet" th:href="@{/css/home_style.css}">
 </head>
 <style>
     /* =========================
@@ -30,200 +30,196 @@
         box-shadow: 0 0 0 2px #fff;
         /* 白縁で視認性UP */
     }
+
     .btn.primary {
-    display: inline-flex;        /* テキストを自然に中央寄せ */
-    align-items: center;         /* 垂直方向の中央揃え */
-    justify-content: center;     /* 水平方向の中央揃え */
-    padding: 8px 16px;           /* 文字が潰れない余白 */
-    line-height: 1;              /* 行の高さを安定させる */
-    text-decoration: none;       /* aタグの下線を消す */
-    border-radius: 6px;          /* ボタンらしい角丸 */
-}
+        display: inline-flex;
+        /* テキストを自然に中央寄せ */
+        align-items: center;
+        /* 垂直方向の中央揃え */
+        justify-content: center;
+        /* 水平方向の中央揃え */
+        padding: 8px 16px;
+        /* 文字が潰れない余白 */
+        line-height: 1;
+        /* 行の高さを安定させる */
+        text-decoration: none;
+        /* aタグの下線を消す */
+        border-radius: 6px;
+        /* ボタンらしい角丸 */
+    }
 </style>
 
 <body>
-	<div th:replace="fragments/header :: header"></div>
-        <main>
-            <section aria-labelledby="match-title">
+    <div th:replace="fragments/header :: header"></div>
+    <main>
+        <section aria-labelledby="match-title">
 
 
-                <div class="actions">
-                    <button class="btn" id="filterBtn">フィルター</button>
+            <div class="actions">
+                <button class="btn" id="filterBtn">フィルター</button>
+            </div>
+
+            <div class="filter-panel" id="filterPanel">
+                <h3>フィルター</h3>
+
+                <label>教科</label>
+                <select id="filterSubject">
+                    <option value="">すべて</option>
+                    <option value="数学">数学</option>
+                    <option value="英語">英語</option>
+                    <option value="国語">国語</option>
+                    <option value="理科">理科</option>
+                    <option value="社会">社会</option>
+                </select>
+
+                <label>評価</label>
+                <select id="filterRating">
+                    <option value="">すべて</option>
+                    <option value="5">★5</option>
+                    <option value="4">★4以上</option>
+                    <option value="3">★3以上</option>
+                </select>
+
+                <button class="btn primary" id="applyFilter">適用</button>
+                <button class="btn" id="resetFilter">リセット</button>
+            </div>
+
+            <div class="grid" id="user-grid">
+
+                <div class="card" th:each="user : ${users}">
+                    <div class="card-content">
+
+                        <!-- ユーザー名 -->
+                        <h3 th:text="${user.userName}"></h3>
+
+                        <!-- 教科 -->
+                        <div class="meta">
+                            <span>
+                                教科:
+                                <span th:text="${user.subjectName}"></span>
+                            </span>
+                        </div>
+
+                        <!-- 評価（★） -->
+                        <div class="rating">
+                            <span th:if="${user.review != null and user.review > 0}"
+                                th:each="i : ${#numbers.sequence(1, user.review)}" class="star-filled">★</span>
+                            <span th:if="${user.review == null or user.review == 0}">未評価</span>
+                        </div>
+
+                        <a th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}" class="btn primary">
+                            メッセージ
+                        </a>
+                    </div>
                 </div>
 
-                <div class="filter-panel" id="filterPanel">
-                    <h3>フィルター</h3>
 
-                    <label>教科</label>
-                    <select id="filterSubject">
-                        <option value="">すべて</option>
-                        <option value="数学">数学</option>
-                        <option value="英語">英語</option>
-                        <option value="国語">国語</option>
-                        <option value="理科">理科</option>
-                        <option value="社会">社会</option>
-                    </select>
-
-                    <label>評価</label>
-                    <select id="filterRating">
-                        <option value="">すべて</option>
-                        <option value="5">★5</option>
-                        <option value="4">★4以上</option>
-                        <option value="3">★3以上</option>
-                    </select>
-
-                    <button class="btn primary" id="applyFilter">適用</button>
-                    <button class="btn" id="resetFilter">リセット</button>
-                </div>
-
-               <div class="grid" id="user-grid">
-
-    <div class="card" th:each="user : ${users}">
-  <div class="card-content">
-
-    <!-- ユーザー名 -->
-    <h3 th:text="${user.userName}"></h3>
-
-    <!-- 教科 -->
-    <div class="meta">
-      <span>
-        教科:
-        <span th:text="${user.subjectName}"></span>
-      </span>
-    </div>
-
-    <!-- 評価（★） -->
-    <div class="rating">
-      <span th:if="${user.review != null and user.review > 0}"
-            th:each="i : ${#numbers.sequence(1, user.review)}"
-            class="star-filled">★</span>
-      <span th:if="${user.review == null or user.review == 0}">未評価</span>
-    </div>
-    
-    <a th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}"
-   class="btn primary">
-    メッセージ
-</a>
-  </div>
-</div>
+            </div>
+        </section>
+    </main>
 
 
-</div>
-            </section>
-        </main>
-
- 
 </body>
 
-    <script>
-		
+<script>
 
-/* 通知 */
-const notifyBtn = document.getElementById("notifyBtn");
-const notificationPanel = document.getElementById("notificationPanel");
 
-if (notifyBtn && notificationPanel) {
-    notifyBtn.addEventListener("click", (e) => {
-        e.preventDefault();
+    /* 通知 */
+    const notifyBtn = document.getElementById("notifyBtn");
+    const notificationPanel = document.getElementById("notificationPanel");
 
-        const isOpen = notificationPanel.style.display === "block";
-        notificationPanel.style.display = isOpen ? "none" : "block";
+    if (notifyBtn && notificationPanel) {
+        notifyBtn.addEventListener("click", (e) => {
+            e.preventDefault();
 
-        // パネルを開いたら既読にする
-        if (!isOpen) {
-            notifyBtn.classList.remove("has-notification");
-        }
-    });
-}
+            const isOpen = notificationPanel.style.display === "block";
+            notificationPanel.style.display = isOpen ? "none" : "block";
 
-// 初期状態：通知が来ているように見せる
-notifyBtn.classList.add("has-notification");
-
-// 通知リスト
-const notificationList = document.getElementById("notificationList");
-
-// 通知追加関数
-function addNotification(text) {
-    const li = document.createElement("li");
-    li.textContent = text;
-    notificationList.appendChild(li);
-
-    // 未読バッジ
-    notifyBtn.classList.add("has-notification");
-}
-
-// サンプル通知
-addNotification("ようこそスタチンへ");
-
-/* フィルター */
-const filterBtn = document.getElementById("filterBtn");
-const filterPanel = document.getElementById("filterPanel");
-
-if (filterBtn && filterPanel) {
-    filterBtn.addEventListener("click", () => {
-        filterPanel.style.display =
-            filterPanel.style.display === "block" ? "none" : "block";
-    });
-}
-
-// フィルター適用
-document.getElementById("applyFilter").addEventListener("click", () => {
-    const subject = document.getElementById("filterSubject").value;
-    const rating = document.getElementById("filterRating").value;
-
-    const cards = document.querySelectorAll(".card");
-
-    cards.forEach(card => {
-        // 教科（複数対応）
-        const subjectText = card.querySelector(".meta span").textContent;
-        const userSubjects = subjectText
-            .replace("教科: ", "")
-            .split(",")
-            .map(s => s.trim());
-
-        // ★の数
-        const userRating = card.querySelectorAll(".star-filled").length;
-
-        let show = true;
-
-        // 教科フィルター：1つでも一致すればOK
-        if (subject && !userSubjects.includes(subject)) {
-            show = false;
-        }
-
-        // 評価フィルター
-        if (rating && userRating < Number(rating)) {
-            show = false;
-        }
-
-        card.style.display = show ? "block" : "none";
-    });
-
-    filterPanel.style.display = "none";
-});
-
-// リセット
-document.getElementById("resetFilter").addEventListener("click", () => {
-    document.getElementById("filterSubject").value = "";
-    document.getElementById("filterRating").value = "";
-
-    document.querySelectorAll(".card").forEach(card => {
-        card.style.display = "block";
-    });
-
-    filterPanel.style.display = "none";
-});
-document.addEventListener("DOMContentLoaded", () => {
-      const hamburger = document.querySelector(".hamburger");
-      const navMenu = document.querySelector(".nav-menu");
-
-      if (hamburger && navMenu) {
-        hamburger.addEventListener("click", () => {
-          navMenu.classList.toggle("active");
-          hamburger.classList.toggle("active");
+            // パネルを開いたら既読にする
+            if (!isOpen) {
+                notifyBtn.classList.remove("has-notification");
+            }
         });
-      }
+    }
+
+    // 初期状態：通知が来ているように見せる
+    notifyBtn.classList.add("has-notification");
+
+    // 通知リスト
+    const notificationList = document.getElementById("notificationList");
+
+    // 通知追加関数
+    function addNotification(text) {
+        const li = document.createElement("li");
+        li.textContent = text;
+        notificationList.appendChild(li);
+
+        // 未読バッジ
+        notifyBtn.classList.add("has-notification");
+    }
+
+    // サンプル通知
+    addNotification("ようこそスタチンへ");
+
+    /* フィルター */
+    const filterBtn = document.getElementById("filterBtn");
+    const filterPanel = document.getElementById("filterPanel");
+
+    if (filterBtn && filterPanel) {
+        filterBtn.addEventListener("click", () => {
+            filterPanel.style.display =
+                filterPanel.style.display === "block" ? "none" : "block";
+        });
+    }
+
+    // フィルター適用
+    document.getElementById("applyFilter").addEventListener("click", () => {
+        const subject = document.getElementById("filterSubject").value;
+        const rating = document.getElementById("filterRating").value;
+
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach(card => {
+            // 教科（複数対応）
+            const subjectText = card.querySelector(".meta span").textContent;
+            const userSubjects = subjectText
+                .replace("教科: ", "")
+                .split(",")
+                .map(s => s.trim());
+
+            // ★の数
+            const userRating = card.querySelectorAll(".star-filled").length;
+
+            let show = true;
+
+            // 教科フィルター：1つでも一致すればOK
+            if (subject && !userSubjects.includes(subject)) {
+                show = false;
+            }
+
+            // 評価フィルター
+            if (rating && userRating < Number(rating)) {
+                show = false;
+            }
+
+            card.style.display = show ? "block" : "none";
+        });
+
+        filterPanel.style.display = "none";
     });
+
+    // リセット
+    document.getElementById("resetFilter").addEventListener("click", () => {
+        document.getElementById("filterSubject").value = "";
+        document.getElementById("filterRating").value = "";
+
+        document.querySelectorAll(".card").forEach(card => {
+            card.style.display = "block";
+        });
+
+        filterPanel.style.display = "none";
+    });
+
 </script>
 
 </html>
