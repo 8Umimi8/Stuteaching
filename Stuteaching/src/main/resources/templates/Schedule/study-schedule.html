@@ -7,9 +7,9 @@
     <title>マッチ | Stutyching - 学習プラットフォーム</title>
 
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
-    <link rel="stylesheet" th:href="@{../css/hed_style.css}">
-    <link rel="stylesheet" th:href="@{../css/time_style.css}">
-    <link rel="stylesheet" th:href="@{../css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/hed_style.css}">
+    <link rel="stylesheet" th:href="@{/css/time_style.css}">
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
 
     <!-- FullCalendar -->
     <link th:href="@{https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css}" rel="stylesheet">
@@ -75,22 +75,9 @@
 <body>
     <div id="header"></div>
 
-<div th:replace="fragments/header :: header"></div>
-	
-    <script>
+    <div th:replace="fragments/header :: header"></div>
 
-                const notifyBtn = document.getElementById("notifyBtn");
-                const notificationPanel = document.getElementById("notificationPanel");
 
-                if (notifyBtn && notificationPanel) {
-                    notifyBtn.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        notificationPanel.style.display =
-                            notificationPanel.style.display === "block" ? "none" : "block";
-                    });
-                }
-            
-    </script>
 
     <div class="calendar-wrapper">
         <div id="calendar"></div>
@@ -128,20 +115,20 @@
 
         // 週データ集計
         function calculateWeeklyStats(events, selectedDate) {
-    const weekStart = getWeekStart(selectedDate);
-    const dailyTotals = Array(7).fill(0);
+            const weekStart = getWeekStart(selectedDate);
+            const dailyTotals = Array(7).fill(0);
 
-    events.forEach(ev => {
-        const d = new Date(ev.start);
-        const diff = Math.floor((d - weekStart) / (1000 * 60 * 60 * 24));
+            events.forEach(ev => {
+                const d = new Date(ev.start);
+                const diff = Math.floor((d - weekStart) / (1000 * 60 * 60 * 24));
 
-        if (diff >= 0 && diff < 7) {
-            dailyTotals[diff] += ev.extendedProps.minutes;
+                if (diff >= 0 && diff < 7) {
+                    dailyTotals[diff] += ev.extendedProps.minutes;
+                }
+            });
+
+            return dailyTotals;
         }
-    });
-
-    return dailyTotals;
-}
 
         // グラフ描画
         function renderWeekChart(dailyTotals) {
@@ -170,24 +157,24 @@
 
         // 合計・平均
         function renderWeekSummary(dailyTotals) {
-    const totalMinutes = dailyTotals.reduce((a, b) => a + b, 0);
+            const totalMinutes = dailyTotals.reduce((a, b) => a + b, 0);
 
-    const h = Math.floor(totalMinutes / 60);
-    const m = totalMinutes % 60;
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
 
-    const totalText =
-        (h ? `${h}時間` : "") + (m ? `${m}分` : "");
+            const totalText =
+                (h ? `${h}時間` : "") + (m ? `${m}分` : "");
 
-    const avgMinutes = Math.round(totalMinutes / 7);
-    const ah = Math.floor(avgMinutes / 60);
-    const am = avgMinutes % 60;
+            const avgMinutes = Math.round(totalMinutes / 7);
+            const ah = Math.floor(avgMinutes / 60);
+            const am = avgMinutes % 60;
 
-    const avgText =
-        (ah ? `${ah}時間` : "") + (am ? `${am}分` : "");
+            const avgText =
+                (ah ? `${ah}時間` : "") + (am ? `${am}分` : "");
 
-    document.getElementById("weekSummary").textContent =
-        `合計: ${totalText || "0分"} ｜ 平均: ${avgText || "0分"}/日`;
-}
+            document.getElementById("weekSummary").textContent =
+                `合計: ${totalText || "0分"} ｜ 平均: ${avgText || "0分"}/日`;
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
@@ -202,25 +189,25 @@
 
                 // Controllerから渡されたJSONデータを使用 (th:inline="javascript" が必要)
                 events: timeList.map(t => ({
-				id: t.timeId,
-  				 title: t.studySubject + " " + t.studyTime + "分",
-        		start: t.date,
-        		extendedProps: {
-        timeId: t.timeId,           
-        hours: t.studyTime / 60,
-        minutes: Number(t.studyTime)
-    }
-   				 })),
-   				 
-   				 
+                    id: t.timeId,
+                    title: t.studySubject + " " + t.studyTime + "分",
+                    start: t.date,
+                    extendedProps: {
+                        timeId: t.timeId,
+                        hours: t.studyTime / 60,
+                        minutes: Number(t.studyTime)
+                    }
+                })),
 
-eventClick: function(info) {
-    selectedEvent = info.event;
-    selectedDate = info.event.startStr;
 
-    document.getElementById("selectedDateDisplay").textContent =
-        "選択中: " + selectedDate;
-},
+
+                eventClick: function (info) {
+                    selectedEvent = info.event;
+                    selectedDate = info.event.startStr;
+
+                    document.getElementById("selectedDateDisplay").textContent =
+                        "選択中: " + selectedDate;
+                },
 
                 select: function (info) {
                     selectedDate = info.startStr;
@@ -235,53 +222,53 @@ eventClick: function(info) {
             });
 
             calendar.render();
-            
+
             document.getElementById('deleteEventBtn').addEventListener('click', () => {
-    if (!selectedEvent) {
-        alert("削除する勉強時間をクリックしてください！");
-        return;
-    }
+                if (!selectedEvent) {
+                    alert("削除する勉強時間をクリックしてください！");
+                    return;
+                }
 
-    const timeId = selectedEvent.extendedProps.timeId;
+                const timeId = selectedEvent.extendedProps.timeId;
 
-    if (!confirm("この勉強時間を削除しますか？")) return;
+                if (!confirm("この勉強時間を削除しますか？")) return;
 
-    fetch(`/study-time/delete?time_id=${timeId}`, {
-        method: "POST"
-    })
-    .then(() => {
-        selectedEvent.remove(); // カレンダーから即削除
-        selectedEvent = null;
-    });
-});
+                fetch(`/study-time/delete?time_id=${timeId}`, {
+                    method: "POST"
+                })
+                    .then(() => {
+                        selectedEvent.remove(); // カレンダーから即削除
+                        selectedEvent = null;
+                    });
+            });
 
             // ボタン処理
-            
+
 
             document.getElementById('editEventBtn').addEventListener('click', () => {
-    if (!selectedEvent) {
-        alert("編集する勉強時間を選択してください");
-        return;
-    }
+                if (!selectedEvent) {
+                    alert("編集する勉強時間を選択してください");
+                    return;
+                }
 
-    window.location.href =
-        `/study-time/edit-display?timeId=${selectedEvent.extendedProps.timeId}`;
-});
+                window.location.href =
+                    `/study-time/edit-display?timeId=${selectedEvent.extendedProps.timeId}`;
+            });
 
             document.getElementById('deleteEventBtn').addEventListener('click', () => {
                 if (!selectedDate) return alert("まずカレンダーで日付を選択してください！");
-                
+
             });
         });
     </script>
-    
+
     <script th:inline="javascript">
-	    /*<![CDATA[*/
-	    const timeList = [[${timeList}]];
-	    console.log(timeList);
-	    /*]]>*/
-	</script>
-	
+        /*<![CDATA[*/
+        const timeList = [[${ timeList }]];
+        console.log(timeList);
+        /*]]>*/
+    </script>
+
 </body>
 
 </html>

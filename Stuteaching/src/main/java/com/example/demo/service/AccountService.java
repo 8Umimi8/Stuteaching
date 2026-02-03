@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.DTO.StudentUsersDTO;
 import com.example.demo.DTO.UserDTO;
+import com.example.demo.entity.SubjectEntity;
 import com.example.demo.entity.TeacherEntity;
 import com.example.demo.web.dto.TeacherUsersResponseDTO;
 
@@ -24,4 +25,8 @@ public interface AccountService {
 	UserDTO findByEmail(String email);
 
 	TeacherEntity findByUserId(Integer userId);
+
+	void updateUser(UserDTO dto, String email);
+
+	List<SubjectEntity> findAll();
 }

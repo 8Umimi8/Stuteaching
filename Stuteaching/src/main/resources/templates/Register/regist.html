@@ -61,6 +61,17 @@
           <option value="2">先生</option>
         </select>
       </div>
+      <div class="field" id="subject-field" style="display: none;">
+        <label for="subject">担当教科</label>
+        <select id="subject" name="subject">
+          <option value="">選択してください</option>
+          <option value="1">国語</option>
+          <option value="2">数学</option>
+          <option value="3">英語</option>
+          <option value="4">理科</option>
+          <option value="5">社会</option>
+        </select>
+      </div>
       <div class="error" id="error" role="alert" aria-live="polite"></div>
       <button type="submit" class="btn">登録</button>
     </form>
@@ -71,24 +82,37 @@
   </main>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      /* ------------------------------
-         パスワード一致チェック
-      ------------------------------ */
-      const form = document.getElementById("regist-form");
-      const pw = document.getElementById("password");
-      const pw2 = document.getElementById("password_again");
-      const error = document.getElementById("error");
+  document.addEventListener("DOMContentLoaded", () => {
+    /* ------------------------------
+       パスワード一致チェック
+    ------------------------------ */
+    const form = document.getElementById("regist-form");
+    const pw = document.getElementById("password");
+    const pw2 = document.getElementById("password_again");
+    const error = document.getElementById("error");
 
-      form.addEventListener("submit", (e) => {
-        if (pw.value !== pw2.value) {
-          e.preventDefault();
-          error.textContent = "パスワードが一致しません";
-          pw2.focus();
-        }
-      });
+    const role = document.getElementById("role");
+    const subjectField = document.getElementById("subject-field");
+
+    // 🔸 役職変更イベント
+    role.addEventListener("change", () => {
+      if (role.value === "2") {
+        subjectField.style.display = "block";
+      } else {
+        subjectField.style.display = "none";
+      }
     });
-  </script>
+
+    // 🔸 パスワード一致チェック
+    form.addEventListener("submit", (e) => {
+      if (pw.value !== pw2.value) {
+        e.preventDefault();
+        error.textContent = "パスワードが一致しません";
+        pw2.focus();
+      }
+    });
+  });
+</script>
 
 </body>
 

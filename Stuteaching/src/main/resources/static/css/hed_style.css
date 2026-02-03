@@ -251,6 +251,10 @@ body {
 .notification-list {
     list-style: none;
 }
+.notification-list li.unread {
+    font-weight: bold;
+    background-color: #eef;
+}
 
 .notification-list li {
     padding: 10px;
@@ -268,3 +272,38 @@ body {
     transform: translateY(0);
     display: flex !important;
 }
+.unread {
+    background-color: #f0f6ff;
+    font-weight: bold;
+}
+.notification-list li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+.notification-list a {
+    text-decoration: none;
+    color: #333;
+}
+.notification-list a:hover {
+    background-color: #f8f8f8;
+}
+.icon-btn {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+}
+

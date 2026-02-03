@@ -58,6 +58,7 @@ public class UserController {
 	@PostMapping("/insert")
 	public String insert(@Valid UserDTO user, BindingResult bindingResult, Model model) {
 		log.info("登録");
+
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errors", bindingResult.getFieldErrors());
 			model.addAttribute("UserDTO", user);
@@ -66,12 +67,11 @@ public class UserController {
 			return "Register/regist";
 		}
 
+		// 👇 これだけでOK！
 		userService.InsertUser(user);
 
-		// 登録完了後 → ログイン画面へ
-
+		// 先生の登録は UserServiceImpl の中で完了している
 		return "redirect:/user/agreement";
-
 	}
 
 	// ========================

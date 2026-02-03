@@ -1,11 +1,13 @@
 <header class="header" th:fragment="header">
     <div class="brand">
 
+        <!-- ロゴ -->
         <div class="logo-group">
-            <img th:src="@{../img/logo.jpg}" class="logo2" alt="Stutyching ロゴ">
+            <img th:src="@{/img/logo.jpg}" class="logo2" alt="Stutyching ロゴ">
             <div class="logo">Stutyching</div>
         </div>
 
+        <!-- ナビゲーション -->
         <nav class="nav-menu">
             <ul>
                 <li><a th:href="@{/match}"><i class="fas fa-home"></i> マッチ</a></li>
@@ -15,28 +17,89 @@
             </ul>
         </nav>
 
+        <!-- ユーザー操作 -->
         <div class="user-actions">
 
             <!-- 通知ボタン -->
             <a th:href="@{#}" class="icon-btn" id="notifyBtn">
                 <i class="fas fa-bell"></i>
+
+                <!-- 未読が1件以上あればバッジ表示 -->
+                <span th:if="${notifications.?[!isRead].size() > 0}" 
+                      class="notification-badge"
+                      th:text="${notifications.?[!isRead].size()}">
+                </span>
             </a>
 
+            <!-- 通知パネル -->
             <div class="notification-panel" id="notificationPanel">
                 <div class="notification-title">通知</div>
+                <ul class="notification-list">
+                    <li th:each="note : ${notifications}" 
+                        th:classappend="${!note.isRead} ? 'unread' : ''">
+                        <a th:href="@{/alert/read/{id}(id=${note.alertId})}"
+                           th:attr="data-alert-id=${note.alertId}">
+                            <strong th:text="${note.title}">通知タイトル</strong><br>
+                            <span th:text="${#temporals.format(note.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
+                        </a>
+                    </li>
 
-                <ul class="notification-list" id="notificationList">
-                    <!-- Thymeleaf Loop -->
-                    <li th:each="note : ${notifications}" th:text="${note}">通知サンプル</li>
-                    <li th:if="${notifications == null or notifications.empty}" style="color:#777;">通知はありません</li>
+                    <li th:if="${notifications == null or notifications.empty}" style="color:#777;">
+                        通知はありません
+                    </li>
                 </ul>
             </div>
 
+            <!-- プロフィールボタン -->
             <a th:href="@{#}" class="profile-btn">
                 <div class="profile-icon"><i class="fas fa-user"></i></div>
             </a>
 
+            <!-- ハンバーガーメニュー -->
             <button class="hamburger"><i class="fas fa-bars"></i></button>
         </div>
     </div>
+
+    <!-- JS -->
+    <script th:src="@{/js/header.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const notifyBtn = document.getElementById('notifyBtn');
+            const notificationPanel = document.getElementById('notificationPanel');
+
+            notifyBtn.addEventListener('click', () => {
+                notificationPanel.classList.toggle('open');
+
+                // パネルが開いたら未読通知IDを取得してサーバーに送信
+                if (notificationPanel.classList.contains('open')) {
+                    const unreadLinks = document.querySelectorAll('.notification-list li.unread a');
+                    const unreadIds = Array.from(unreadLinks)
+                                           .map(a => parseInt(a.getAttribute('data-alert-id')))
+                                           .filter(id => !isNaN(id));
+
+                    if (unreadIds.length > 0) {
+                        fetch('/alert/read/batch', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(unreadIds)
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === "OK") {
+                                // バッジ削除
+                                const badge = document.querySelector('.notification-badge');
+                                if (badge) badge.remove();
+
+                                // 未読クラス削除
+                                unreadLinks.forEach(a => a.parentElement.classList.remove('unread'));
+                            } else {
+                                console.error(data.message);
+                            }
+                        })
+                        .catch(err => console.error('通知更新エラー:', err));
+                    }
+                }
+            });
+        });
+    </script>
 </header>

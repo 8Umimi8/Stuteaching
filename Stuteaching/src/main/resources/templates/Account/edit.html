@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>プロフィール編集</title>
+
+
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/hed_style.css}">
+    <link rel="stylesheet" th:href="@{/css/edit.css}">
+
+</head>
+
+<body>
+
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="profile-container">
+
+        <div class="profile-card">
+
+            <h1 class="profile-section-title">プロフィールを編集</h1>
+
+            <form th:action="@{/account/profile/update}" th:object="${user}" method="post">
+
+                <!-- 表示名 -->
+                <div class="profile-section">
+                    <div class="profile-label">表示名</div>
+                    <input type="text" th:field="*{user_name}" class="profile-input" required />
+                </div>
+
+                <!-- 性別 -->
+                <div class="profile-section">
+                    <div class="profile-label">性別</div>
+                    <select th:field="*{gender}" class="profile-input">
+                        <option th:value="1" th:selected="${user.gender == 1}">男性</option>
+                        <option th:value="2" th:selected="${user.gender == 2}">女性</option>
+                        <option th:value="3" th:selected="${user.gender == 3}">どちらでもない</option>
+                    </select>
+                </div>
+
+                <!-- 生年月日 -->
+                <div class="profile-section">
+                    <div class="profile-label">生年月日</div>
+                    <input type="date" th:field="*{birthday}" class="profile-input" required />
+                </div>
+
+                <!-- メール -->
+                <div class="profile-section">
+                    <div class="profile-label">メールアドレス</div>
+                    <input type="email" th:field="*{email}" class="profile-input" required />
+                </div>
+
+                <div th:if="${user.role == 2}" class="profile-section">
+  <div class="profile-label">担当教科</div>
+  <select name="subject" class="profile-input">
+    <option value="">選択してください</option>
+    <option value="1" th:selected="${teacher.subjectId?.subjectId == 1}">国語</option>
+    <option value="2" th:selected="${teacher.subjectId?.subjectId == 2}">数学</option>
+    <option value="3" th:selected="${teacher.subjectId?.subjectId == 3}">英語</option>
+    <option value="4" th:selected="${teacher.subjectId?.subjectId == 4}">理科</option>
+    <option value="5" th:selected="${teacher.subjectId?.subjectId == 5}">社会</option>
+  </select>
+</div>
+
+
+                <!-- 送信ボタン -->
+                <div class="profile-actions">
+                    <button type="submit" class="profile-button primary">変更を保存</button>
+                    <a th:href="@{/account/profile}" class="profile-button secondary">キャンセル</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
