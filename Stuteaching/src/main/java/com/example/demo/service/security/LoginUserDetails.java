@@ -22,7 +22,7 @@ public class LoginUserDetails implements UserDetails {
 
 	//Entity から Security 用の UserDetails を生成する
 	public LoginUserDetails(LoginEntity entity) {
-		this.user_id = entity.getUser_id();
+		this.user_id = entity.getUserId();
 		this.email = entity.getEmail();
 		this.password = entity.getPassword();
 		String roleName = switch (entity.getRole()) {

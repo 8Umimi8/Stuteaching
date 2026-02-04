@@ -55,18 +55,18 @@ public class UserServiceImpl implements UserService {
 		userrepository.save(userEntity);
 
 		// INSERT 後の user_id を取得（スネークケースのまま）
-		Integer userId = userEntity.getUser_id();
+		Integer userId = userEntity.getUserId();
 
 		if (user.getRole() == 1) {
 			StudentEntity student = new StudentEntity();
-			student.setUser_id(userEntity);
+			student.setUserId(userEntity);
 			studentRepository.save(student);
 		}
 
 		// 先生
 		else if (user.getRole() == 2) {
 			TeacherEntity teacher = new TeacherEntity();
-			teacher.setUser_id(userEntity);
+			teacher.setUserId(userEntity);
 
 			// ✅ 実際に存在する Subject を取得してセット
 			if (user.getSubject() != null) {

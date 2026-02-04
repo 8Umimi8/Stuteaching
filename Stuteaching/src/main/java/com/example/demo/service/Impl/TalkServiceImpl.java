@@ -59,7 +59,7 @@ public class TalkServiceImpl implements TalkService {
 
 			if (entity.getSenderId() != null) {
 				userRepository.findById(entity.getSenderId())
-						.ifPresent(user -> dto.setSenderName(user.getUser_name()));
+						.ifPresent(user -> dto.setSenderName(user.getUserName()));
 			}
 
 			return dto;
@@ -72,9 +72,9 @@ public class TalkServiceImpl implements TalkService {
 		RoomEntity room = roomRepository.findById(roomId)
 				.orElseThrow(() -> new IllegalArgumentException("roomが存在しない"));
 
-		Integer partnerId = room.getRoomUserId().getUser_id().equals(myUserId)
-				? room.getRoomTeacherId().getUser_id()
-				: room.getRoomUserId().getUser_id();
+		Integer partnerId = room.getRoomUserId().getUserId().equals(myUserId)
+				? room.getRoomTeacherId().getUserId()
+				: room.getRoomUserId().getUserId();
 
 		return userRepository.findById(partnerId)
 				.map(entity -> {

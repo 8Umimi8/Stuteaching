@@ -57,8 +57,8 @@ public class AccountServiceImpl implements AccountService {
 
 	private UserDTO convertToDTO(UserEntity entity) {
 		UserDTO dto = new UserDTO();
-		dto.setUser_id(entity.getUser_id()); // ← user_id に合わせる
-		dto.setUser_name(entity.getUser_name()); // ← user_name に合わせる
+		dto.setUser_id(entity.getUserId()); // ← user_id に合わせる
+		dto.setUser_name(entity.getUserName()); // ← user_name に合わせる
 		dto.setGender(entity.getGender());
 		dto.setBirthday(entity.getBirthday());
 		dto.setEmail(entity.getEmail());
@@ -103,8 +103,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		UserDTO dto = new UserDTO();
-		dto.setUser_id(entity.getUser_id());
-		dto.setUser_name(entity.getUser_name());
+		dto.setUser_id(entity.getUserId());
+		dto.setUser_name(entity.getUserName());
 		dto.setEmail(entity.getEmail());
 		dto.setBirthday(entity.getBirthday());
 		dto.setGender(entity.getGender());
@@ -130,7 +130,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		// --- 2. 基本情報を更新 ---
-		user.setUser_name(dto.getUser_name());
+		user.setUserName(dto.getUser_name());
 		user.setEmail(dto.getEmail());
 		user.setBirthday(dto.getBirthday());
 		user.setGender(dto.getGender());

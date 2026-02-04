@@ -31,7 +31,7 @@ public class RoomServiceImpl implements RoomService {
 
 		// 🔑 teacher_id → user_id 変換
 		UserEntity teacherUser = teacherRepository.findById(teacherId)
-				.map(TeacherEntity::getUser_id)
+				.map(TeacherEntity::getUserId)
 				.orElseThrow(() -> new IllegalArgumentException("教師が存在しない"));
 
 		UserEntity user = userRepository.findById(userId)
@@ -66,8 +66,8 @@ public class RoomServiceImpl implements RoomService {
 							? room.getRoomTeacherId()
 							: room.getRoomUserId();
 
-					dto.setUserId(partner.getUser_id());
-					dto.setName(partner.getUser_name());
+					dto.setUserId(partner.getUserId());
+					dto.setName(partner.getUserName());
 
 					return dto;
 				})
