@@ -20,9 +20,9 @@ public class StudentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "student_id")
-	private Integer student_id;
+	private Integer studentId;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
-	private UserEntity user_id;
+	private UserEntity userId;
 }

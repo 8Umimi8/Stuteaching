@@ -26,7 +26,7 @@ public class TeacherEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
-	private UserEntity user_id;
+	private UserEntity userId;
 
 	@ManyToOne
 	@JoinColumn(name = "subject_id")

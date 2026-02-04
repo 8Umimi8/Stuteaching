@@ -20,7 +20,7 @@ public class UserEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	private Integer user_id;
+	private Integer userId;
 
 	@Column(name = "password")
 	private String password;
@@ -29,7 +29,7 @@ public class UserEntity {
 	private String email;
 
 	@Column(name = "user_name")
-	private String user_name;
+	private String userName;
 
 	@Column(name = "birthday")
 	private Date birthday;
