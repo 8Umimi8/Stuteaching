@@ -50,10 +50,15 @@
                 </ul>
             </div>
 
-            <!-- プロフィールボタン -->
-            <a th:href="@{#}" class="profile-btn">
-                <div class="profile-icon"><i class="fas fa-user"></i></div>
-            </a>
+            <!-- ログアウトボタン -->
+			    <form th:action="@{/logout}" method="post">
+				    <button type="submit"
+				            class="icon-btn logout-btn"
+				            title="ログアウト">
+				        <i class="fas fa-right-from-bracket"></i>
+				    </button>
+				</form>
+
 
             <!-- ハンバーガーメニュー -->
             <button class="hamburger"><i class="fas fa-bars"></i></button>

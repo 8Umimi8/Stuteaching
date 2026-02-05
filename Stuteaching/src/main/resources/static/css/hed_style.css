@@ -175,6 +175,12 @@ body {
     border: 1px solid var(--border-color);
 }
 
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
 /* =========================
    ハンバーガー（PCでは非表示）
 ========================= */
