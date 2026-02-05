@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -29,4 +30,12 @@ public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer>
 	List<TeacherUsersDTO> findAllTeachers();
 
 	TeacherEntity findByUserId(UserEntity user);
+
+	@Modifying
+	@Query(value = """
+			UPDATE teacher_users
+			SET review_id = :avg
+			WHERE teacher_id = :teacherId
+			""", nativeQuery = true)
+	void updateAvgReview(Integer teacherId, Integer avg);
 }

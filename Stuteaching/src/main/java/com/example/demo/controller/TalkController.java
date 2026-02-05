@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.demo.DTO.ReviewDTO;
 import com.example.demo.DTO.TalkDTO;
+import com.example.demo.service.ReviewService;
 import com.example.demo.service.RoomService;
 import com.example.demo.service.Impl.TalkServiceImpl;
 import com.example.demo.service.security.LoginUserDetails;
@@ -25,6 +27,9 @@ public class TalkController {
 
 	@Autowired
 	private RoomService roomService;
+
+	@Autowired
+	private ReviewService reviewService;
 
 	@GetMapping("/chat")
 	public ModelAndView chatRoot(@AuthenticationPrincipal LoginUserDetails user) {
@@ -85,4 +90,19 @@ public class TalkController {
 	public List<TalkDTO> getMessages(@PathVariable Integer classId) {
 		return talkServiceImpl.getTalkList(classId);
 	}
+
+	@PostMapping("/chat/{classId}/rating")
+	public String submitRating(
+			@PathVariable Integer classId,
+			@RequestParam Integer score,
+			@AuthenticationPrincipal LoginUserDetails loginUser) {
+		ReviewDTO dto = new ReviewDTO();
+		dto.setRoomId(classId);
+		dto.setScore(score);
+
+		reviewService.registerReview(dto);
+
+		return "redirect:/chat/" + classId;
+	}
+
 }
