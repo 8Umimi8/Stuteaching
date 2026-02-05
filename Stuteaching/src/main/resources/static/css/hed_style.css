@@ -138,12 +138,31 @@ body {
     color: var(--text-color);
     font-size: 18px !important;
     transition: color 0.3s;
+    position: relative;
+    display: inline-block;
 }
 
 .icon-btn:hover {
     color: var(--primary-color);
 }
 
+/* 通知バッジ */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+}
+
+/* プロフィールアイコン */
 .profile-icon {
     width: 35px;
     height: 35px;
@@ -192,19 +211,18 @@ body {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
 
-    /* ★ ここを修正：中央揃えが確実に効くように */
     .nav-menu ul {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center; /* ← 追加 */
+        justify-content: center;
         width: 100%;
         gap: 20px;
         text-align: center;
     }
 
     .nav-menu li {
-        width: 100%; /* ← 追加 */
+        width: 100%;
     }
 
     .nav-menu a {
@@ -223,87 +241,75 @@ body {
         margin-left: 10px;
     }
 }
-
-/* =========================
-   通知
-========================= */
+/* 通知パネルの修正版 */
 .notification-panel {
+    display: none !important; /* ← これがポイント！ */
     position: absolute;
-    top: 70px;
-    right: 10px;
-    width: 250px;
-    height: 200px;
-    background: white;
+    top: 60px;
+    right: 15px;
+    width: 300px;
+    max-height: 325px;
+    background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    display: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    flex-direction: column;
+    overflow: hidden;
     z-index: 2000;
 }
 
-.notification-title {
-    font-weight: bold !important;
-    margin-bottom: 10px;
-    font-size: 16px !important;
+.notification-panel.open {
+    display: flex !important; /* ← 開く時だけ優先して表示 */
+    animation: fadeIn 0.2s ease;
 }
 
+/* タイトル部分を固定 */
+.notification-title {
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    background: #f9f9f9;
+    flex-shrink: 0; /* ← 高さ固定してスクロール対象から除外 */
+}
+
+/* リスト部分をスクロール領域にする */
 .notification-list {
+    flex: 1;              /* ← 残りの高さを全部使う */
+    overflow-y: auto;     /* ← 内部スクロールを有効化 */
+    margin: 0;
+    padding: 0;
     list-style: none;
 }
-.notification-list li.unread {
-    font-weight: bold;
-    background-color: #eef;
+
+/* スクロールバーの見た目 */
+.notification-list::-webkit-scrollbar {
+    width: 6px;
+}
+.notification-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+.notification-list::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
 }
 
+/* 通知1件ごとの見た目 */
 .notification-list li {
     padding: 10px;
     border-bottom: 1px solid #eee;
-    font-size: 14px !important;
+    font-size: 14px;
+    transition: background-color 0.2s;
 }
-
 .notification-list li:hover {
-    background: #f5f5f5;
-    cursor: pointer;
+    background-color: #f5f5f5;
 }
-
-/* PCでも .active を反映 */
-.nav-menu.active {
-    transform: translateY(0);
-    display: flex !important;
-}
-.unread {
-    background-color: #f0f6ff;
+.notification-list li.unread {
+    background-color: #eef6ff;
     font-weight: bold;
 }
-.notification-list li {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-.notification-list a {
-    text-decoration: none;
-    color: #333;
-}
-.notification-list a:hover {
-    background-color: #f8f8f8;
-}
-.icon-btn {
-    position: relative;
-    display: inline-block;
-}
 
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: red;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 16px;
+/* 開閉アニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-

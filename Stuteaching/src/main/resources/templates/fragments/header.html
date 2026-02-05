@@ -63,44 +63,61 @@
     <!-- JS -->
     <script th:src="@{/js/header.js}"></script>
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const notifyBtn = document.getElementById('notifyBtn');
-    const notificationPanel = document.getElementById('notificationPanel');
+document.addEventListener("DOMContentLoaded", () => {
+  const notifyBtn = document.getElementById("notifyBtn");
+  const notificationPanel = document.getElementById("notificationPanel");
 
-    notifyBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        notificationPanel.classList.toggle('open');
+  if (!notifyBtn) {
+    console.error("notifyBtn が見つかりません。#notifyBtn のIDを確認してください。");
+    return;
+  }
+  if (!notificationPanel) {
+    console.error("notificationPanel が見つかりません。#notificationPanel のIDを確認してください。");
+    return;
+  }
 
-        // 開いたときに未読処理
-        if (notificationPanel.classList.contains('open')) {
-            const unreadLinks = document.querySelectorAll('.notification-list li.unread a');
-            const unreadIds = Array.from(unreadLinks)
-                                   .map(a => parseInt(a.getAttribute('data-alert-id')))
-                                   .filter(id => !isNaN(id));
+  // ヘルパー: パネルが開いているか
+  const isOpen = () => notificationPanel.classList.contains("open");
 
-            // 👇 見た目を即座に反映
-            const badge = document.querySelector('.notification-badge');
-            if (badge) badge.remove();
-            unreadLinks.forEach(a => a.parentElement.classList.remove('unread'));
+  // トグル（通知ボタン）
+  const onNotifyClick = (e) => {
+    e.stopPropagation();
+    notificationPanel.classList.toggle("open");
+    console.log("通知ボタン: toggle open ->", isOpen());
+  };
 
-            // 👇 サーバーへ非同期で既読を送信（裏で処理）
-            if (unreadIds.length > 0) {
-                fetch('/alert/read/batch', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(unreadIds)
-                }).catch(err => console.error('通知更新エラー:', err));
-            }
-        }
-    });
+  // パネル内クリックは伝播を止める
+  const onPanelPointer = (e) => {
+    e.stopPropagation();
+  };
 
-    // 外クリックでパネル閉じる
-    document.addEventListener('click', (e) => {
-        if (!notificationPanel.contains(e.target) && !notifyBtn.contains(e.target)) {
-            notificationPanel.classList.remove('open');
-        }
-    });
+  // ドキュメント上の pointerdown（マウス/タッチ/ペン）で外クリック判定
+  const onDocumentPointer = (e) => {
+    // クリック／タップされたターゲットがパネル内 or ボタン内なら何もしない
+    if (notificationPanel.contains(e.target) || notifyBtn.contains(e.target)) {
+      // do nothing
+      return;
+    }
+    if (isOpen()) {
+      notificationPanel.classList.remove("open");
+      console.log("外部クリックでパネルを閉じました");
+    }
+  };
+
+  // 古いリスナがある場合に二重登録しないよう先に除去（安全）
+  notifyBtn.removeEventListener("click", onNotifyClick);
+  notificationPanel.removeEventListener("pointerdown", onPanelPointer);
+  document.removeEventListener("pointerdown", onDocumentPointer);
+
+  // 登録
+  notifyBtn.addEventListener("click", onNotifyClick);
+  notificationPanel.addEventListener("pointerdown", onPanelPointer);
+  // document の pointerdown を使うとタッチでも確実にキャッチできます
+  document.addEventListener("pointerdown", onDocumentPointer);
 });
 </script>
+
+
+
 
 </header>

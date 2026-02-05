@@ -92,7 +92,8 @@
 
               <div class="card"
      th:each="user : ${users}"
-     th:attr="data-teacher-id=${user.teacherId}">	
+     th:attr="data-teacher-id=${user.teacherId}, data-subject-id=${user.subjectId}">
+
                     <div class="card-content">
 
                         <!-- ユーザー名 -->
@@ -141,31 +142,26 @@
         });
     }
 
-    // フィルター適用
-    document.getElementById("applyFilter").addEventListener("click", () => {
-        const subject = document.getElementById("filterSubject").value;
-        const rating = document.getElementById("filterRating").value;
+   // フィルター適用
+document.getElementById("applyFilter").addEventListener("click", () => {
+    const subject = document.getElementById("filterSubject").value;
+    const rating = document.getElementById("filterRating").value;
 
-        const cards = document.querySelectorAll(".card");
+    const cards = document.querySelectorAll(".card");
 
-        cards.forEach(card => {
-            const subjectText = card.querySelector(".meta span").textContent;
-            const userSubjects = subjectText
-                .replace("教科: ", "")
-                .split(",")
-                .map(s => s.trim());
+    cards.forEach(card => {
+        const cardSubjectId = card.getAttribute("data-subject-id");
+        const userRating = card.querySelectorAll(".star-filled").length;
 
-            const userRating = card.querySelectorAll(".star-filled").length;
+        let show = true;
+        if (subject && cardSubjectId !== subject) show = false; // 教科IDで一致確認
+        if (rating && userRating < Number(rating)) show = false;
 
-            let show = true;
-            if (subject && !userSubjects.includes(subject)) show = false;
-            if (rating && userRating < Number(rating)) show = false;
-
-            card.style.display = show ? "block" : "none";
-        });
-
-        filterPanel.style.display = "none";
+        card.style.display = show ? "block" : "none";
     });
+
+    filterPanel.style.display = "none";
+});
 
     // リセット
     document.getElementById("resetFilter").addEventListener("click", () => {
