@@ -20,8 +20,8 @@ public interface RoomRepository extends JpaRepository<RoomEntity, Integer> {
 	@Query("""
 			SELECT r
 			FROM RoomEntity r
-			WHERE (r.roomUserId.user_id = :userId
-			    OR r.roomTeacherId.user_id = :userId)
+			WHERE (r.roomUserId.userId = :userId
+			    OR r.roomTeacherId.userId = :userId)
 			AND r.isDeleted = false
 			""")
 	List<RoomEntity> findRoomsByUserId(Integer userId);

@@ -37,11 +37,11 @@
                 <ul class="notification-list">
                     <li th:each="note : ${notifications}" 
                         th:classappend="${!note.isRead} ? 'unread' : ''">
-                        <a th:href="@{/alert/read/{id}(id=${note.alertId})}"
+                        <div th:href="@{/alert/read/{id}(id=${note.alertId})}"
                            th:attr="data-alert-id=${note.alertId}">
                             <strong th:text="${note.title}">通知タイトル</strong><br>
                             <span th:text="${#temporals.format(note.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
-                        </a>
+                        </div>
                     </li>
 
                     <li th:if="${notifications == null or notifications.empty}" style="color:#777;">
@@ -63,43 +63,44 @@
     <!-- JS -->
     <script th:src="@{/js/header.js}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const notifyBtn = document.getElementById('notifyBtn');
-            const notificationPanel = document.getElementById('notificationPanel');
+document.addEventListener('DOMContentLoaded', function () {
+    const notifyBtn = document.getElementById('notifyBtn');
+    const notificationPanel = document.getElementById('notificationPanel');
 
-            notifyBtn.addEventListener('click', () => {
-                notificationPanel.classList.toggle('open');
+    notifyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notificationPanel.classList.toggle('open');
 
-                // パネルが開いたら未読通知IDを取得してサーバーに送信
-                if (notificationPanel.classList.contains('open')) {
-                    const unreadLinks = document.querySelectorAll('.notification-list li.unread a');
-                    const unreadIds = Array.from(unreadLinks)
-                                           .map(a => parseInt(a.getAttribute('data-alert-id')))
-                                           .filter(id => !isNaN(id));
+        // 開いたときに未読処理
+        if (notificationPanel.classList.contains('open')) {
+            const unreadLinks = document.querySelectorAll('.notification-list li.unread a');
+            const unreadIds = Array.from(unreadLinks)
+                                   .map(a => parseInt(a.getAttribute('data-alert-id')))
+                                   .filter(id => !isNaN(id));
 
-                    if (unreadIds.length > 0) {
-                        fetch('/alert/read/batch', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(unreadIds)
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.status === "OK") {
-                                // バッジ削除
-                                const badge = document.querySelector('.notification-badge');
-                                if (badge) badge.remove();
+            // 👇 見た目を即座に反映
+            const badge = document.querySelector('.notification-badge');
+            if (badge) badge.remove();
+            unreadLinks.forEach(a => a.parentElement.classList.remove('unread'));
 
-                                // 未読クラス削除
-                                unreadLinks.forEach(a => a.parentElement.classList.remove('unread'));
-                            } else {
-                                console.error(data.message);
-                            }
-                        })
-                        .catch(err => console.error('通知更新エラー:', err));
-                    }
-                }
-            });
-        });
-    </script>
+            // 👇 サーバーへ非同期で既読を送信（裏で処理）
+            if (unreadIds.length > 0) {
+                fetch('/alert/read/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(unreadIds)
+                }).catch(err => console.error('通知更新エラー:', err));
+            }
+        }
+    });
+
+    // 外クリックでパネル閉じる
+    document.addEventListener('click', (e) => {
+        if (!notificationPanel.contains(e.target) && !notifyBtn.contains(e.target)) {
+            notificationPanel.classList.remove('open');
+        }
+    });
+});
+</script>
+
 </header>

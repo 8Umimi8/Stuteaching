@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class UserDTO {
 
-	private Integer user_id;
+	private Integer userId;
 	@NotBlank(message = "必須です")
-	private String user_name;
+	private String userName;
 	@NotBlank(message = "必須です")
 	private String password;
 	@NotBlank(message = "必須です")

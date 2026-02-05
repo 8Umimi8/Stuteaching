@@ -69,11 +69,11 @@
                 <label>教科</label>
                 <select id="filterSubject">
                     <option value="">すべて</option>
-                    <option value="数学">数学</option>
-                    <option value="英語">英語</option>
-                    <option value="国語">国語</option>
-                    <option value="理科">理科</option>
-                    <option value="社会">社会</option>
+                    <option value="2">数学</option>
+                    <option value="3">英語</option>
+                    <option value="1">国語</option>
+                    <option value="4">理科</option>
+                    <option value="5">社会</option>
                 </select>
 
                 <label>評価</label>
@@ -90,7 +90,9 @@
 
             <div class="grid" id="user-grid">
 
-                <div class="card" th:each="user : ${users}">
+              <div class="card"
+     th:each="user : ${users}"
+     th:attr="data-teacher-id=${user.teacherId}">	
                     <div class="card-content">
 
                         <!-- ユーザー名 -->

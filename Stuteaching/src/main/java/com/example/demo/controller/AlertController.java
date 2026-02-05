@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,7 +61,7 @@ public class AlertController {
 			return "redirect:/login";
 
 		AlertEntity alert = alertRepository.findById(id).orElse(null);
-		if (alert != null && alert.getUserId().equals(user.getUser_id())) {
+		if (alert != null && alert.getUserId().equals(user.getUserId())) {
 			alert.setIsRead(true);
 			alertRepository.save(alert);
 		}
@@ -71,24 +72,25 @@ public class AlertController {
 	@PostMapping("/read/batch")
 	@Transactional
 	@ResponseBody
-	public String markAllAsRead(@RequestBody List<Integer> alertIds, Principal principal) {
-		if (principal == null)
-			return "fragments/header";
+	public Map<String, String> markAllAsRead(@RequestBody List<Integer> alertIds, Principal principal) {
+		if (principal == null) {
+			return Map.of("status", "ERROR", "message", "Unauthorized");
+		}
 
 		UserDTO user = accountService.findByEmail(principal.getName());
-		if (user == null)
-			return "fragments/header";
+		if (user == null) {
+			return Map.of("status", "ERROR", "message", "User not found");
+		}
 
 		List<AlertEntity> alerts = alertRepository.findAllById(alertIds);
 		for (AlertEntity alert : alerts) {
-			if (alert.getUserId().equals(user.getUser_id())) { // この場合は正しい
+			if (alert.getUserId().equals(user.getUserId())) {
 				alert.setIsRead(true);
 			}
-
 		}
 
 		alertRepository.saveAll(alerts);
-		return "fragments/header";
+		return Map.of("status", "OK");
 	}
 
 }

@@ -34,6 +34,6 @@ public class GlobalModelAttributes {
 			return List.of();
 		}
 
-		return alertRepository.findActiveAlertsByUserId(user.getUser_id());
+		return alertRepository.findActiveAlertsByUserId(user.getUserId());
 	}
 }

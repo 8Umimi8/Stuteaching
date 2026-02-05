@@ -36,7 +36,7 @@ public class AccountController {
 
 		// ロールが2（先生）の場合のみteacher情報を取得
 		if (user.getRole() == 2) {
-			teacher = accountService.findByUserId(user.getUser_id());
+			teacher = accountService.findByUserId(user.getUserId());
 		}
 
 		model.addAttribute("teacher", teacher); // ← 常に追加（null可）
@@ -52,7 +52,7 @@ public class AccountController {
 		// 先生の場合、教科一覧と担当教科をセット
 		if (user.getRole() == 2) {
 			model.addAttribute("subjects", accountService.findAll());
-			TeacherEntity teacher = accountService.findByUserId(user.getUser_id());
+			TeacherEntity teacher = accountService.findByUserId(user.getUserId());
 			model.addAttribute("teacher", teacher);
 		}
 

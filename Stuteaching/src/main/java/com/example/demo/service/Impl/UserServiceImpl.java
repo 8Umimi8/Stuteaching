@@ -1,14 +1,18 @@
 package com.example.demo.service.Impl;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.UserDTO;
+import com.example.demo.entity.AlertEntity;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.entity.SubjectEntity;
 import com.example.demo.entity.TeacherEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.AlertRepository;
 import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SubjectRepository;
@@ -36,6 +40,8 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private AlertRepository alertRepository;
 
 	@Override
 	public void InsertUser(UserDTO user) {
@@ -61,6 +67,15 @@ public class UserServiceImpl implements UserService {
 			StudentEntity student = new StudentEntity();
 			student.setUserId(userEntity);
 			studentRepository.save(student);
+
+			AlertEntity alert = new AlertEntity();
+			alert.setUserId(userId);
+			alert.setTitle("ようこそスタチンへ！まずは先生を探してみましょう！");
+			alert.setIsRead(false);
+			alert.setIsDeleted(false);
+			alert.setCreatedAt(LocalDateTime.now());
+			alert.setUpdatedAt(LocalDateTime.now());
+			alertRepository.save(alert);
 		}
 
 		// 先生
@@ -75,6 +90,15 @@ public class UserServiceImpl implements UserService {
 				teacher.setSubjectId(subjectEntity);
 			}
 			teacherRepository.save(teacher);
+
+			AlertEntity alert = new AlertEntity();
+			alert.setUserId(userId);
+			alert.setTitle("ようこそスタチンへ！楽しく授業をしよう！");
+			alert.setIsRead(false);
+			alert.setIsDeleted(false);
+			alert.setCreatedAt(LocalDateTime.now());
+			alert.setUpdatedAt(LocalDateTime.now());
+			alertRepository.save(alert);
 		}
 	}
 

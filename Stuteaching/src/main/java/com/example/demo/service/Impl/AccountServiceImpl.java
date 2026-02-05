@@ -1,5 +1,6 @@
 package com.example.demo.service.Impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DTO.StudentUsersDTO;
 import com.example.demo.DTO.UserDTO;
+import com.example.demo.entity.AlertEntity;
 import com.example.demo.entity.StudentEntity;
 import com.example.demo.entity.SubjectEntity;
 import com.example.demo.entity.TeacherEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.AlertRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SubjectRepository;
 import com.example.demo.repository.TeacherRepository;
@@ -37,10 +40,31 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	private SubjectRepository subjectRepository;
+	@Autowired
+	private AlertRepository alertRepository;
 
 	@Autowired
 	public AccountServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
+	}
+
+	@Transactional
+	public UserEntity registerUser(UserEntity user) {
+		// 1️⃣ ユーザーを保存
+		UserEntity savedUser = userRepository.save(user);
+
+		// 2️⃣ 初回ログイン通知を作成
+		AlertEntity alert = new AlertEntity();
+		alert.setUserId(savedUser.getUserId());
+		alert.setTitle("ようこそStutychingへ！プロフィールを設定してみましょう！");
+		alert.setIsRead(false);
+		alert.setIsDeleted(false);
+		alert.setCreatedAt(LocalDateTime.now());
+		alert.setUpdatedAt(LocalDateTime.now());
+
+		alertRepository.save(alert);
+
+		return savedUser;
 	}
 
 	@Override
@@ -57,8 +81,8 @@ public class AccountServiceImpl implements AccountService {
 
 	private UserDTO convertToDTO(UserEntity entity) {
 		UserDTO dto = new UserDTO();
-		dto.setUser_id(entity.getUserId()); // ← user_id に合わせる
-		dto.setUser_name(entity.getUserName()); // ← user_name に合わせる
+		dto.setUserId(entity.getUserId()); // ← user_id に合わせる
+		dto.setUserName(entity.getUserName()); // ← user_name に合わせる
 		dto.setGender(entity.getGender());
 		dto.setBirthday(entity.getBirthday());
 		dto.setEmail(entity.getEmail());
@@ -91,7 +115,8 @@ public class AccountServiceImpl implements AccountService {
 						p.getUserName(),
 						p.getGender(),
 						p.getReview(),
-						p.getSubjectName()))
+						p.getSubjectName(),
+						p.getSubjectId()))
 				.toList();
 	}
 
@@ -103,8 +128,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		UserDTO dto = new UserDTO();
-		dto.setUser_id(entity.getUserId());
-		dto.setUser_name(entity.getUserName());
+		dto.setUserId(entity.getUserId());
+		dto.setUserName(entity.getUserName());
 		dto.setEmail(entity.getEmail());
 		dto.setBirthday(entity.getBirthday());
 		dto.setGender(entity.getGender());
@@ -117,7 +142,7 @@ public class AccountServiceImpl implements AccountService {
 		// userId から UserEntity を取得して渡す
 		UserEntity userEntity = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User not found"));
-		return teacherRepository.findByUser(userEntity);
+		return teacherRepository.findByUserId(userEntity);
 	}
 
 	@Transactional
@@ -130,7 +155,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 
 		// --- 2. 基本情報を更新 ---
-		user.setUserName(dto.getUser_name());
+		user.setUserName(dto.getUserName());
 		user.setEmail(dto.getEmail());
 		user.setBirthday(dto.getBirthday());
 		user.setGender(dto.getGender());
@@ -139,7 +164,7 @@ public class AccountServiceImpl implements AccountService {
 		// --- 3. 先生（role=2）の場合のみ、担当教科を更新 ---
 		if (user.getRole() == 2 && dto.getSubject() != null) {
 			// 先生エンティティを取得
-			TeacherEntity teacher = teacherRepository.findByUser(user);
+			TeacherEntity teacher = teacherRepository.findByUserId(user);
 			if (teacher == null) {
 				throw new RuntimeException("先生情報が見つかりません");
 			}

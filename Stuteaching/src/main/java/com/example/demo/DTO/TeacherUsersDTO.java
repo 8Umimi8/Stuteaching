@@ -10,4 +10,6 @@ public interface TeacherUsersDTO {
 	Integer getReview();
 
 	String getSubjectName();
+
+	Integer getSubjectId();
 }

@@ -28,7 +28,7 @@
 
         <!-- ヘッダー -->
         <div class="chat-header" style="display:flex;" th:if="${chatPartner != null}">
-            <div class="chat-header-title" th:text="${chatPartner.user_name}">
+            <div class="chat-header-title" th:text="${chatPartner.userName}">
             </div>
 
             <form th:action="@{'/chat/' + ${classId} + '/rating'}" method="post" class="chat-rating-area">

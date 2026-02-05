@@ -7,17 +7,19 @@ public class TeacherUsersResponseDTO {
 	private Integer gender;
 	private Integer review;
 	private String subjectName;
+	private Integer subjectId;
 
 	public TeacherUsersResponseDTO() {
 	}
 
 	public TeacherUsersResponseDTO(Integer teacherId, String userName, Integer gender,
-			Integer review, String subjectName) {
+			Integer review, String subjectName, Integer subjectId) {
 		this.teacherId = teacherId;
 		this.userName = userName;
 		this.gender = gender;
 		this.review = review;
 		this.subjectName = subjectName;
+		this.subjectId = subjectId;
 	}
 
 	public Integer getTeacherId() {
@@ -58,5 +60,13 @@ public class TeacherUsersResponseDTO {
 
 	public void setSubjectName(String subjectName) {
 		this.subjectName = subjectName;
+	}
+
+	public Integer getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(Integer subjectId) {
+		this.subjectId = subjectId;
 	}
 }
