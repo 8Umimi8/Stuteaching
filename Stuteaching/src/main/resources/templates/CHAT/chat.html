@@ -31,7 +31,7 @@
             <div class="chat-header-title" th:text="${chatPartner.userName}">
             </div>
 
-            <form th:action="@{'/chat/' + ${classId} + '/rating'}" method="post" class="chat-rating-area">
+            <form th:action="@{'/chat/' + ${classId} + '/rating'}" method="post" class="chat-rating-area" th:if="${chatPartner.role == 2}">
 
                 <input type="hidden" name="score" id="ratingScore">
 
