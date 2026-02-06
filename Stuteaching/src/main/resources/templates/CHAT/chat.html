@@ -2,241 +2,277 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>チャット | Stutyching</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>チャット | Stutyching</title>
 
-    <link rel="stylesheet" th:href="@{/css/chat.css}">
-    <link rel="stylesheet" th:href="@{/css/hed_style.css}">
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
-    <style>
-        /* チャット内画像 */
-        
-
-        /* プレビュー用（入力欄の上に表示、大きく） */
-        #previewContainer {
-            position: absolute;
-            top: -290px; /* 入力欄の上 */
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-
-        #previewContainer .image-preview-msg {
-            max-width: 500px;
-            max-height: 500px;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        #previewContainer .image-preview-msg img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .remove-preview {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            text-align: center;
-            line-height: 22px;
-        }
-
-        /* モーダル */
-        .image-modal {
-            display: none;
-            position: fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .image-modal img {
-            max-width: 80%;
-            max-height: 80%;
-            border-radius: 8px;
-        }
-    </style>
+  <link rel="stylesheet" th:href="@{/css/chat.css}">
+  <link rel="stylesheet" th:href="@{/css/hed_style.css}">
+  <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}">
+  <style>
+    /* 画像プレビュー */
+    #previewContainer {
+      position: absolute;
+      top: -290px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    #previewContainer .image-preview-msg {
+      max-width: 500px;
+      max-height: 500px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    #previewContainer .image-preview-msg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .remove-preview {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      line-height: 22px;
+    }
+    /* モーダル */
+    .image-modal {
+      display: none;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .image-modal img {
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 8px;
+    }
+    /* 星評価 */
+    .stars {
+      display: flex;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #ccc;
+    }
+    .rating-star.star-filled {
+      color: gold;
+    }
+  </style>
 </head>
 
 <body>
 
 <div th:replace="fragments/header :: header"></div>
 
+<!-- サイドバー -->
 <div class="sidebar">
-    <div th:each="u : ${users}" th:if="${u.userId != currentUser.userId}" class="user"
-         th:classappend="${u.roomId == classId} ? ' active'" th:data-initial="${u.name.substring(0,1)}"
-         th:text="${u.name}" th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
-    </div>
+  <div th:each="u : ${users}"
+       th:if="${u.userId != currentUser.userId}"
+       class="user"
+       th:classappend="${u.roomId == classId} ? ' active'"
+       th:data-initial="${u.name.substring(0,1)}"
+       th:text="${u.name}"
+       th:onclick="'location.href=\'/chat/' + ${u.roomId} + '\';'">
+  </div>
 </div>
 
+<!-- チャットエリア -->
 <div class="chat-area">
-    <div class="chat-header" style="display:flex;" th:if="${chatPartner != null}">
-        <div class="chat-header-title" th:text="${chatPartner.userName}"></div>
-    </div>
 
-    <div class="chat-messages" th:if="${chatPartner != null}"></div>
+  <!-- ヘッダー -->
+  <div class="chat-header" th:if="${chatPartner != null}"
+       style="display:flex; align-items:center; justify-content:space-between; padding:10px;">
 
-    <form class="chat-input" th:if="${chatPartner != null}"
-          th:action="@{'/chat/' + ${classId} + '/send'}"
-          method="post" enctype="multipart/form-data"
-          style="display:flex; align-items:center; gap:8px; position: relative;">
+    <div class="chat-header-title" th:text="${chatPartner.userName}"></div>
 
-        <!-- プレビュー表示用 -->
-        <div id="previewContainer"></div>
+    <!-- ★ レビュー評価フォーム -->
+    <form th:action="@{'/chat/' + ${classId} + '/rating'}"
+          method="post"
+          class="chat-rating-area"
+          th:if="${chatPartner.role == 2}"
+          style="display:flex; align-items:center; gap:6px;">
 
-        <button type="button" class="attach-btn" onclick="document.getElementById('imageInput').click()">
-            <i class="fas fa-image"></i>
-        </button>
+      <input type="hidden" name="score" id="ratingScore">
 
-        <input type="file" id="imageInput" name="image" accept="image/*" style="display:none;">
-        <input type="text" name="messageText" placeholder="メッセージを入力..." style="flex:1;">
-        <button type="submit">
-            <i class="fas fa-paper-plane"></i> 送信
-        </button>
+      <span class="stars">
+        <span class="rating-star"
+              th:each="i : ${#numbers.sequence(1,5)}"
+              th:onclick="'setRating(' + ${i} + ')'">★</span>
+      </span>
+
+      <button class="rating-btn" type="submit" style="border:none; background:none; cursor:pointer;">
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </form>
+  </div>
+
+  <!-- メッセージ -->
+  <div class="chat-messages" th:if="${chatPartner != null}"></div>
+
+  <!-- 入力欄 -->
+  <form class="chat-input" th:if="${chatPartner != null}"
+        th:action="@{'/chat/' + ${classId} + '/send'}"
+        method="post" enctype="multipart/form-data"
+        style="display:flex; align-items:center; gap:8px; position: relative;">
+
+    <div id="previewContainer"></div>
+
+    <button type="button" class="attach-btn" onclick="document.getElementById('imageInput').click()">
+      <i class="fas fa-image"></i>
+    </button>
+
+    <input type="file" id="imageInput" name="image" accept="image/*" style="display:none;">
+    <input type="text" name="messageText" placeholder="メッセージを入力..." style="flex:1;">
+    <button type="submit"><i class="fas fa-paper-plane"></i> 送信</button>
+  </form>
 </div>
 
 <!-- モーダル -->
 <div class="image-modal" id="imageModal">
-    <img src="" alt="拡大画像">
+  <img src="" alt="拡大画像">
 </div>
 
 <script th:inline="javascript">
-    const currentUserId = /*[[${currentUser.userId}]]*/ 0;
-    const classId = /*[[${classId}]]*/ 0;
+  const currentUserId = /*[[${currentUser.userId}]]*/ 0;
+  const classId = /*[[${classId}]]*/ 0;
 </script>
 
 <script>
 let lastMessageId = null;
 
-// メッセージ読み込み
+/* メッセージ取得 */
 async function loadMessages(classId) {
-    const res = await fetch(`/chat/${classId}/messages`);
-    const messages = await res.json();
-    const area = document.querySelector(".chat-messages");
+  const res = await fetch(`/chat/${classId}/messages`);
+  const messages = await res.json();
+  const area = document.querySelector(".chat-messages");
 
-    if (lastMessageId === null) {
-        messages.forEach(m => appendMessage(m, area));
-        if (messages.length > 0) lastMessageId = messages[messages.length - 1].classId;
-        setTimeout(() => { area.scrollTop = area.scrollHeight; }, 100);
-        return;
-    }
+  if (lastMessageId === null) {
+    messages.forEach(m => appendMessage(m, area));
+    if (messages.length > 0) lastMessageId = messages[messages.length - 1].classId;
+    setTimeout(() => { area.scrollTop = area.scrollHeight; }, 100);
+    return;
+  }
 
-    let added = false;
-    messages.forEach(m => {
-        if (m.classId > lastMessageId) {
-            appendMessage(m, area);
-            added = true;
-        }
-    });
-    if (added) {
-        lastMessageId = messages[messages.length - 1].classId;
-        area.scrollTop = area.scrollHeight;
+  let added = false;
+  messages.forEach(m => {
+    if (m.classId > lastMessageId) {
+      appendMessage(m, area);
+      added = true;
     }
+  });
+  if (added) {
+    lastMessageId = messages[messages.length - 1].classId;
+    area.scrollTop = area.scrollHeight;
+  }
 }
 
+/* メッセージ描画 */
 function appendMessage(m, area) {
-    const isMe = Number(m.senderId) === Number(currentUserId);
-    const wrapper = document.createElement("div");
-    wrapper.className = "message-wrapper " + (isMe ? "me" : "them");
-    wrapper.dataset.senderId = m.senderId;
+  const isMe = Number(m.senderId) === Number(currentUserId);
+  const wrapper = document.createElement("div");
+  wrapper.className = "message-wrapper " + (isMe ? "me" : "them");
+  wrapper.dataset.senderId = m.senderId;
 
-    const last = area.lastElementChild;
-    const showName = !last || last.dataset.senderId != m.senderId;
+  const last = area.lastElementChild;
+  const showName = !last || last.dataset.senderId != m.senderId;
 
-    let contentHtml = m.imageUrl ? `<img src="${m.imageUrl}" class="chat-image">`
-                                 : `<div class="content">${m.messageText}</div>`;
+  let contentHtml = m.imageUrl ? `<img src="${m.imageUrl}" class="chat-image">`
+                               : `<div class="content">${m.messageText}</div>`;
 
-    wrapper.innerHTML = `${showName ? `<div class="sender-name">${m.senderName}</div>` : "" }
-        <div class="message ${isMe ? "from-me" : "from-them"}">${contentHtml}</div>`;
+  wrapper.innerHTML = `${showName ? `<div class="sender-name">${m.senderName}</div>` : "" }
+      <div class="message ${isMe ? "from-me" : "from-them"}">${contentHtml}</div>`;
 
-    area.appendChild(wrapper);
+  area.appendChild(wrapper);
 }
 
+/* 初期ロード・定期更新 */
 document.addEventListener("DOMContentLoaded", () => {
-    if (classId > 0) loadMessages(classId);
+  if (classId > 0) loadMessages(classId);
 });
-
 setInterval(() => { if (classId > 0) loadMessages(classId); }, 1000);
 
-// 画像プレビュー
+/* 星評価 */
+function setRating(score) {
+  document.getElementById("ratingScore").value = score;
+  document.querySelectorAll(".rating-star")
+      .forEach((s, i) => s.classList.toggle("star-filled", i < score));
+}
+
+/* 画像プレビュー */
 const imageInput = document.getElementById("imageInput");
 const chatForm = document.querySelector(".chat-input");
 const messageText = chatForm.querySelector('input[name="messageText"]');
 let previewWrapper = null;
 
 imageInput.addEventListener("change", function() {
-    const file = this.files[0];
-    if (!file) return;
+  const file = this.files[0];
+  if (!file) return;
 
-    if (previewWrapper) previewWrapper.remove();
+  if (previewWrapper) previewWrapper.remove();
 
-    previewWrapper = document.createElement("div");
-    previewWrapper.className = "image-preview-msg";
+  previewWrapper = document.createElement("div");
+  previewWrapper.className = "image-preview-msg";
 
-    const img = document.createElement("img");
-    const reader = new FileReader();
-    reader.onload = function(e) { img.src = e.target.result; };
-    reader.readAsDataURL(file);
+  const img = document.createElement("img");
+  const reader = new FileReader();
+  reader.onload = e => img.src = e.target.result;
+  reader.readAsDataURL(file);
 
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "remove-preview";
-    removeBtn.textContent = "✖";
-    removeBtn.addEventListener("click", () => {
-        previewWrapper.remove();
-        previewWrapper = null;
-        imageInput.value = "";
-        messageText.disabled = false;
-    });
+  const removeBtn = document.createElement("button");
+  removeBtn.className = "remove-preview";
+  removeBtn.textContent = "✖";
+  removeBtn.addEventListener("click", () => {
+    previewWrapper.remove();
+    previewWrapper = null;
+    imageInput.value = "";
+    messageText.disabled = false;
+  });
 
-    previewWrapper.appendChild(img);
-    previewWrapper.appendChild(removeBtn);
-
-    document.getElementById("previewContainer").appendChild(previewWrapper);
-
-    messageText.disabled = true;
+  previewWrapper.appendChild(img);
+  previewWrapper.appendChild(removeBtn);
+  document.getElementById("previewContainer").appendChild(previewWrapper);
+  messageText.disabled = true;
 });
 
-// 送信制限
-chatForm.addEventListener("submit", (e) => {
-    if (imageInput.files.length > 0 && messageText.value.trim() !== "") {
-        e.preventDefault();
-        alert("画像と文字は同時に送信できません。どちらか一方にしてください。");
-    }
+/* 送信制限 */
+chatForm.addEventListener("submit", e => {
+  if (imageInput.files.length > 0 && messageText.value.trim() !== "") {
+    e.preventDefault();
+    alert("画像と文字は同時に送信できません。どちらか一方にしてください。");
+  }
 });
 
-// 画像モーダル
+/* 画像モーダル */
 const imageModal = document.getElementById("imageModal");
 const modalImg = imageModal.querySelector("img");
 
 document.addEventListener("click", e => {
-    if (e.target.classList.contains("chat-image")) {
-        modalImg.src = e.target.src;
-        imageModal.style.display = "flex";
-    }
+  if (e.target.classList.contains("chat-image")) {
+    modalImg.src = e.target.src;
+    imageModal.style.display = "flex";
+  }
 });
-
 imageModal.addEventListener("click", () => {
-    imageModal.style.display = "none";
-    modalImg.src = "";
+  imageModal.style.display = "none";
+  modalImg.src = "";
 });
 </script>
 
