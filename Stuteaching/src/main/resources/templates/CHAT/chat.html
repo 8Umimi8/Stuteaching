@@ -113,10 +113,12 @@ async function loadMessages(classId) {
             lastMessageId = messages[messages.length - 1].classId;
         }
 
-        // 初回は必ず最下部へ
-        requestAnimationFrame(() => {
-            area.scrollTop = area.scrollHeight;
-        });
+        // 初回は必ず最下部へ（レイアウト完了を確実に待つ）
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                area.scrollTop = area.scrollHeight;
+            });
+        }, 100);
 
         return;
     }
@@ -187,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ---------------------------
 setInterval(() => {
     if (classId > 0) loadMessages(classId);
-}, 5000);
+}, 1000);
     // ------------------------------
     // 画像プレビュー
     // ------------------------------
