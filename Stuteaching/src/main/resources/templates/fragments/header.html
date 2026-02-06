@@ -20,15 +20,9 @@
         <!-- ユーザー操作 -->
         <div class="user-actions">
 
-            <!-- 通知ボタン -->
+            <!-- 通知ボタン（初期バッジなし） -->
             <a th:href="@{#}" class="icon-btn" id="notifyBtn">
                 <i class="fas fa-bell"></i>
-
-                <!-- 未読が1件以上あればバッジ表示 -->
-                <span th:if="${notifications.?[!isRead].size() > 0}" 
-                      class="notification-badge"
-                      th:text="${notifications.?[!isRead].size()}">
-                </span>
             </a>
 
             <!-- 通知パネル -->
@@ -36,13 +30,12 @@
                 <div class="notification-title">通知</div>
                 <ul class="notification-list">
                     <li th:each="note : ${notifications}" 
-                        th:classappend="${!note.isRead} ? 'unread' : ''">
-                        <div th:href="@{/alert/read/{id}(id=${note.alertId})}"
-                           th:attr="data-alert-id=${note.alertId}">
-                            <strong th:text="${note.title}">通知タイトル</strong><br>
-                            <span th:text="${#temporals.format(note.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
-                        </div>
-                    </li>
+    th:classappend="${!note.isRead} ? 'unread' : ''"
+    th:attr="data-alert-id=${note.alertId}">
+    <strong th:text="${note.title}">通知タイトル</strong><br>
+    <span th:text="${#temporals.format(note.createdAt, 'yyyy/MM/dd HH:mm')}"></span>
+</li>
+
 
                     <li th:if="${notifications == null or notifications.empty}" style="color:#777;">
                         通知はありません
@@ -51,79 +44,87 @@
             </div>
 
             <!-- ログアウトボタン -->
-			    <form th:action="@{/logout}" method="post">
-				    <button type="submit"
-				            class="icon-btn logout-btn"
-				            title="ログアウト">
-				        <i class="fas fa-right-from-bracket"></i>
-				    </button>
-				</form>
-
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="icon-btn logout-btn" title="ログアウト">
+                    <i class="fas fa-right-from-bracket"></i>
+                </button>
+            </form>
 
             <!-- ハンバーガーメニュー -->
             <button class="hamburger"><i class="fas fa-bars"></i></button>
         </div>
     </div>
 
-    <!-- JS -->
     <script th:src="@{/js/header.js}"></script>
-    <script>
+   <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const notifyBtn = document.getElementById("notifyBtn");
-  const notificationPanel = document.getElementById("notificationPanel");
+    const notifyBtn = document.getElementById("notifyBtn");
+    const notificationPanel = document.getElementById("notificationPanel");
 
-  if (!notifyBtn) {
-    console.error("notifyBtn が見つかりません。#notifyBtn のIDを確認してください。");
-    return;
-  }
-  if (!notificationPanel) {
-    console.error("notificationPanel が見つかりません。#notificationPanel のIDを確認してください。");
-    return;
-  }
+    if (!notifyBtn || !notificationPanel) return;
 
-  // ヘルパー: パネルが開いているか
-  const isOpen = () => notificationPanel.classList.contains("open");
+    const togglePanel = (open) => {
+        notificationPanel.classList.toggle("open", open);
+    };
 
-  // トグル（通知ボタン）
-  const onNotifyClick = (e) => {
-    e.stopPropagation();
-    notificationPanel.classList.toggle("open");
-    console.log("通知ボタン: toggle open ->", isOpen());
-  };
+    // 外クリックで閉じる
+    document.addEventListener("pointerdown", (e) => {
+        if (!notificationPanel.contains(e.target) && !notifyBtn.contains(e.target)) {
+            togglePanel(false);
+        }
+    });
 
-  // パネル内クリックは伝播を止める
-  const onPanelPointer = (e) => {
-    e.stopPropagation();
-  };
+    // ページ読み込み時：未読件数があれば赤丸を表示
+    const updateBadge = () => {
+        const unreadCount = document.querySelectorAll(".notification-list li.unread").length;
+        let badge = notifyBtn.querySelector(".notification-badge");
+        if (unreadCount > 0) {
+            if (!badge) {
+                badge = document.createElement("span");
+                badge.classList.add("notification-badge");
+                notifyBtn.appendChild(badge);
+            }
+            badge.textContent = unreadCount;
+        } else if (badge) {
+            badge.remove();
+        }
+    };
 
-  // ドキュメント上の pointerdown（マウス/タッチ/ペン）で外クリック判定
-  const onDocumentPointer = (e) => {
-    // クリック／タップされたターゲットがパネル内 or ボタン内なら何もしない
-    if (notificationPanel.contains(e.target) || notifyBtn.contains(e.target)) {
-      // do nothing
-      return;
-    }
-    if (isOpen()) {
-      notificationPanel.classList.remove("open");
-      console.log("外部クリックでパネルを閉じました");
-    }
-  };
+    updateBadge(); // 初期状態でチェック
 
-  // 古いリスナがある場合に二重登録しないよう先に除去（安全）
-  notifyBtn.removeEventListener("click", onNotifyClick);
-  notificationPanel.removeEventListener("pointerdown", onPanelPointer);
-  document.removeEventListener("pointerdown", onDocumentPointer);
+    // 通知ボタン押下時
+    notifyBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpening = !notificationPanel.classList.contains("open");
+        togglePanel(isOpening);
 
-  // 登録
-  notifyBtn.addEventListener("click", onNotifyClick);
-  notificationPanel.addEventListener("pointerdown", onPanelPointer);
-  // document の pointerdown を使うとタッチでも確実にキャッチできます
-  document.addEventListener("pointerdown", onDocumentPointer);
+        if (isOpening) {
+            const unreadLis = document.querySelectorAll(".notification-list li.unread");
+
+            if (unreadLis.length > 0) {
+                const unreadIds = Array.from(unreadLis).map(li =>
+                    parseInt(li.getAttribute("data-alert-id"))
+                );
+
+                fetch("/alert/read/batch", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(unreadIds)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "OK") {
+                        unreadLis.forEach(li => li.classList.remove("unread"));
+                        updateBadge();
+                    } else {
+                        console.error(data.message);
+                    }
+                })
+                .catch(err => console.error("通知更新エラー:", err));
+            }
+        }
+    });
 });
-
 </script>
-
-
-
 
 </header>
