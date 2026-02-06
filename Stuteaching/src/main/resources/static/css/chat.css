@@ -242,14 +242,18 @@ body {
 ========================= */
 .chat-messages {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: flex-start; ← 削除 */
+    align-items: stretch;
     padding: 24px;
     overflow-y: auto;
     overflow-x: hidden;
-    background: var(--bg-light);
-    display: none;
     gap: 16px;
     min-height: 0;
+    background: var(--bg-light);
 }
+
 
 .chat-messages::-webkit-scrollbar {
     width: 8px;

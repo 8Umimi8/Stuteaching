@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.DTO.ReviewDTO;
 import com.example.demo.DTO.TalkDTO;
+import com.example.demo.entity.PhotosEntity;
+import com.example.demo.repository.PhotosRepository;
 import com.example.demo.service.ReviewService;
 import com.example.demo.service.RoomService;
 import com.example.demo.service.Impl.TalkServiceImpl;
@@ -30,6 +36,9 @@ public class TalkController {
 
 	@Autowired
 	private ReviewService reviewService;
+
+	@Autowired
+	private PhotosRepository photoRepository;
 
 	@GetMapping("/chat")
 	public ModelAndView chatRoot(@AuthenticationPrincipal LoginUserDetails user) {
@@ -71,17 +80,26 @@ public class TalkController {
 	@PostMapping("/chat/{roomId}/send")
 	public String send(
 			@PathVariable Integer roomId,
-			@RequestParam String messageText,
-			@AuthenticationPrincipal LoginUserDetails user) {
+			@RequestParam(required = false) String messageText,
+			@RequestParam(required = false, name = "image") MultipartFile image,
+			@AuthenticationPrincipal LoginUserDetails user) throws IOException {
 
 		TalkDTO dto = new TalkDTO();
 		dto.setRoomId(roomId);
 		dto.setMessageText(messageText);
-		dto.setSenderId(user.getUser_id()); // ID取れる
-		dto.setSenderName(user.getUsername()); // 名前取れる
+		dto.setSenderId(user.getUser_id());
+		dto.setSenderName(user.getUsername());
+
+		// 画像が送られてきた場合
+		if (image != null && !image.isEmpty()) {
+			dto.setImageData(image.getBytes());
+			dto.setImageType(image.getContentType());
+		}
 
 		talkServiceImpl.sendTalk(dto);
-
+		System.out.println("image = " + image);
+		System.out.println("image.isEmpty = " + (image == null ? "null" : image.isEmpty()));
+		System.out.println("image bytes = " + (image == null ? "null" : image.getBytes().length));
 		return "redirect:/chat/" + roomId;
 	}
 
@@ -105,4 +123,14 @@ public class TalkController {
 		return "redirect:/chat/" + classId;
 	}
 
+	@GetMapping("/chat/image/{photoId}")
+	@ResponseBody
+	public ResponseEntity<byte[]> getImage(@PathVariable Integer photoId) {
+		PhotosEntity photo = photoRepository.findById(photoId)
+				.orElseThrow(() -> new RuntimeException("画像が見つかりません"));
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_TYPE, photo.getImageType())
+				.body(photo.getImageData());
+	}
 }
