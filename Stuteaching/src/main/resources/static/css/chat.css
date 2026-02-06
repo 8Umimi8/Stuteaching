@@ -14,6 +14,26 @@
     --message-me: linear-gradient(135deg, #4a8df6 0%, #3a7ae0 100%);
     --message-them: #ffffff;
 }
+/* PC でもモーダル表示 */
+.image-modal {
+    display: none; /* 初期非表示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: zoom-out;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
 
 /* =========================
    基本スタイル
@@ -385,11 +405,23 @@ body {
 }
 
 .message-image {
-    max-width: 100%;
+    max-width: 100px; /* 幅を最大200pxに制限 */
+    max-height: 150px; /* 高さを最大150pxに制限 */
+    width: auto;       /* 横幅は自動調整 */
+    height: auto;      /* 高さも自動調整 */
     border-radius: 8px;
     margin-top: 4px;
     display: block;
+    object-fit: cover; /* アスペクト比を保ちながら収める */
 }
+.chat-image {
+    max-width: 400px; /* 横幅の上限 */
+    width: auto;      /* 自動調整 */
+    height: auto;     /* 縦横比を維持 */
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
 
 /* システムメッセージ（評価送信ログなど） */
 .message-system {
@@ -485,4 +517,25 @@ body {
     .empty-logo {
         width: 150px;
     }
+    /* 画像モーダル */
+.image-modal {
+    display: none; /* 初期は非表示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: zoom-out;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
+
 }
