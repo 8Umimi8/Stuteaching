@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.DTO.TalkDTO;
 import com.example.demo.DTO.UserDTO;
+import com.example.demo.entity.PhotosEntity;
 import com.example.demo.entity.RoomEntity;
 import com.example.demo.entity.TalkEntity;
+import com.example.demo.repository.PhotosRepository;
 import com.example.demo.repository.RoomRepository;
 import com.example.demo.repository.TalkRepository;
 import com.example.demo.repository.UserRepository;
@@ -28,21 +30,32 @@ public class TalkServiceImpl implements TalkService {
 
 	@Autowired
 	private RoomRepository roomRepository;
+	@Autowired
+	private PhotosRepository photoRepository;
 
 	@Override
 	public void sendTalk(TalkDTO talkDTO) {
-		// ① room を取得（FKの正解ルート）
+		// ① room を取得
 		RoomEntity room = roomRepository.findById(talkDTO.getRoomId())
 				.orElseThrow(() -> new IllegalArgumentException("roomが存在しない"));
 
-		// ② Entityを組み立てる
-		TalkEntity entity = new TalkEntity();
-		entity.setRoomId(room); // ★ 超重要
-		entity.setSenderId(talkDTO.getSenderId());
-		entity.setMessageText(talkDTO.getMessageText());
+		// ② Talk を保存
+		TalkEntity talk = new TalkEntity();
+		talk.setRoomId(room);
+		talk.setSenderId(talkDTO.getSenderId());
+		talk.setMessageText(talkDTO.getMessageText());
 
-		// ③ 保存
-		talkRepository.save(entity);
+		TalkEntity savedTalk = talkRepository.save(talk);
+
+		if (talkDTO.getImageData() != null && talkDTO.getImageData().length > 0) {
+			PhotosEntity photo = new PhotosEntity();
+			photo.setTalk(savedTalk);
+			photo.setImageData(talkDTO.getImageData());
+			photo.setImageType(talkDTO.getImageType());
+
+			PhotosEntity savedPhoto = photoRepository.save(photo);
+			System.out.println("Photo saved with ID: " + savedPhoto.getPhotId());
+		}
 
 	}
 
@@ -57,9 +70,16 @@ public class TalkServiceImpl implements TalkService {
 			TalkDTO dto = new TalkDTO();
 			UtilService.ConvertDTO(entity, dto);
 
+			// 送信者名をセット
 			if (entity.getSenderId() != null) {
 				userRepository.findById(entity.getSenderId())
 						.ifPresent(user -> dto.setSenderName(user.getUserName()));
+			}
+
+			// ★ 画像が存在する場合はURLをセット（ここが追加部分） ★
+			List<PhotosEntity> photos = photoRepository.findByTalk(entity);
+			if (!photos.isEmpty()) {
+				dto.setImageUrl("/chat/image/" + photos.get(0).getPhotId());
 			}
 
 			return dto;

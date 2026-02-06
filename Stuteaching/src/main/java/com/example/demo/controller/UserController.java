@@ -70,7 +70,6 @@ public class UserController {
 		// 👇 これだけでOK！
 		userService.InsertUser(user);
 
-		// 先生の登録は UserServiceImpl の中で完了している
 		return "redirect:/user/agreement";
 	}
 

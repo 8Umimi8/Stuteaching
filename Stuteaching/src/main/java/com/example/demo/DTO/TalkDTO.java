@@ -9,4 +9,8 @@ public class TalkDTO {
 	private Integer senderId;
 	private String senderName;
 	private String messageText;
+	private byte[] imageData;
+	private String imageType;
+	private String imageUrl;
+
 }
