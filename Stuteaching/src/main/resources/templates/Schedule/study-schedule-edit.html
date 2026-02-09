@@ -24,7 +24,7 @@
 
 
     <div class="form-container">
-        <h1>予定を編集</h1>
+        <h1>勉強時間を編集</h1>
         <form th:action="@{/study-time/update}" th:object="${TimeManageDTO}" method="post">
 
             <input type="hidden" name="time_id" th:value="*{timeId}">
