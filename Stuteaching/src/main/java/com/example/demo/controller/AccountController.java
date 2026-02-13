@@ -31,6 +31,8 @@ public class AccountController {
 		UserDTO user = accountService.findByEmail(principal.getName());
 		model.addAttribute("user", user);
 
+		model.addAttribute("activeMenu", "account");
+
 		// teacherをあらかじめnullで登録（テンプレート安全対策）
 		TeacherEntity teacher = null;
 

@@ -63,6 +63,8 @@ public class TalkController {
 
 		ModelAndView mav = new ModelAndView("CHAT/chat");
 
+		mav.addObject("activeMenu", "chat");
+
 		mav.addObject("messages",
 				talkServiceImpl.getTalkList(classId));
 		mav.addObject("classId", classId);

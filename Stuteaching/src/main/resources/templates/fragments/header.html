@@ -9,13 +9,38 @@
 
         <!-- ナビゲーション -->
         <nav class="nav-menu">
-            <ul>
-                <li><a th:href="@{/match}"><i class="fas fa-home"></i> マッチ</a></li>
-                <li><a th:href="@{/chat}"><i class="fas fa-comments"></i> トーク</a></li>
-                <li><a th:href="@{/study-time/display}"><i class="fas fa-clock"></i> 勉強時間管理</a></li>
-                <li><a th:href="@{/account/profile}"><i class="fas fa-user"></i> アカウント詳細</a></li>
-            </ul>
-        </nav>
+    <ul>
+        <li>
+            <a th:href="@{/match}"
+               th:classappend="${activeMenu == 'match'} ? 'active'">
+                <i class="fas fa-home"></i> マッチ
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/chat}"
+               th:classappend="${activeMenu == 'chat'} ? 'active'">
+                <i class="fas fa-comments"></i> トーク
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/study-time/display}"
+               th:classappend="${activeMenu == 'study'} ? 'active'">
+                <i class="fas fa-clock"></i> 勉強時間管理
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/account/profile}"
+               th:classappend="${activeMenu == 'account'} ? 'active'">
+                <i class="fas fa-user"></i> アカウント詳細
+            </a>
+        </li>
+    </ul>
+</nav>
+
+
 
         <!-- ユーザー操作 -->
         <div class="user-actions">
