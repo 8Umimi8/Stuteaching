@@ -49,7 +49,19 @@
     }
     .filter-panel {
     display: none; /* 初期は非表示 */
-}
+	}
+	.rating {
+    font-size: 20px;
+    letter-spacing: 2px;
+	}
+	
+	.star-filled {
+	    color: #f5c518;
+	}
+	
+	.star-empty {
+	    color: #ddd;
+	}
 
 </style>
 
@@ -109,10 +121,16 @@
 
                         <!-- 評価（★） -->
                         <div class="rating">
-                            <span th:if="${user.review != null and user.review > 0}"
-                                th:each="i : ${#numbers.sequence(1, user.review)}" class="star-filled">★</span>
-                            <span th:if="${user.review == null or user.review == 0}">未評価</span>
-                        </div>
+						    <span th:if="${user.review != null}"
+						          th:each="i : ${#numbers.sequence(1,5)}"
+						          th:classappend="${i <= user.review} ? 'star-filled' : 'star-empty'">
+						        ★
+						    </span>
+						
+						    <span th:if="${user.review == null or user.review == 0}">
+						        
+						    </span>
+						</div>
 
                         <a th:href="@{/chat/start/{teacherId}(teacherId=${user.teacherId})}" class="btn primary">
                             メッセージ
