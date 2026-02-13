@@ -35,6 +35,8 @@ public class StudyScheduleController {
 
 		Integer user_id = user.getUser_id();
 
+		model.addAttribute("activeMenu", "study");
+
 		List<TimeManageDTO> list = service.DisplayTime(user_id);
 		model.addAttribute("timeList", list);
 

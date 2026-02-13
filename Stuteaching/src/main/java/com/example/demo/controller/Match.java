@@ -22,6 +22,9 @@ public class Match {
 		List<TeacherUsersResponseDTO> users = accountService.getAllTeachers();
 		model.addAttribute("users", users);
 
-		return "match/teacher-list"; // match.html
+		model.addAttribute("activeMenu", "match"); // ← ここが重要
+
+		return "match/teacher-list";
 	}
+
 }

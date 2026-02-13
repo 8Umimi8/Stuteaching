@@ -319,3 +319,14 @@ body {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.nav-menu a.active {
+    color: #1e90ff;
+    font-weight: bold;
+    border-bottom: 3px solid #1e90ff;
+}
+
+.nav-menu a.active i {
+    color: #1e90ff;
+}
+
