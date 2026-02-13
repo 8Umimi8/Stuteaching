@@ -164,23 +164,27 @@ async function loadMessages(classId) {
   const messages = await res.json();
   const area = document.querySelector(".chat-messages");
 
-  if (lastMessageId === null) {
-    messages.forEach(m => appendMessage(m, area));
-    if (messages.length > 0) lastMessageId = messages[messages.length - 1].classId;
-    setTimeout(() => { area.scrollTop = area.scrollHeight; }, 100);
-    return;
-  }
+  if (!area) return;
 
+  const isFirstLoad = lastMessageId === null;
   let added = false;
+
   messages.forEach(m => {
-    if (m.classId > lastMessageId) {
+    if (isFirstLoad || m.classId > lastMessageId) {
       appendMessage(m, area);
       added = true;
     }
   });
-  if (added) {
+
+  if (messages.length > 0) {
     lastMessageId = messages[messages.length - 1].classId;
-    area.scrollTop = area.scrollHeight;
+  }
+
+  // 初回ロード or 新着があった場合は最下部へスクロール
+  if (isFirstLoad || added) {
+    requestAnimationFrame(() => {
+      area.scrollTop = area.scrollHeight;
+    });
   }
 }
 
@@ -194,26 +198,52 @@ function appendMessage(m, area) {
   const last = area.lastElementChild;
   const showName = !last || last.dataset.senderId != m.senderId;
 
-  let contentHtml = m.imageUrl ? `<img src="${m.imageUrl}" class="chat-image">`
-                               : `<div class="content">${m.messageText}</div>`;
+  let contentHtml;
+
+  if (m.imageUrl) {
+    // 画像付きメッセージ
+    contentHtml = `<img src="${m.imageUrl}" class="chat-image">`;
+  } else {
+    // テキストメッセージ
+    contentHtml = `<div class="content">${m.messageText}</div>`;
+  }
 
   wrapper.innerHTML = `${showName ? `<div class="sender-name">${m.senderName}</div>` : "" }
       <div class="message ${isMe ? "from-me" : "from-them"}">${contentHtml}</div>`;
 
   area.appendChild(wrapper);
+
+  // 画像が含まれている場合は読み込み完了後にスクロール
+  const img = wrapper.querySelector("img");
+  if (img) {
+    img.onload = () => {
+      requestAnimationFrame(() => {
+        area.scrollTop = area.scrollHeight;
+      });
+    };
+  } else {
+    // テキストのみの場合はすぐスクロール
+    requestAnimationFrame(() => {
+      area.scrollTop = area.scrollHeight;
+    });
+  }
 }
+
 
 /* 初期ロード・定期更新 */
 document.addEventListener("DOMContentLoaded", () => {
   if (classId > 0) loadMessages(classId);
 });
-setInterval(() => { if (classId > 0) loadMessages(classId); }, 1000);
+setInterval(() => {
+  if (classId > 0) loadMessages(classId);
+}, 1000);
 
 /* 星評価 */
 function setRating(score) {
   document.getElementById("ratingScore").value = score;
-  document.querySelectorAll(".rating-star")
-      .forEach((s, i) => s.classList.toggle("star-filled", i < score));
+  document
+    .querySelectorAll(".rating-star")
+    .forEach((s, i) => s.classList.toggle("star-filled", i < score));
 }
 
 /* 画像プレビュー */
@@ -222,7 +252,7 @@ const chatForm = document.querySelector(".chat-input");
 const messageText = chatForm.querySelector('input[name="messageText"]');
 let previewWrapper = null;
 
-imageInput.addEventListener("change", function() {
+imageInput.addEventListener("change", function () {
   const file = this.files[0];
   if (!file) return;
 
@@ -233,7 +263,7 @@ imageInput.addEventListener("change", function() {
 
   const img = document.createElement("img");
   const reader = new FileReader();
-  reader.onload = e => img.src = e.target.result;
+  reader.onload = (e) => (img.src = e.target.result);
   reader.readAsDataURL(file);
 
   const removeBtn = document.createElement("button");
@@ -252,19 +282,51 @@ imageInput.addEventListener("change", function() {
   messageText.disabled = true;
 });
 
-/* 送信制限 */
-chatForm.addEventListener("submit", e => {
-  if (imageInput.files.length > 0 && messageText.value.trim() !== "") {
+/* 送信制限 & 二重送信防止 */
+chatForm.addEventListener("submit", async (e) => {
+  const sendButton = chatForm.querySelector('button[type="submit"]');
+
+  const text = messageText.value.trim(); // ← ここで空白削除した内容を取得
+
+  // テキストも画像もない場合は送信キャンセル
+  if (text === "" && imageInput.files.length === 0) {
+    e.preventDefault();
+    alert("空白のメッセージは送信できません。");
+    return;
+  }
+
+  // 画像と文字を同時送信しない
+  if (imageInput.files.length > 0 && text !== "") {
     e.preventDefault();
     alert("画像と文字は同時に送信できません。どちらか一方にしてください。");
+    return;
   }
+
+  // 二重送信防止：ボタンを無効化
+  sendButton.disabled = true;
+  sendButton.style.opacity = "0.6";
+  sendButton.style.cursor = "not-allowed";
+
+  // 送信完了後または一定時間後に再度有効化
+  setTimeout(() => {
+    sendButton.disabled = false;
+    sendButton.style.opacity = "1";
+    sendButton.style.cursor = "pointer";
+  }, 1500);
+
+  // スクロール（サーバー反映後）
+  setTimeout(() => {
+    const area = document.querySelector(".chat-messages");
+    if (area) area.scrollTop = area.scrollHeight;
+  }, 600);
 });
+
 
 /* 画像モーダル */
 const imageModal = document.getElementById("imageModal");
 const modalImg = imageModal.querySelector("img");
 
-document.addEventListener("click", e => {
+document.addEventListener("click", (e) => {
   if (e.target.classList.contains("chat-image")) {
     modalImg.src = e.target.src;
     imageModal.style.display = "flex";
@@ -275,6 +337,7 @@ imageModal.addEventListener("click", () => {
   modalImg.src = "";
 });
 </script>
+
 
 </body>
 </html>
